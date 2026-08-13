@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { TopbarComponent } from '../topbar/topbar.component';
@@ -11,6 +11,12 @@ import { ToastContainerComponent } from '../../../shared/components/toast/toast.
   template: `
     <div class="shell">
       <app-sidebar [collapsed]="sidebarCollapsed" (collapsedChange)="sidebarCollapsed = $event" />
+      
+      <!-- Backdrop for mobile overlay sidebar -->
+      @if (!sidebarCollapsed) {
+        <div class="shell__backdrop" (click)="sidebarCollapsed = true"></div>
+      }
+      
       <div class="shell__main" [class.shell__main--collapsed]="sidebarCollapsed">
         <app-topbar [sidebarCollapsed]="sidebarCollapsed" (toggleSidebar)="sidebarCollapsed = !sidebarCollapsed" />
         <main class="shell__content">
@@ -26,6 +32,19 @@ import { ToastContainerComponent } from '../../../shared/components/toast/toast.
       height: 100vh;
       background: var(--c-surface);
       overflow: hidden;
+      position: relative;
+    }
+
+    .shell__backdrop {
+      display: none;
+      @media (max-width: 768px) {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.4);
+        backdrop-filter: blur(2px);
+        z-index: 95;
+      }
     }
 
     .shell__main {
@@ -49,6 +68,13 @@ import { ToastContainerComponent } from '../../../shared/components/toast/toast.
     }
   `]
 })
-export class ShellComponent {
+export class ShellComponent implements OnInit {
   sidebarCollapsed = false;
+
+  ngOnInit() {
+    if (typeof window !== 'undefined') {
+      this.sidebarCollapsed = window.innerWidth <= 768;
+    }
+  }
 }
+

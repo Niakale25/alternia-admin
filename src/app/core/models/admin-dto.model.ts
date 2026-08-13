@@ -1,19 +1,22 @@
+// ================================================================
+// ALTERNIA ADMIN — MODÈLES MÉTIER EDTECH
+// Tous les modèles sont orientés métier pédagogique.
+// Aucune donnée technique (CPU, RAM, bande passante) n'est présente.
+// ================================================================
+
+// ── BOÎTIER ALTERNIA ─────────────────────────────────────────────
 export interface BoitierDTO {
   id: string;
   serialNumber: string;
   etablissementId: string;
   etablissementNom: string;
-  status: 'En ligne' | 'Hors ligne' | 'Synchronisation' | 'Maintenance';
-  firmwareVersion: string;
-  batteryLevel: number;
-  lastSync: string;
-  ipAddress: string;
-  operatingMode: 'Autonome' | 'Classe Connectée' | 'Examen' | 'Mise à jour';
-  storageUsedPercent: number;
-  hardwareRevision: string;
-  cpuTemperature: number;
+  statut: 'Actif' | 'Hors ligne' | 'Maintenance';
+  versionFirmware: string;
+  derniereConnexion: string;
+  ville: string;
 }
 
+// ── ÉTABLISSEMENT ────────────────────────────────────────────────
 export interface EtablissementDTO {
   id: string;
   nom: string;
@@ -21,6 +24,7 @@ export interface EtablissementDTO {
   ville: string;
   pays: string;
   boitiersCount: number;
+  profilsCount: number;
   licencesCount: number;
   dateInscription: string;
   statut: 'Actif' | 'En attente' | 'Suspendu';
@@ -29,6 +33,7 @@ export interface EtablissementDTO {
   contactPhone: string;
 }
 
+// ── COMPTE PARENT ────────────────────────────────────────────────
 export interface ParentAccountDTO {
   id: string;
   nomFamille: string;
@@ -36,17 +41,32 @@ export interface ParentAccountDTO {
   email: string;
   telephone: string;
   etablissementNom: string;
-  licencesAssocies: number;
   statut: 'Actif' | 'Inactif' | 'Suspendu';
   derniereActivite: string;
-  abonnementsType: 'Premium Annuel' | 'Standard Mensuel' | 'Découverte';
+  abonnementType: 'Premium Annuel' | 'Standard Mensuel' | 'Découverte';
+  nbProfilsLies: number;
 }
 
+// ── PROFIL PÉDAGOGIQUE ───────────────────────────────────────────
+export interface ProfilPedagogiqueDTO {
+  id: string;
+  nom: string;
+  prenom: string;
+  matiere: string;
+  niveaux: string[];          // Ex: ['Primaire', 'Collège']
+  photoUrl: string;
+  audioUrl: string;
+  statut: 'Actif' | 'Inactif';
+  dateCreation: string;
+}
+
+// ── LICENCE ──────────────────────────────────────────────────────
 export interface LicenceDTO {
   id: string;
   code: string;
   type: 'Établissement Bulk' | 'Parent Solo' | 'Institutionnel Pack';
   titulaire: string;
+  etablissementId?: string;
   dateActivation: string;
   dateExpiration: string;
   statut: 'Active' | 'Expirée' | 'En attente' | 'Renouvelée';
@@ -54,56 +74,62 @@ export interface LicenceDTO {
   dureeMois: number;
 }
 
-export interface IaModelDTO {
+// ── ABONNEMENT ───────────────────────────────────────────────────
+export interface AbonnementDTO {
+  id: string;
+  parentId: string;
+  parentNom: string;
+  type: 'Premium Annuel' | 'Standard Mensuel' | 'Découverte';
+  dateDebut: string;
+  dateRenouvellement: string;
+  montant: number;
+  statut: 'Actif' | 'Résilié' | 'En attente de paiement' | 'Suspendu';
+  autoRenouvellement: boolean;
+}
+
+// ── MOTEUR IA PÉDAGOGIQUE ────────────────────────────────────────
+// Uniquement des métriques compréhensibles par un responsable pédagogique.
+export interface MoteurIADTO {
   id: string;
   nom: string;
-  version: string;
-  domaine: string;
-  statut: 'Actif' | 'Entraînement' | 'Maintenance' | 'Dégradé';
-  tempsReponseMoyenMs: number;
-  tauxErreurPercent: number;
-  consommationJourReq: number;
-  disponibilitePercent: number;
-  tokensPerMinute: number;
+  matiereCiblee: string;
+  niveauxCibles: string[];
+  statut: 'Actif' | 'En formation' | 'Maintenance';
+  questionsTraiteesJour: number;
+  questionsTraiteesTotal: number;
+  langues: string[];
+  dateDeploiement: string;
 }
 
-export interface ServerNodeDTO {
-  id: string;
-  region: string;
-  provider: string;
-  cpuLoadPercent: number;
-  ramUsedGb: number;
-  ramTotalGb: number;
-  bandwidthMbps: number;
-  status: 'Opérationnel' | 'Charge élevée' | 'Maintenance';
-}
-
-export interface DeploymentDTO {
-  id: string;
-  version: string;
-  canal: 'Canari (10%)' | 'Flotte Globale (100%)' | 'Bêta Établissements';
-  date: string;
-  statut: 'Succès' | 'En cours' | 'Rollback';
-  boitiersImpactes: string;
-  auteur: string;
-  changelog: string[];
-}
-
-export interface MaintenanceTicketDTO {
-  id: string;
-  sujet: string;
-  etablissementNom: string;
-  priorite: 'Urgent' | 'Haute' | 'Normale' | 'Basse';
-  statut: 'Ouvert' | 'En cours' | 'Résolu';
-  dateCreation: string;
-  assigneA: string;
-}
-
-export interface GlobalAnalyticsDTO {
+// ── STATISTIQUES GLOBALES ─────────────────────────────────────────
+// Uniquement des données agrégées et anonymisées — aucune donnée individuelle.
+export interface StatistiquesGlobalesDTO {
   tempsUtilisationTotalHeures: number;
-  volumeQuestionsMonthMillions: number;
-  disciplinePlusConsultee: string;
-  disciplinePlusConsulteePercent: number;
-  subjects: Array<{ matiere: string; pourcentage: number; heuresTotal: string }>;
-  topics: Array<{ sujet: string; matiere: string; occurrences: string; tendance: string }>;
+  volumeQuestionsMois: number;
+  matieresPlusConsultees: Array<{
+    matiere: string;
+    pourcentage: number;
+    heuresTotal: number;
+  }>;
+  sujetsFrequents: Array<{
+    sujet: string;
+    matiere: string;
+    occurrences: number;
+    tendance: 'hausse' | 'baisse' | 'stable';
+  }>;
+  evolutionMensuelle: Array<{
+    mois: string;
+    questions: number;
+    boitiersActifs: number;
+  }>;
+}
+
+// ── ALERTE PRIORITAIRE ───────────────────────────────────────────
+export interface AlertePrioritaireDTO {
+  id: string;
+  type: 'renouvellement' | 'boitier_hors_ligne' | 'nouvel_etablissement' | 'info';
+  message: string;
+  dateCreation: string;
+  urgence: 'haute' | 'normale' | 'basse';
+  actionRequise: boolean;
 }

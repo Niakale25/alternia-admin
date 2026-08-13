@@ -8,18 +8,19 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'commandement',
+        redirectTo: 'tableau-bord',
+        pathMatch: 'full'
+      },
+      // Ancienne route commandement redirigée pour compatibilité
+      {
+        path: 'commandement',
+        redirectTo: 'tableau-bord',
         pathMatch: 'full'
       },
       {
-        path: 'commandement',
-        loadComponent: () => import('./features/commandement/commandement.component').then(m => m.CommandementComponent),
-        title: 'Centre de Commandement — Alternia'
-      },
-      {
-        path: 'boitiers',
-        loadComponent: () => import('./features/boitiers/boitiers.component').then(m => m.BoitiersComponent),
-        title: 'Boîtiers — Alternia'
+        path: 'tableau-bord',
+        loadComponent: () => import('./features/tableau-bord/tableau-bord.component').then(m => m.TableauBordComponent),
+        title: 'Tableau de Bord — Alternia'
       },
       {
         path: 'etablissements',
@@ -32,39 +33,45 @@ export const routes: Routes = [
         title: 'Parents — Alternia'
       },
       {
+        path: 'boitiers',
+        loadComponent: () => import('./features/boitiers/boitiers.component').then(m => m.BoitiersComponent),
+        title: 'Boîtiers — Alternia'
+      },
+      {
+        path: 'profils-pedagogiques',
+        loadComponent: () => import('./features/profils-pedagogiques/profils-pedagogiques.component').then(m => m.ProfilsPedagogiquesComponent),
+        title: 'Profils Pédagogiques — Alternia'
+      },
+      {
+        path: 'moteurs-ia',
+        loadComponent: () => import('./features/moteurs-ia/moteurs-ia.component').then(m => m.MoteursIAComponent),
+        title: 'Moteurs IA Pédagogiques — Alternia'
+      },
+      {
         path: 'licences',
         loadComponent: () => import('./features/licences/licences.component').then(m => m.LicencesComponent),
         title: 'Licences & Abonnements — Alternia'
       },
       {
-        path: 'ia',
-        loadComponent: () => import('./features/ia/ia.component').then(m => m.IaComponent),
-        title: 'Intelligence Artificielle — Alternia'
+        path: 'abonnements',
+        loadComponent: () => import('./features/abonnements/abonnements.component').then(m => m.AbonnementsComponent),
+        title: 'Abonnements Parents — Alternia'
       },
       {
-        path: 'infrastructure',
-        loadComponent: () => import('./features/infrastructure/infrastructure.component').then(m => m.InfrastructureComponent),
-        title: 'Infrastructure Cloud — Alternia'
+        path: 'statistiques',
+        loadComponent: () => import('./features/statistiques/statistiques.component').then(m => m.StatistiquesComponent),
+        title: 'Statistiques Pédagogiques — Alternia'
       },
       {
-        path: 'deploiements',
-        loadComponent: () => import('./features/deploiements/deploiements.component').then(m => m.DeploiementsComponent),
-        title: 'Déploiements — Alternia'
-      },
-      {
-        path: 'maintenance',
-        loadComponent: () => import('./features/maintenance/maintenance.component').then(m => m.MaintenanceComponent),
-        title: 'Maintenance & Support — Alternia'
-      },
-      {
-        path: 'analytics',
-        loadComponent: () => import('./features/analytics/analytics.component').then(m => m.AnalyticsComponent),
-        title: 'Analytics Globales — Alternia'
+        path: 'parametres',
+        loadComponent: () => import('./features/parametres/parametres.component').then(m => m.ParametresComponent),
+        title: 'Paramètres — Alternia'
       }
     ]
   },
   {
     path: '**',
-    redirectTo: ''
+    loadComponent: () => import('./shared/components/not-found/not-found.component').then(m => m.NotFoundComponent),
+    title: 'Page introuvable — Alternia'
   }
 ];

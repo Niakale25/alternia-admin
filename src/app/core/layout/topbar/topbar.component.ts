@@ -1,58 +1,84 @@
-import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
+import { Component, Input, Output, EventEmitter, signal, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { ThemeService } from '../../services/theme.service';
 
 @Component({
   selector: 'app-topbar',
   standalone: true,
-  imports: [],
+  imports: [RouterLink],
   template: `
     <header class="topbar">
-      <!-- Left -->
+      <!-- Gauche -->
       <div class="topbar__left">
-        <button class="topbar__menu-btn" (click)="toggleSidebar.emit()" aria-label="Toggle menu">
+        <button class="topbar__menu-btn" (click)="toggleSidebar.emit()" aria-label="Ouvrir ou fermer le menu">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
           </svg>
         </button>
 
-        <!-- Search -->
+        <!-- Barre de recherche -->
         <div class="topbar__search">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
           </svg>
-          <input type="text" placeholder="Rechercher dans Alternia..." [value]="searchQuery()" (input)="onSearch($event)" />
+          <input
+            type="text"
+            placeholder="Rechercher dans Alternia..."
+            [value]="searchQuery()"
+            (input)="onSearch($event)"
+            aria-label="Rechercher dans Alternia"
+          />
           <span class="topbar__search-kbd">⌘K</span>
         </div>
       </div>
 
-      <!-- Right -->
+      <!-- Droite -->
       <div class="topbar__right">
 
-        <!-- Platform Status Indicator -->
-        <div class="topbar__status" data-tooltip="Tous les systèmes opérationnels">
+        <!-- Indicateur plateforme EdTech (pas IT) -->
+        <div class="topbar__platform-badge">
           <span class="status-dot status-dot--online"></span>
-          <span class="topbar__status-text">Systèmes opérationnels</span>
+          <span class="topbar__platform-text">Plateforme active</span>
         </div>
 
-        <div class="topbar__divider"></div>
+        <!-- Mode Sombre / Clair -->
+        <button
+          class="topbar__icon-btn"
+          (click)="themeService.toggleTheme()"
+          [attr.data-tooltip]="themeService.isDarkMode() ? 'Mode Clair' : 'Mode Sombre'"
+          [attr.aria-label]="themeService.isDarkMode() ? 'Passer au mode clair' : 'Passer au mode sombre'"
+        >
+          @if (themeService.isDarkMode()) {
+            <!-- Sun Icon for Light mode switch -->
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>
+            </svg>
+          } @else {
+            <!-- Moon Icon for Dark mode switch -->
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+            </svg>
+          }
+        </button>
 
         <!-- Notifications -->
-        <button class="topbar__icon-btn" data-tooltip="3 alertes actives" aria-label="Notifications">
+        <button class="topbar__icon-btn" data-tooltip="3 alertes en attente" aria-label="Notifications">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
           </svg>
           <span class="topbar__notif-badge">3</span>
         </button>
 
-        <!-- Settings -->
-        <button class="topbar__icon-btn" data-tooltip="Paramètres" aria-label="Paramètres">
+        <!-- Paramètres -->
+        <button class="topbar__icon-btn" routerLink="/parametres" data-tooltip="Paramètres" aria-label="Paramètres">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
             <circle cx="12" cy="12" r="3"/>
           </svg>
         </button>
 
-        <!-- User -->
-        <div class="topbar__user">
+        <!-- Utilisateur -->
+        <div class="topbar__user" role="button" tabindex="0" aria-label="Menu utilisateur" routerLink="/parametres">
           <div class="topbar__user-avatar">SA</div>
           <div class="topbar__user-info">
             <div class="topbar__user-name">Super Admin</div>
@@ -121,6 +147,10 @@ import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
       transition: all var(--t-fast);
       color: var(--c-subtle);
 
+      @media (max-width: 768px) {
+        display: none;
+      }
+
       &:focus-within {
         background: var(--c-white);
         border-color: var(--c-brand);
@@ -161,7 +191,7 @@ import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
       flex-shrink: 0;
     }
 
-    .topbar__status {
+    .topbar__platform-badge {
       display: flex;
       align-items: center;
       gap: 6px;
@@ -169,14 +199,21 @@ import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
       border-radius: var(--r-full);
       background: var(--c-success-bg);
       border: 1px solid var(--c-success-border);
-      cursor: default;
+
+      @media (max-width: 576px) {
+        padding: 4px;
+      }
     }
 
-    .topbar__status-text {
+    .topbar__platform-text {
       font-size: 11px;
       font-weight: 600;
       color: var(--c-success);
       white-space: nowrap;
+
+      @media (max-width: 576px) {
+        display: none;
+      }
     }
 
     .topbar__divider {
@@ -261,10 +298,15 @@ import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
       font-weight: 600;
       color: var(--c-text);
       white-space: nowrap;
+
+      @media (max-width: 576px) {
+        display: none;
+      }
     }
   `]
 })
 export class TopbarComponent {
+  themeService = inject(ThemeService);
   @Input() sidebarCollapsed = false;
   @Output() toggleSidebar = new EventEmitter<void>();
 
@@ -274,3 +316,4 @@ export class TopbarComponent {
     this.searchQuery.set((event.target as HTMLInputElement).value);
   }
 }
+
