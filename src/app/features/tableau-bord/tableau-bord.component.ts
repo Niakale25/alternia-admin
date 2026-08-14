@@ -88,6 +88,13 @@ interface PointGraphique {
             <div class="tdb__kpi-valeur">{{ kpi.valeur }}</div>
             <div class="tdb__kpi-label">{{ kpi.label }}</div>
             <div class="tdb__kpi-sous">{{ kpi.sousTexte }}</div>
+            <!-- Sparkline -->
+            <div class="tdb__kpi-sparkline" style="margin-top: 14px; height: 32px;">
+              <svg viewBox="0 0 100 30" preserveAspectRatio="none" style="width: 100%; height: 100%; overflow: visible;">
+                <path d="M0,25 Q15,15 30,22 T60,10 T85,15 T100,5 L100,30 L0,30 Z" fill="color-mix(in srgb, var(--kpi-color) 12%, transparent)"></path>
+                <path d="M0,25 Q15,15 30,22 T60,10 T85,15 T100,5" fill="none" stroke="var(--kpi-color)" stroke-width="2" vector-effect="non-scaling-stroke"></path>
+              </svg>
+            </div>
           </div>
         }
       </div>
@@ -108,25 +115,33 @@ interface PointGraphique {
             </div>
           </div>
 
-          <!-- Graphique en barres groupées -->
-          <div class="tdb__bar-chart">
-            @for (point of pointsGraphique; track point.mois; let i = $index) {
-              <div class="tdb__bar-group">
-                <div class="tdb__bar-values">
-                  <div
-                    class="tdb__bar tdb__bar--brand"
-                    [style.height.%]="(point.etablissements / 1500) * 100"
-                    [attr.data-tooltip]="point.etablissements + ' établissements'"
-                  ></div>
-                  <div
-                    class="tdb__bar tdb__bar--cyan"
-                    [style.height.%]="(point.parents / 60000) * 100"
-                    [attr.data-tooltip]="(point.parents | number) + ' parents'"
-                  ></div>
-                </div>
-                <div class="tdb__bar-label">{{ point.mois }}</div>
-              </div>
-            }
+          <!-- Graphique de surface lissée -->
+          <div class="tdb__area-chart">
+            <svg viewBox="0 0 600 200" preserveAspectRatio="none" class="tdb__area-svg">
+              <defs>
+                <linearGradient id="gradBrand" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="var(--c-brand)" stop-opacity="0.25"/>
+                  <stop offset="100%" stop-color="var(--c-brand)" stop-opacity="0"/>
+                </linearGradient>
+                <linearGradient id="gradCyan" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="var(--c-cyan)" stop-opacity="0.25"/>
+                  <stop offset="100%" stop-color="var(--c-cyan)" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              
+              <!-- Etablissements (brand) - Smooth curve -->
+              <path d="M0,170 C100,160 200,165 300,140 C400,110 500,130 600,60 L600,200 L0,200 Z" fill="url(#gradBrand)"/>
+              <path d="M0,170 C100,160 200,165 300,140 C400,110 500,130 600,60" fill="none" stroke="var(--c-brand)" stroke-width="2.5" vector-effect="non-scaling-stroke"/>
+              
+              <!-- Parents (cyan) - Smooth curve -->
+              <path d="M0,190 C100,175 200,180 300,160 C400,140 500,150 600,90 L600,200 L0,200 Z" fill="url(#gradCyan)"/>
+              <path d="M0,190 C100,175 200,180 300,160 C400,140 500,150 600,90" fill="none" stroke="var(--c-cyan)" stroke-width="2.5" stroke-dasharray="4 4" vector-effect="non-scaling-stroke"/>
+            </svg>
+            <div class="tdb__area-labels">
+              @for (point of pointsGraphique; track point.mois) {
+                <div class="tdb__area-label">{{ point.mois }}</div>
+              }
+            </div>
           </div>
         </div>
 
@@ -252,15 +267,14 @@ interface PointGraphique {
           </div>
           <div class="tdb__boitiers-hl">
             <div class="tdb__boitiers-hl-visual">
-              <svg viewBox="0 0 100 100" class="tdb__donut">
-                <circle cx="50" cy="50" r="40" fill="none" stroke="var(--c-border)" stroke-width="12"/>
+              <svg viewBox="0 0 100 100" class="tdb__donut" style="transform: rotate(-90deg);">
+                <circle cx="50" cy="50" r="46" fill="none" stroke="var(--c-border)" stroke-width="5"/>
                 <circle
-                  cx="50" cy="50" r="40"
+                  cx="50" cy="50" r="46"
                   fill="none"
                   stroke="var(--c-success)"
-                  stroke-width="12"
-                  stroke-dasharray="218 251"
-                  stroke-dashoffset="63"
+                  stroke-width="5"
+                  stroke-dasharray="252 289"
                   stroke-linecap="round"
                 />
               </svg>
@@ -535,57 +549,34 @@ interface PointGraphique {
       &--cyan::before  { background: var(--c-cyan); }
     }
 
-    /* Graphique en barres */
-    .tdb__bar-chart {
+    /* Graphique de surface (Area Chart) */
+    .tdb__area-chart {
       display: flex;
-      align-items: flex-end;
+      flex-direction: column;
       gap: 12px;
       height: 180px;
       padding-bottom: 24px;
       position: relative;
     }
 
-    .tdb__bar-group {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      height: 100%;
-    }
-
-    .tdb__bar-values {
-      display: flex;
-      align-items: flex-end;
-      gap: 3px;
+    .tdb__area-svg {
       flex: 1;
       width: 100%;
+      height: 100%;
+      overflow: visible;
     }
 
-    .tdb__bar {
-      flex: 1;
-      border-radius: 4px 4px 0 0;
-      min-height: 4px;
-      transition: height 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-      cursor: pointer;
-
-      &--brand {
-        background: var(--c-brand);
-        opacity: 0.85;
-        &:hover { opacity: 1; }
-      }
-
-      &--cyan {
-        background: var(--c-cyan);
-        opacity: 0.75;
-        &:hover { opacity: 1; }
-      }
+    .tdb__area-labels {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      padding: 0 10px;
     }
 
-    .tdb__bar-label {
+    .tdb__area-label {
       font-size: 11px;
       color: var(--c-subtle);
       font-weight: 500;
-      margin-top: 6px;
       white-space: nowrap;
     }
 

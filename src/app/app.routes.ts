@@ -37,11 +37,7 @@ export const routes: Routes = [
         loadComponent: () => import('./features/boitiers/boitiers.component').then(m => m.BoitiersComponent),
         title: 'Boîtiers — Alternia'
       },
-      {
-        path: 'profils-pedagogiques',
-        loadComponent: () => import('./features/profils-pedagogiques/profils-pedagogiques.component').then(m => m.ProfilsPedagogiquesComponent),
-        title: 'Profils Pédagogiques — Alternia'
-      },
+
       {
         path: 'moteurs-ia',
         loadComponent: () => import('./features/moteurs-ia/moteurs-ia.component').then(m => m.MoteursIAComponent),

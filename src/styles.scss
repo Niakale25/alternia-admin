@@ -5,48 +5,48 @@
 // ── DESIGN TOKENS ────────────────────────────────────────────
 :root {
   // Brand Colors
-  --c-brand:          #314999;
-  --c-brand-hover:    #2a3f85;
-  --c-brand-light:    #4a62b8;
-  --c-brand-bg:       rgba(49, 73, 153, 0.06);
-  --c-brand-bg-hover: rgba(49, 73, 153, 0.10);
-  --c-brand-border:   rgba(49, 73, 153, 0.20);
+  --c-brand:          #6366F1; // Indigo
+  --c-brand-hover:    #4F46E5;
+  --c-brand-light:    #818CF8;
+  --c-brand-bg:       rgba(99, 102, 241, 0.06);
+  --c-brand-bg-hover: rgba(99, 102, 241, 0.10);
+  --c-brand-border:   rgba(99, 102, 241, 0.20);
 
-  // Cyan / Innovation
-  --c-cyan:           #40BBCC;
-  --c-cyan-hover:     #35a5b5;
-  --c-cyan-bg:        rgba(64, 187, 204, 0.08);
-  --c-cyan-border:    rgba(64, 187, 204, 0.24);
+  // Cyan / Info
+  --c-cyan:           #0EA5E9;
+  --c-cyan-hover:     #0284C7;
+  --c-cyan-bg:        rgba(14, 165, 233, 0.08);
+  --c-cyan-border:    rgba(14, 165, 233, 0.24);
 
   // Accent / Warning
-  --c-accent:         #F1851F;
-  --c-accent-hover:   #d4721a;
-  --c-accent-bg:      rgba(241, 133, 31, 0.08);
-  --c-accent-border:  rgba(241, 133, 31, 0.24);
+  --c-accent:         #F59E0B; // Amber
+  --c-accent-hover:   #D97706;
+  --c-accent-bg:      rgba(245, 158, 11, 0.08);
+  --c-accent-border:  rgba(245, 158, 11, 0.24);
 
   // Semantic
-  --c-success:         #22c55e;
-  --c-success-bg:      rgba(34, 197, 94, 0.08);
-  --c-success-border:  rgba(34, 197, 94, 0.24);
-  --c-danger:          #ef4444;
+  --c-success:         #10B981; // Mint Green
+  --c-success-bg:      rgba(16, 185, 129, 0.08);
+  --c-success-border:  rgba(16, 185, 129, 0.24);
+  --c-danger:          #EF4444;
   --c-danger-bg:       rgba(239, 68, 68, 0.08);
   --c-danger-border:   rgba(239, 68, 68, 0.24);
-  --c-info:            #3b82f6;
-  --c-info-bg:         rgba(59, 130, 246, 0.08);
-  --c-info-border:     rgba(59, 130, 246, 0.24);
-  --c-cyan-text:       #2ea8b8;
-  --c-text-on-brand:   #ffffff;
+  --c-info:            #0EA5E9;
+  --c-info-bg:         rgba(14, 165, 233, 0.08);
+  --c-info-border:     rgba(14, 165, 233, 0.24);
+  --c-cyan-text:       #0284C7;
+  --c-text-on-brand:   #FFFFFF;
 
   // Neutrals (dominant palette — 80%)
   --c-white:          #FFFFFF;
-  --c-surface:        #F8FAFC;
-  --c-surface-alt:    #F1F5F9;
+  --c-surface:        #FAFAFA; // Ultra-bright off-white
+  --c-surface-alt:    #F8FAFC;
   --c-border:         #E2E8F0;
-  --c-border-light:   #F1F5F9;
-  --c-muted:          #CBD5E1;
-  --c-subtle:         #94A3B8;
-  --c-secondary:      #64748B;
-  --c-text:           #1E293B;
+  --c-border-light:   #F3F4F6;
+  --c-muted:          #E5E7EB;
+  --c-subtle:         #9CA3AF;
+  --c-secondary:      #64748B; // Neutral gray
+  --c-text:           #0F172A; // Dark charcoal
   --c-text-secondary: #475569;
 
   // Layout
@@ -56,20 +56,20 @@
 
   // Radii
   --r-xs:   4px;
-  --r-sm:   6px;
+  --r-sm:   8px;
   --r-md:   10px;
-  --r-lg:   14px;
-  --r-xl:   18px;
+  --r-lg:   12px;
+  --r-xl:   16px;
   --r-2xl:  24px;
   --r-full: 9999px;
 
   // Shadows (Elevated SaaS Aesthetic)
-  --s-xs:  0 1px 3px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.02);
-  --s-sm:  0 2px 6px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
-  --s-md:  0 8px 18px -2px rgba(15, 23, 42, 0.08), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
-  --s-lg:  0 16px 28px -4px rgba(15, 23, 42, 0.10), 0 6px 12px -2px rgba(15, 23, 42, 0.05);
-  --s-xl:  0 24px 48px -6px rgba(15, 23, 42, 0.12), 0 8px 20px -2px rgba(15, 23, 42, 0.06);
-  --s-brand: 0 6px 20px -2px rgba(49, 73, 153, 0.28);
+  --s-xs:  0 1px 2px 0 rgba(0, 0, 0, 0.05); // Requested shadow
+  --s-sm:  0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  --s-md:  0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --s-lg:  0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+  --s-xl:  0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+  --s-brand: 0 4px 14px 0 rgba(99, 102, 241, 0.39);
 
   // Transitions
   --t-fast:   140ms cubic-bezier(0.16, 1, 0.3, 1);
@@ -248,15 +248,14 @@ a { color: var(--c-brand); text-decoration: none; }
 // ── CARDS ─────────────────────────────────────────────────────
 .card {
   background: var(--c-white);
-  border: 1px solid var(--c-border);
-  border-radius: var(--r-lg);
+  border: 1px solid var(--c-border); // #E2E8F0
+  border-radius: var(--r-xl); // rounded-xl requested
   box-shadow: var(--s-xs);
-  padding: 1.25rem;
+  padding: 1.5rem; // generous padding requested
   transition: transform var(--t-base), box-shadow var(--t-base), border-color var(--t-base);
 
   &:hover {
     box-shadow: var(--s-md);
-    transform: translateY(-2px);
   }
   &--elevated { box-shadow: var(--s-md); }
 }
@@ -306,7 +305,7 @@ a { color: var(--c-brand); text-decoration: none; }
   padding: 9px 16px;
   border-radius: var(--r-md);
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500; // modern buttons are often medium weight
   font-family: var(--font-sans);
   cursor: pointer;
   border: 1px solid transparent;
@@ -317,13 +316,14 @@ a { color: var(--c-brand); text-decoration: none; }
   &:active { transform: scale(0.97); }
 
   &--primary {
-    background: linear-gradient(135deg, var(--c-brand) 0%, #3e5bc4 100%);
+    background: var(--c-text); // Modern linear style (black buttons)
     color: var(--c-white);
-    border-color: var(--c-brand);
-    box-shadow: var(--s-brand);
+    border-color: var(--c-text);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     &:hover {
-      background: linear-gradient(135deg, var(--c-brand-hover) 0%, var(--c-brand) 100%);
-      box-shadow: 0 8px 24px -2px rgba(49, 73, 153, 0.4);
+      background: var(--c-text-secondary);
+      border-color: var(--c-text-secondary);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.15);
       transform: translateY(-1px);
     }
   }

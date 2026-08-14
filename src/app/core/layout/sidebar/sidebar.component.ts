@@ -188,7 +188,8 @@ interface NavGroup {
       display: flex;
       align-items: center;
       gap: 9px;
-      padding: 7px 9px;
+      padding: 6px 8px; // Adjusted for border
+      border: 1px solid transparent;
       border-radius: var(--r-md);
       color: var(--c-secondary);
       text-decoration: none;
@@ -200,32 +201,23 @@ interface NavGroup {
       position: relative;
 
       &:hover {
-        background: rgba(49, 73, 153, 0.06);
-        color: var(--c-brand);
+        background: var(--c-surface-alt);
+        color: var(--c-text);
 
         .sidebar__item-icon {
-          color: var(--c-brand);
+          color: var(--c-text);
         }
       }
 
       &--active {
-        background: rgba(49, 73, 153, 0.08);
-        color: var(--c-brand);
+        background: var(--c-surface-alt);
+        color: var(--c-text);
         font-weight: 600;
+        border-color: var(--c-border); // Trait fin
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.02);
 
         .sidebar__item-icon {
-          color: var(--c-brand);
-        }
-
-        &::before {
-          content: '';
-          position: absolute;
-          left: 0;
-          top: 5px;
-          bottom: 5px;
-          width: 3px;
-          background: var(--c-brand);
-          border-radius: 0 var(--r-xs) var(--r-xs) 0;
+          color: var(--c-brand); // Icône accentuée
         }
       }
     }
@@ -421,11 +413,6 @@ export class SidebarComponent {
     {
       label: 'Pédagogie',
       items: [
-        {
-          label: 'Profils Pédagogiques',
-          route: '/profils-pedagogiques',
-          icon: this.icons.graduationCap
-        },
         {
           label: 'Moteurs IA',
           route: '/moteurs-ia',
