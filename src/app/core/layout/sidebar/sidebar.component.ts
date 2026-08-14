@@ -210,14 +210,24 @@ interface NavGroup {
       }
 
       &--active {
-        background: var(--c-surface-alt);
+        background: var(--c-success-bg);
         color: var(--c-text);
         font-weight: 600;
-        border-color: var(--c-border); // Trait fin
-        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.02);
+        border-color: transparent;
+
+        &::before {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 15%;
+          bottom: 15%;
+          width: 3px;
+          background: var(--c-success);
+          border-radius: 0 4px 4px 0;
+        }
 
         .sidebar__item-icon {
-          color: var(--c-brand); // Icône accentuée
+          color: var(--c-success);
         }
       }
     }

@@ -40,277 +40,226 @@ interface PointGraphique {
       <!-- ── EN-TÊTE ──────────────────────────────────────────── -->
       <div class="tdb__header">
         <div class="tdb__header-left">
-          <div class="tdb__eyebrow">
-            <span class="status-dot status-dot--online"></span>
-            Plateforme Alternia — Active
-          </div>
+          <div class="tdb__eyebrow">Bonjour Super Admin 👋</div>
           <h1 class="tdb__title">Tableau de Bord</h1>
           <p class="tdb__subtitle">Pilotage global de l'écosystème éducatif Alternia</p>
         </div>
         <div class="tdb__header-right">
           <div class="tdb__date">
             <div class="tdb__date-label">Mis à jour</div>
-            <div class="tdb__date-value">13 août 2026 — 10h34</div>
+            <div class="tdb__date-value">13 août 2026 - 10h34</div>
           </div>
           <button class="btn btn--secondary btn--sm" (click)="refreshData()">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
             Actualiser
           </button>
-          <button class="btn btn--primary btn--sm" (click)="downloadReport()">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+          <button class="btn btn--secondary btn--sm" (click)="downloadReport()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
             Rapport
           </button>
         </div>
       </div>
 
-      <!-- ── ZONE 1 — VISION GLOBALE ────────────────────────── -->
-      <div class="tdb__section-label">Vision globale</div>
+      <!-- ── ZONE 1 — 4 KPIs ──────────────────────────────────── -->
       <div class="tdb__kpi-grid">
         @for (kpi of kpisPrincipaux; track kpi.label) {
-          <div class="tdb__kpi-card" [style.--kpi-color]="kpi.couleur">
+          <div class="card tdb__kpi-card" [style.--kpi-color]="kpi.couleur">
             <div class="tdb__kpi-top">
               <div class="tdb__kpi-icon" [innerHTML]="kpi.icon | safeHtml"></div>
-              <div
-                class="tdb__kpi-tendance"
-                [class.tdb__kpi-tendance--hausse]="kpi.tendance > 0"
-                [class.tdb__kpi-tendance--baisse]="kpi.tendance < 0"
-              >
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  @if (kpi.tendance > 0) {
-                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>
-                  } @else {
-                    <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/>
-                  }
-                </svg>
-                {{ kpi.tendanceLabel }}
-              </div>
+              <div class="tdb__kpi-label">{{ kpi.label }}</div>
             </div>
             <div class="tdb__kpi-valeur">{{ kpi.valeur }}</div>
-            <div class="tdb__kpi-label">{{ kpi.label }}</div>
             <div class="tdb__kpi-sous">{{ kpi.sousTexte }}</div>
-            <!-- Sparkline -->
-            <div class="tdb__kpi-sparkline" style="margin-top: 14px; height: 32px;">
-              <svg viewBox="0 0 100 30" preserveAspectRatio="none" style="width: 100%; height: 100%; overflow: visible;">
-                <path d="M0,25 Q15,15 30,22 T60,10 T85,15 T100,5 L100,30 L0,30 Z" fill="color-mix(in srgb, var(--kpi-color) 12%, transparent)"></path>
-                <path d="M0,25 Q15,15 30,22 T60,10 T85,15 T100,5" fill="none" stroke="var(--kpi-color)" stroke-width="2" vector-effect="non-scaling-stroke"></path>
+            <div class="tdb__kpi-tendance" [class.tdb__kpi-tendance--hausse]="kpi.tendance > 0">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/>
               </svg>
+              {{ kpi.tendanceLabel }}
             </div>
           </div>
         }
       </div>
 
-      <!-- ── ZONE 2 + 3 — CROISSANCE & ACTIVITÉ ─────────────── -->
+      <!-- ── ZONE 2 — MIDDLE ROW ──────────────────────────────── -->
       <div class="tdb__middle-row">
 
-        <!-- ZONE 2 — Croissance plateforme -->
-        <div class="tdb__chart-card tdb__chart-card--large">
+        <!-- LEFT: Area Chart with Donut Overlay -->
+        <div class="card tdb__chart-card">
           <div class="tdb__chart-header">
             <div>
               <div class="tdb__chart-title">Croissance de la plateforme</div>
               <div class="tdb__chart-subtitle">Établissements et parents inscrits — 6 derniers mois</div>
             </div>
-            <div class="tdb__chart-legend">
-              <span class="tdb__legend-item tdb__legend-item--brand">Établissements</span>
-              <span class="tdb__legend-item tdb__legend-item--cyan">Parents</span>
-            </div>
-          </div>
-
-          <!-- Graphique de surface lissée -->
-          <div class="tdb__area-chart">
-            <svg viewBox="0 0 600 200" preserveAspectRatio="none" class="tdb__area-svg">
-              <defs>
-                <linearGradient id="gradBrand" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stop-color="var(--c-brand)" stop-opacity="0.25"/>
-                  <stop offset="100%" stop-color="var(--c-brand)" stop-opacity="0"/>
-                </linearGradient>
-                <linearGradient id="gradCyan" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stop-color="var(--c-cyan)" stop-opacity="0.25"/>
-                  <stop offset="100%" stop-color="var(--c-cyan)" stop-opacity="0"/>
-                </linearGradient>
-              </defs>
-              
-              <!-- Etablissements (brand) - Smooth curve -->
-              <path d="M0,170 C100,160 200,165 300,140 C400,110 500,130 600,60 L600,200 L0,200 Z" fill="url(#gradBrand)"/>
-              <path d="M0,170 C100,160 200,165 300,140 C400,110 500,130 600,60" fill="none" stroke="var(--c-brand)" stroke-width="2.5" vector-effect="non-scaling-stroke"/>
-              
-              <!-- Parents (cyan) - Smooth curve -->
-              <path d="M0,190 C100,175 200,180 300,160 C400,140 500,150 600,90 L600,200 L0,200 Z" fill="url(#gradCyan)"/>
-              <path d="M0,190 C100,175 200,180 300,160 C400,140 500,150 600,90" fill="none" stroke="var(--c-cyan)" stroke-width="2.5" stroke-dasharray="4 4" vector-effect="non-scaling-stroke"/>
-            </svg>
-            <div class="tdb__area-labels">
-              @for (point of pointsGraphique; track point.mois) {
-                <div class="tdb__area-label">{{ point.mois }}</div>
-              }
-            </div>
-          </div>
-        </div>
-
-        <!-- ZONE 3 — Activité pédagogique -->
-        <div class="tdb__activity-card">
-          <div class="tdb__chart-header">
-            <div>
-              <div class="tdb__chart-title">Activité pédagogique</div>
-              <div class="tdb__chart-subtitle">Matières les plus consultées ce mois</div>
-            </div>
-          </div>
-
-          <div class="tdb__activity-kpi">
-            <div class="tdb__activity-kpi-item">
-              <div class="tdb__activity-kpi-value">54,2M</div>
-              <div class="tdb__activity-kpi-label">Questions traitées ce mois</div>
-            </div>
-            <div class="tdb__activity-kpi-item">
-              <div class="tdb__activity-kpi-value">4,2h/j</div>
-              <div class="tdb__activity-kpi-label">Utilisation moyenne / boîtier</div>
-            </div>
-          </div>
-
-          <div class="tdb__matieres">
-            @for (m of matieres; track m.nom) {
-              <div class="tdb__matiere-item">
-                <div class="tdb__matiere-header">
-                  <span class="tdb__matiere-nom">{{ m.nom }}</span>
-                  <span class="tdb__matiere-pct">{{ m.pct }}%</span>
-                </div>
-                <div class="progress">
-                  <div
-                    class="progress__bar"
-                    [class.progress__bar--cyan]="m.nom === 'Mathématiques'"
-                    [class.progress__bar--brand]="m.nom !== 'Mathématiques'"
-                    [style.width.%]="m.pct"
-                  ></div>
-                </div>
-              </div>
-            }
-          </div>
-        </div>
-      </div>
-
-      <!-- ── ZONE 4 — ALERTES & ACTIONS PRIORITAIRES ────────── -->
-      <div class="tdb__section-label">Alertes et actions prioritaires</div>
-      <div class="tdb__alertes-grid">
-        @for (alerte of alertesPrioritaires; track alerte.id) {
-          <div
-            class="tdb__alerte"
-            [class.tdb__alerte--haute]="alerte.urgence === 'haute'"
-            [class.tdb__alerte--normale]="alerte.urgence === 'normale'"
-            [class.tdb__alerte--basse]="alerte.urgence === 'basse'"
-          >
-            <div class="tdb__alerte-icon" [innerHTML]="getAlerteIcon(alerte.type) | safeHtml"></div>
-            <div class="tdb__alerte-body">
-              <div class="tdb__alerte-message">{{ alerte.message }}</div>
-              <div class="tdb__alerte-detail">{{ alerte.detail }}</div>
-            </div>
-            <button class="tdb__alerte-action btn btn--sm"
-              [class.btn--danger]="alerte.urgence === 'haute'"
-              [class.btn--secondary]="alerte.urgence !== 'haute'"
-              (click)="onAlerteAction(alerte)"
-            >
-              {{ alerte.actionLabel }}
+            <button class="btn btn--ghost btn--icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
             </button>
           </div>
-        }
-      </div>
 
-      <!-- ── RENOUVELLEMENTS RÉCENTS ──────────────────────────── -->
-      <div class="tdb__bottom-row">
-        <div class="tdb__card">
-          <div class="tdb__card-header">
-            <div class="tdb__card-title">Licences à renouveler (30 jours)</div>
-            <span class="badge badge--warning">3 892 licences</span>
-          </div>
-          <div class="tdb__renewals">
-            @for (r of renouvellements; track r.nom) {
-              <div class="tdb__renewal-item">
-                <div class="tdb__renewal-dot"
-                  [class.tdb__renewal-dot--urgent]="r.joursRestants <= 7"
-                  [class.tdb__renewal-dot--normal]="r.joursRestants > 7"
-                ></div>
-                <div class="tdb__renewal-body">
-                  <div class="tdb__renewal-nom">{{ r.nom }}</div>
-                  <div class="tdb__renewal-type">{{ r.type }}</div>
-                </div>
-                <div class="tdb__renewal-meta">
-                  <div class="tdb__renewal-jours" [class.text-accent]="r.joursRestants <= 7">{{ r.joursRestants }}j</div>
-                  <div class="tdb__renewal-montant">{{ r.montant }}</div>
-                </div>
+          <div class="tdb__chart-visual">
+            <div class="tdb__chart-legend-top">
+              <span class="tdb__legend-item"><span class="dot" style="background: var(--c-cyan)"></span> Établissements</span>
+              <span class="tdb__legend-item"><span class="dot" style="background: var(--c-accent)"></span> Parents</span>
+              <span class="tdb__legend-item"><span class="dot" style="background: var(--c-brand)"></span> Boîtiers</span>
+            </div>
+
+            <div class="tdb__area-chart-container">
+              <div class="tdb__grid-lines">
+                 <span>60K</span><span>50K</span><span>40K</span><span>30K</span><span>20K</span><span>10K</span><span>0</span>
               </div>
-            }
-          </div>
-          <a routerLink="/licences" class="tdb__card-link">Voir toutes les licences à renouveler</a>
-        </div>
+              <div class="tdb__area-svg-wrapper">
+                 <svg viewBox="0 0 600 250" preserveAspectRatio="none" class="tdb__area-svg">
+                   <defs>
+                     <linearGradient id="gradBrand" x1="0" y1="0" x2="0" y2="1">
+                       <stop offset="0%" stop-color="var(--c-brand)" stop-opacity="0.3"/>
+                       <stop offset="100%" stop-color="var(--c-brand)" stop-opacity="0"/>
+                     </linearGradient>
+                     <linearGradient id="gradCyan" x1="0" y1="0" x2="0" y2="1">
+                       <stop offset="0%" stop-color="var(--c-cyan)" stop-opacity="0.3"/>
+                       <stop offset="100%" stop-color="var(--c-cyan)" stop-opacity="0"/>
+                     </linearGradient>
+                     <linearGradient id="gradAccent" x1="0" y1="0" x2="0" y2="1">
+                       <stop offset="0%" stop-color="var(--c-accent)" stop-opacity="0.3"/>
+                       <stop offset="100%" stop-color="var(--c-accent)" stop-opacity="0"/>
+                     </linearGradient>
+                   </defs>
 
-        <div class="tdb__card">
-          <div class="tdb__card-header">
-            <div class="tdb__card-title">Nouveaux établissements</div>
-            <span class="badge badge--brand">Ce mois</span>
-          </div>
-          <div class="tdb__etablissements-recents">
-            @for (e of etablissementsRecents; track e.nom) {
-              <div class="tdb__etab-item" routerLink="/etablissements">
-                <div class="tdb__etab-avatar">{{ e.initiales }}</div>
-                <div class="tdb__etab-body">
-                  <div class="tdb__etab-nom">{{ e.nom }}</div>
-                  <div class="tdb__etab-meta">{{ e.ville }} &bull; {{ e.offre }}</div>
-                </div>
-                <span class="badge" [class.badge--success]="e.statut === 'Actif'" [class.badge--warning]="e.statut === 'En attente'">{{ e.statut }}</span>
-              </div>
-            }
-          </div>
-          <a routerLink="/etablissements" class="tdb__card-link">Voir tous les établissements</a>
-        </div>
+                   <!-- Cyan Curve (Etablissements) -->
+                   <path d="M0,250 L0,180 C100,100 200,200 300,140 C400,60 500,100 600,40 L600,250 Z" fill="url(#gradCyan)"/>
+                   <path d="M0,180 C100,100 200,200 300,140 C400,60 500,100 600,40" fill="none" stroke="var(--c-cyan)" stroke-width="3" vector-effect="non-scaling-stroke"/>
 
-        <div class="tdb__card">
-          <div class="tdb__card-header">
-            <div class="tdb__card-title">Boîtiers hors ligne</div>
-            <span class="badge badge--danger">{{ boitiersHorsLigne }} boîtiers</span>
-          </div>
-          <div class="tdb__boitiers-hl">
-            <div class="tdb__boitiers-hl-visual">
-              <svg viewBox="0 0 100 100" class="tdb__donut" style="transform: rotate(-90deg);">
-                <circle cx="50" cy="50" r="46" fill="none" stroke="var(--c-border)" stroke-width="5"/>
-                <circle
-                  cx="50" cy="50" r="46"
-                  fill="none"
-                  stroke="var(--c-success)"
-                  stroke-width="5"
-                  stroke-dasharray="252 289"
-                  stroke-linecap="round"
-                />
-              </svg>
-              <div class="tdb__donut-center">
-                <div class="tdb__donut-pct">87,2%</div>
-                <div class="tdb__donut-label">En ligne</div>
+                   <!-- Accent Curve (Parents) -->
+                   <path d="M0,250 L0,200 C100,150 200,220 300,180 C400,120 500,160 600,100 L600,250 Z" fill="url(#gradAccent)"/>
+                   <path d="M0,200 C100,150 200,220 300,180 C400,120 500,160 600,100" fill="none" stroke="var(--c-accent)" stroke-width="3" vector-effect="non-scaling-stroke"/>
+
+                   <!-- Brand Curve (Boitiers) -->
+                   <path d="M0,250 L0,220 C100,180 200,240 300,200 C400,160 500,180 600,140 L600,250 Z" fill="url(#gradBrand)"/>
+                   <path d="M0,220 C100,180 200,240 300,200 C400,160 500,180 600,140" fill="none" stroke="var(--c-brand)" stroke-width="3" vector-effect="non-scaling-stroke"/>
+                 </svg>
+                 
+                 <!-- Glassmorphism Donut Overlay -->
+                 <div class="tdb__donut-overlay">
+                   <div class="glass-donut">
+                     <svg viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="32" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="20"/>
+                        <circle cx="50" cy="50" r="32" fill="none" stroke="var(--c-cyan)" stroke-width="20" stroke-dasharray="70 201" stroke-dashoffset="0" stroke-linecap="round"/>
+                        <circle cx="50" cy="50" r="32" fill="none" stroke="var(--c-accent)" stroke-width="20" stroke-dasharray="50 201" stroke-dashoffset="-80" stroke-linecap="round"/>
+                        <circle cx="50" cy="50" r="32" fill="none" stroke="var(--c-brand)" stroke-width="20" stroke-dasharray="40 201" stroke-dashoffset="-140" stroke-linecap="round"/>
+                     </svg>
+                     <div class="glass-donut-center"></div>
+                   </div>
+                 </div>
               </div>
             </div>
-            <div class="tdb__donut-stats">
-              <div class="tdb__donut-stat">
-                <span class="tdb__donut-stat-dot" style="background: var(--c-success)"></span>
-                <span>En ligne</span>
-                <strong>11 203</strong>
+
+            <div class="tdb__area-x-axis">
+              <span>Mar</span><span>Avr</span><span>Mai</span><span>Juin</span><span>Juil</span><span>Août</span>
+            </div>
+          </div>
+
+          <div class="tdb__chart-bottom-kpis">
+             <div class="tdb__cb-kpi">
+               <div class="tdb__cb-label">Établissements</div>
+               <div class="tdb__cb-main">
+                 <span class="tdb__cb-val">1 247</span>
+                 <svg class="tdb__cb-sparkline" viewBox="0 0 50 15" preserveAspectRatio="none"><path d="M0,10 L10,12 L20,5 L30,8 L40,2 L50,0" fill="none" stroke="var(--c-brand)" stroke-width="2" stroke-linecap="round"/></svg>
+               </div>
+               <div class="tdb__cb-trend tdb__cb-trend--up">+ 0,3% au trimestre</div>
+             </div>
+             
+             <div class="tdb__cb-kpi">
+               <div class="tdb__cb-label">Parents</div>
+               <div class="tdb__cb-main">
+                 <span class="tdb__cb-val">48 391</span>
+                 <svg class="tdb__cb-sparkline" viewBox="0 0 50 15" preserveAspectRatio="none"><path d="M0,12 L10,8 L20,10 L30,4 L40,6 L50,0" fill="none" stroke="var(--c-cyan)" stroke-width="2" stroke-linecap="round"/></svg>
+               </div>
+               <div class="tdb__cb-trend tdb__cb-trend--up">+ 12,4% ce mois</div>
+             </div>
+
+             <div class="tdb__cb-kpi">
+               <div class="tdb__cb-label">Écart</div>
+               <div class="tdb__cb-main">
+                 <span class="tdb__cb-val">47 144</span>
+                 <svg class="tdb__cb-sparkline" viewBox="0 0 50 15" preserveAspectRatio="none"><path d="M0,8 L10,10 L20,4 L30,6 L40,0 L50,2" fill="none" stroke="var(--c-brand)" stroke-width="2" stroke-linecap="round"/></svg>
+               </div>
+               <div class="tdb__cb-trend tdb__cb-trend--up">+ 11,1% vs le mois dernier</div>
+             </div>
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div class="tdb__right-col">
+          
+          <!-- Activity Card -->
+          <div class="card tdb__activity-card">
+            <div class="tdb__chart-header">
+              <div>
+                <div class="tdb__chart-title">Activité pédagogique</div>
+                <div class="tdb__chart-subtitle">Matières les plus consultées ce mois</div>
               </div>
-              <div class="tdb__donut-stat">
-                <span class="tdb__donut-stat-dot" style="background: var(--c-danger)"></span>
-                <span>Hors ligne</span>
-                <strong>1 044</strong>
+            </div>
+            
+            <div class="tdb__activity-content">
+              <div class="tdb__activity-donut">
+                <svg viewBox="0 0 100 100" class="tdb__donut-svg">
+                  <circle cx="50" cy="50" r="42" fill="none" stroke="var(--c-border-light)" stroke-width="10"/>
+                  <circle cx="50" cy="50" r="42" fill="none" stroke="var(--c-brand)" stroke-width="10" stroke-dasharray="142 264" stroke-dashoffset="0" stroke-linecap="round"/>
+                  <circle cx="50" cy="50" r="42" fill="none" stroke="var(--c-cyan)" stroke-width="10" stroke-dasharray="58 264" stroke-dashoffset="-150" stroke-linecap="round"/>
+                </svg>
+                <div class="tdb__donut-center-text">
+                  <strong>54,2%</strong>
+                  <span>Questions traitées de maths</span>
+                </div>
               </div>
-              <div class="tdb__donut-stat">
-                <span class="tdb__donut-stat-dot" style="background: var(--c-accent)"></span>
-                <span>Maintenance</span>
-                <strong>600</strong>
+              
+              <div class="tdb__matieres-list">
+                @for (m of matieres; track m.nom) {
+                  <div class="tdb__matiere-item">
+                    <div class="tdb__matiere-header">
+                      <span class="tdb__matiere-nom">{{ m.nom }}</span>
+                      <span class="tdb__matiere-pct">{{ m.pct }}%</span>
+                    </div>
+                    <div class="progress">
+                      <div class="progress__bar"
+                           [class.progress__bar--brand]="m.nom === 'Mathématiques'"
+                           [class.progress__bar--cyan]="m.nom !== 'Mathématiques'"
+                           [style.width.%]="m.pct"></div>
+                    </div>
+                  </div>
+                }
               </div>
             </div>
           </div>
-          <a routerLink="/boitiers" class="tdb__card-link">Gérer les boîtiers</a>
+          
+          <!-- Mini Cards Row -->
+          <div class="tdb__mini-cards-row">
+            <div class="card tdb__mini-card">
+              <div class="tdb__mini-icon" style="color: var(--c-brand); background: var(--c-brand-bg);">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+              <div class="tdb__mini-label">Utilisation moyenne / boîtier</div>
+              <div class="tdb__mini-val">4.2h/j</div>
+              <div class="tdb__cb-trend tdb__cb-trend--up">+0,5% vs M-1</div>
+            </div>
+            
+            <div class="card tdb__mini-card">
+              <div class="tdb__mini-icon" style="color: var(--c-cyan); background: var(--c-cyan-bg);">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              </div>
+              <div class="tdb__mini-label">Questions traitées ce mois</div>
+              <div class="tdb__mini-val">54.2M</div>
+              <div class="tdb__cb-trend tdb__cb-trend--up">+5,5% vs M-1</div>
+            </div>
+          </div>
+          
         </div>
       </div>
-
     </div>
   `,
   styles: [`
     .tdb {
-      padding: 1.75rem 2rem;
+      padding: 2rem;
       max-width: 1600px;
+      margin: 0 auto;
       animation: fadeIn var(--t-slow) ease;
       display: flex;
       flex-direction: column;
@@ -325,22 +274,16 @@ interface PointGraphique {
       gap: 1rem;
     }
 
-    .tdb__header-left { flex: 1; }
-
     .tdb__eyebrow {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 11px;
+      font-size: 13px;
       font-weight: 600;
-      color: var(--c-success);
-      letter-spacing: 0.04em;
-      margin-bottom: 6px;
+      color: var(--c-text);
+      margin-bottom: 4px;
     }
 
     .tdb__title {
       font-family: var(--font-tight);
-      font-size: 1.875rem;
+      font-size: 2rem;
       font-weight: 700;
       color: var(--c-text);
       letter-spacing: -0.03em;
@@ -355,22 +298,20 @@ interface PointGraphique {
     .tdb__header-right {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 12px;
       flex-shrink: 0;
     }
 
     .tdb__date {
       text-align: right;
-      margin-right: 4px;
+      margin-right: 8px;
     }
 
     .tdb__date-label {
       font-size: 10px;
       color: var(--c-subtle);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
     }
-
+    
     .tdb__date-value {
       font-size: 12px;
       font-weight: 600;
@@ -378,132 +319,103 @@ interface PointGraphique {
       margin-top: 2px;
     }
 
-    /* ── SECTION LABEL ───────────────────────────────────────── */
-    .tdb__section-label {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--c-subtle);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: -0.5rem;
-    }
-
     /* ── ZONE 1 — KPI GRID ───────────────────────────────────── */
     .tdb__kpi-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 1rem;
+      gap: 1.25rem;
 
       @media (max-width: 1200px) { grid-template-columns: repeat(2, 1fr); }
       @media (max-width: 600px)  { grid-template-columns: 1fr; }
     }
 
     .tdb__kpi-card {
-      background: var(--c-white);
-      border: 1px solid var(--c-border);
-      border-radius: var(--r-lg);
-      padding: 1.25rem;
-      box-shadow: var(--s-xs);
-      transition: box-shadow var(--t-base), transform var(--t-base);
-      cursor: default;
-
-      &:hover {
-        box-shadow: var(--s-md);
-        transform: translateY(-1px);
-      }
+      display: flex;
+      flex-direction: column;
+      padding: 1.5rem;
     }
 
     .tdb__kpi-top {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      margin-bottom: 0.875rem;
+      gap: 12px;
+      margin-bottom: 1rem;
     }
 
     .tdb__kpi-icon {
-      width: 36px;
-      height: 36px;
+      width: 40px;
+      height: 40px;
       border-radius: var(--r-md);
-      background: color-mix(in srgb, var(--kpi-color) 10%, transparent);
+      background: color-mix(in srgb, var(--kpi-color) 12%, transparent);
       display: flex;
       align-items: center;
       justify-content: center;
       color: var(--kpi-color);
 
       ::ng-deep svg {
-        width: 18px;
-        height: 18px;
+        width: 20px;
+        height: 20px;
         stroke-width: 1.75;
       }
-    }
-
-    .tdb__kpi-tendance {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 11px;
-      font-weight: 600;
-      padding: 3px 7px;
-      border-radius: var(--r-full);
-
-      &--hausse {
-        background: var(--c-success-bg);
-        color: var(--c-success);
-        border: 1px solid var(--c-success-border);
-      }
-
-      &--baisse {
-        background: var(--c-danger-bg);
-        color: var(--c-danger);
-        border: 1px solid var(--c-danger-border);
-      }
-    }
-
-    .tdb__kpi-valeur {
-      font-family: var(--font-tight);
-      font-size: 1.875rem;
-      font-weight: 700;
-      color: var(--c-text);
-      letter-spacing: -0.04em;
-      line-height: 1;
-      margin-bottom: 4px;
     }
 
     .tdb__kpi-label {
       font-size: 13px;
       font-weight: 600;
       color: var(--c-text);
-      margin-bottom: 2px;
+      line-height: 1.3;
+    }
+
+    .tdb__kpi-valeur {
+      font-family: var(--font-tight);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--c-text);
+      letter-spacing: -0.04em;
+      line-height: 1;
+      margin-bottom: 6px;
+      text-align: center;
     }
 
     .tdb__kpi-sous {
-      font-size: 11px;
-      color: var(--c-subtle);
+      font-size: 12px;
+      color: var(--c-secondary);
+      text-align: center;
+      margin-bottom: 1rem;
     }
 
-    /* ── ZONE 2 + 3 — MIDDLE ROW ─────────────────────────────── */
+    .tdb__kpi-tendance {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      align-self: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: var(--r-full);
+      background: var(--c-surface-alt);
+      color: var(--c-secondary);
+
+      &--hausse {
+        background: var(--c-success-bg);
+        color: var(--c-success);
+      }
+    }
+
+    /* ── ZONE 2 — MIDDLE ROW ─────────────────────────────────── */
     .tdb__middle-row {
       display: grid;
-      grid-template-columns: 1.5fr 1fr;
-      gap: 1rem;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 1.5rem;
 
-      @media (max-width: 1000px) { grid-template-columns: 1fr; }
+      @media (max-width: 1100px) { grid-template-columns: 1fr; }
     }
 
     .tdb__chart-card {
-      background: var(--c-white);
-      border: 1px solid var(--c-border);
-      border-radius: var(--r-lg);
-      padding: 1.25rem;
-      box-shadow: var(--s-xs);
-    }
-
-    .tdb__activity-card {
-      background: var(--c-white);
-      border: 1px solid var(--c-border);
-      border-radius: var(--r-lg);
-      padding: 1.25rem;
-      box-shadow: var(--s-xs);
+      display: flex;
+      flex-direction: column;
+      padding: 1.5rem;
     }
 
     .tdb__chart-header {
@@ -514,7 +426,7 @@ interface PointGraphique {
     }
 
     .tdb__chart-title {
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 600;
       color: var(--c-text);
     }
@@ -522,100 +434,258 @@ interface PointGraphique {
     .tdb__chart-subtitle {
       font-size: 12px;
       color: var(--c-subtle);
-      margin-top: 2px;
+      margin-top: 4px;
     }
 
-    .tdb__chart-legend {
-      display: flex;
-      gap: 10px;
-      flex-shrink: 0;
-    }
-
-    .tdb__legend-item {
-      font-size: 11px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-
-      &::before {
-        content: '';
-        width: 8px;
-        height: 8px;
-        border-radius: 2px;
-      }
-
-      &--brand::before { background: var(--c-brand); }
-      &--cyan::before  { background: var(--c-cyan); }
-    }
-
-    /* Graphique de surface (Area Chart) */
-    .tdb__area-chart {
+    .tdb__chart-visual {
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      height: 180px;
-      padding-bottom: 24px;
+      flex: 1;
       position: relative;
     }
 
+    .tdb__chart-legend-top {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .tdb__legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--c-secondary);
+
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+      }
+    }
+
+    .tdb__area-chart-container {
+      position: relative;
+      height: 250px;
+      margin-bottom: 10px;
+    }
+
+    .tdb__grid-lines {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      pointer-events: none;
+
+      span {
+        font-size: 10px;
+        color: var(--c-subtle);
+        transform: translateY(-50%);
+        border-bottom: 1px dashed var(--c-border-light);
+        width: 100%;
+        text-align: left;
+        line-height: 0;
+        padding-bottom: 1px;
+      }
+    }
+
+    .tdb__area-svg-wrapper {
+      position: absolute;
+      left: 30px; 
+      right: 0;
+      top: 0;
+      bottom: 0;
+      overflow: hidden;
+    }
+
     .tdb__area-svg {
-      flex: 1;
       width: 100%;
       height: 100%;
       overflow: visible;
     }
 
-    .tdb__area-labels {
+    .tdb__donut-overlay {
+      position: absolute;
+      left: 15%;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+
+    .glass-donut {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      svg {
+        width: 100%;
+        height: 100%;
+        transform: rotate(-90deg);
+        position: absolute;
+        inset: 0;
+      }
+    }
+
+    .glass-donut-center {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: radial-gradient(circle at top left, rgba(255,255,255,0.9), rgba(255,255,255,0.4));
+      box-shadow: inset 0 2px 4px rgba(255,255,255,0.8), 0 4px 8px rgba(0,0,0,0.05);
+      z-index: 2;
+    }
+
+    .tdb__area-x-axis {
       display: flex;
       justify-content: space-between;
-      width: 100%;
-      padding: 0 10px;
+      margin-left: 30px;
+      padding-top: 8px;
+      border-top: 1px solid var(--c-border);
+      
+      span {
+        font-size: 11px;
+        color: var(--c-subtle);
+        font-weight: 500;
+      }
     }
 
-    .tdb__area-label {
-      font-size: 11px;
-      color: var(--c-subtle);
-      font-weight: 500;
-      white-space: nowrap;
-    }
-
-    /* Activité pédagogique */
-    .tdb__activity-kpi {
+    .tdb__chart-bottom-kpis {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 1.25rem;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--c-border-light);
     }
 
-    .tdb__activity-kpi-item {
-      background: var(--c-surface);
-      border: 1px solid var(--c-border-light);
-      border-radius: var(--r-md);
-      padding: 10px 12px;
+    .tdb__cb-kpi {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }
 
-    .tdb__activity-kpi-value {
+    .tdb__cb-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--c-text);
+    }
+
+    .tdb__cb-main {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .tdb__cb-val {
       font-family: var(--font-tight);
-      font-size: 1.25rem;
+      font-size: 1.5rem;
       font-weight: 700;
-      color: var(--c-brand);
-      letter-spacing: -0.03em;
+      color: var(--c-text);
     }
 
-    .tdb__activity-kpi-label {
+    .tdb__cb-sparkline {
+      width: 50px;
+      height: 20px;
+      overflow: visible;
+    }
+
+    .tdb__cb-trend {
       font-size: 11px;
-      color: var(--c-subtle);
-      margin-top: 2px;
+      font-weight: 600;
+      color: var(--c-success);
+
+      &::before {
+        content: '↗ ';
+        margin-right: 2px;
+      }
     }
 
-    .tdb__matieres {
+    /* ── RIGHT COLUMN ────────────────────────────────────────── */
+    .tdb__right-col {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .tdb__activity-card {
+      padding: 1.5rem;
+      flex: 1;
+    }
+
+    .tdb__activity-content {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 1.5rem;
+      margin-top: 1rem;
+
+      @media (max-width: 600px) {
+        flex-direction: column;
+      }
+    }
+
+    .tdb__activity-donut {
+      position: relative;
+      width: 130px;
+      height: 130px;
+      flex-shrink: 0;
+
+      .tdb__donut-svg {
+        width: 100%;
+        height: 100%;
+        transform: rotate(-90deg);
+      }
+    }
+
+    .tdb__donut-center-text {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 10px;
+
+      strong {
+        font-family: var(--font-tight);
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--c-text);
+        line-height: 1.1;
+      }
+      span {
+        font-size: 9px;
+        color: var(--c-subtle);
+        line-height: 1.1;
+        margin-top: 2px;
+      }
+    }
+
+    .tdb__matieres-list {
       display: flex;
       flex-direction: column;
       gap: 10px;
+      flex: 1;
+      min-width: 0;
     }
 
-    .tdb__matiere-item { display: flex; flex-direction: column; gap: 5px; }
+    .tdb__matiere-item {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
 
     .tdb__matiere-header {
       display: flex;
@@ -623,296 +693,44 @@ interface PointGraphique {
       align-items: center;
     }
 
-    .tdb__matiere-nom { font-size: 12px; font-weight: 500; color: var(--c-text); }
+    .tdb__matiere-nom { font-size: 12px; font-weight: 600; color: var(--c-text); }
     .tdb__matiere-pct { font-size: 12px; font-weight: 700; color: var(--c-secondary); font-family: var(--font-tight); }
 
-    /* ── ZONE 4 — ALERTES ─────────────────────────────────────── */
-    .tdb__alertes-grid {
+    .tdb__mini-cards-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+    }
+
+    .tdb__mini-card {
+      padding: 1.25rem;
       display: flex;
       flex-direction: column;
       gap: 8px;
     }
 
-    .tdb__alerte {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 16px;
-      border-radius: var(--r-lg);
-      border: 1px solid;
-      background: var(--c-white);
-
-      @media (max-width: 550px) {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-
-        .tdb__alerte-action {
-          width: 100%;
-        }
-      }
-
-      &--haute {
-        border-color: var(--c-danger-border);
-        background: var(--c-danger-bg);
-      }
-
-      &--normale {
-        border-color: var(--c-accent-border);
-        background: var(--c-accent-bg);
-      }
-
-      &--basse {
-        border-color: var(--c-brand-border);
-        background: var(--c-brand-bg);
-      }
-    }
-
-    .tdb__alerte-icon {
+    .tdb__mini-icon {
       width: 36px;
       height: 36px;
       border-radius: var(--r-md);
-      background: white;
       display: flex;
       align-items: center;
       justify-content: center;
-      flex-shrink: 0;
-
-      ::ng-deep svg {
-        width: 18px;
-        height: 18px;
-        stroke-width: 1.75;
-      }
+      margin-bottom: 2px;
     }
 
-    .tdb__alerte-body { flex: 1; min-width: 0; }
-
-    .tdb__alerte-message {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--c-text);
-    }
-
-    .tdb__alerte-detail {
+    .tdb__mini-label {
       font-size: 12px;
       color: var(--c-secondary);
-      margin-top: 2px;
+      line-height: 1.3;
     }
 
-    .tdb__alerte-action { flex-shrink: 0; }
-
-    /* ── BOTTOM ROW — 3 CARTES ─────────────────────────────────── */
-    .tdb__bottom-row {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1rem;
-
-      @media (max-width: 1000px) { grid-template-columns: 1fr 1fr; }
-      @media (max-width: 650px)  { grid-template-columns: 1fr; }
-    }
-
-    .tdb__card {
-      background: var(--c-white);
-      border: 1px solid var(--c-border);
-      border-radius: var(--r-lg);
-      padding: 1.25rem;
-      box-shadow: var(--s-xs);
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .tdb__card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .tdb__card-title {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--c-text);
-    }
-
-    .tdb__card-link {
-      font-size: 12px;
-      color: var(--c-brand);
-      font-weight: 500;
-      text-decoration: none;
-      margin-top: auto;
-
-      &:hover { text-decoration: underline; }
-    }
-
-    /* Renouvellements */
-    .tdb__renewals {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .tdb__renewal-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 8px 0;
-      border-bottom: 1px solid var(--c-border-light);
-
-      &:last-child { border-bottom: none; }
-    }
-
-    .tdb__renewal-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      flex-shrink: 0;
-
-      &--urgent { background: var(--c-accent); animation: pulse-dot 2s infinite; box-shadow: 0 0 0 3px var(--c-accent-bg); }
-      &--normal { background: var(--c-brand); }
-    }
-
-    .tdb__renewal-body { flex: 1; min-width: 0; }
-
-    .tdb__renewal-nom {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--c-text);
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .tdb__renewal-type {
-      font-size: 11px;
-      color: var(--c-subtle);
-    }
-
-    .tdb__renewal-meta { text-align: right; flex-shrink: 0; }
-
-    .tdb__renewal-jours {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--c-secondary);
-    }
-
-    .tdb__renewal-montant {
-      font-size: 11px;
-      color: var(--c-subtle);
-    }
-
-    /* Établissements récents */
-    .tdb__etablissements-recents {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .tdb__etab-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 8px;
-      border-radius: var(--r-md);
-      transition: background var(--t-fast);
-      cursor: pointer;
-
-      &:hover { background: var(--c-surface); }
-    }
-
-    .tdb__etab-avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: var(--r-md);
-      background: var(--c-brand-bg);
-      border: 1px solid var(--c-brand-border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--c-brand);
-      flex-shrink: 0;
-    }
-
-    .tdb__etab-body { flex: 1; min-width: 0; }
-
-    .tdb__etab-nom {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--c-text);
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .tdb__etab-meta { font-size: 11px; color: var(--c-subtle); }
-
-    /* Donut boîtiers */
-    .tdb__boitiers-hl {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .tdb__boitiers-hl-visual {
-      position: relative;
-      width: 80px;
-      height: 80px;
-      flex-shrink: 0;
-    }
-
-    .tdb__donut {
-      width: 80px;
-      height: 80px;
-      transform: rotate(-90deg);
-    }
-
-    .tdb__donut-center {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .tdb__donut-pct {
+    .tdb__mini-val {
       font-family: var(--font-tight);
-      font-size: 14px;
+      font-size: 1.5rem;
       font-weight: 700;
-      color: var(--c-success);
-      letter-spacing: -0.02em;
-    }
-
-    .tdb__donut-label { font-size: 9px; color: var(--c-subtle); text-transform: uppercase; }
-
-    .tdb__donut-stats {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      flex: 1;
-    }
-
-    .tdb__donut-stat {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      color: var(--c-secondary);
-
-      strong {
-        font-weight: 700;
-        color: var(--c-text);
-        margin-left: auto;
-        font-family: var(--font-tight);
-      }
-    }
-
-    .tdb__donut-stat-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      flex-shrink: 0;
+      color: var(--c-text);
+      line-height: 1;
     }
   `]
 })
