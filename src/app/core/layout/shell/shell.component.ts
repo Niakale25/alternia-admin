@@ -58,6 +58,10 @@ import { ToastContainerComponent } from '../../../shared/components/toast/toast.
       &--collapsed {
         margin-left: var(--sidebar-collapsed);
       }
+
+      @media (max-width: 768px) {
+        margin-left: 0;
+      }
     }
 
     .shell__content {

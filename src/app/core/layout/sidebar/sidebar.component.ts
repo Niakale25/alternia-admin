@@ -21,20 +21,43 @@ interface NavGroup {
   template: `
     <aside class="sidebar" [class.sidebar--collapsed]="collapsed">
 
-      <!-- LOGO -->
-      <div class="sidebar__logo">
-        <div class="sidebar__logo-mark">
-          <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
-            <rect width="30" height="30" rx="9" fill="#314999"/>
-            <path d="M15 6L23.5 23H6.5L15 6Z" fill="white" opacity="0.95"/>
-            <path d="M15 11L20.5 23H9.5L15 11Z" fill="#40BBCC" opacity="0.8"/>
-          </svg>
-        </div>
+      <!-- HEADER (ChatGPT Style Toggle) -->
+      <div class="sidebar__header">
         @if (!collapsed) {
-          <div class="sidebar__logo-text">
-            <span class="sidebar__logo-name">Alternia</span>
-            <span class="sidebar__logo-tag">Super Admin</span>
+          <div class="sidebar__logo">
+            <div class="sidebar__logo-mark">
+              <svg width="30" height="30" viewBox="0 0 34 34" fill="none">
+                <rect width="34" height="34" rx="9" fill="#314999"/>
+                <path d="M17 7L26.5 26H7.5L17 7Z" fill="white" opacity="0.95"/>
+                <path d="M17 12.5L23 26H11L17 12.5Z" fill="#40BBCC" opacity="0.9"/>
+              </svg>
+            </div>
+            <div class="sidebar__logo-text">
+              <span class="sidebar__logo-name">Alternia</span>
+              <span class="sidebar__logo-tag">SUPER ADMIN</span>
+            </div>
           </div>
+          <button
+            class="sidebar__toggle-btn"
+            (click)="toggleCollapse()"
+            data-tooltip="Fermer la barre latérale"
+            aria-label="Fermer la barre latérale"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/>
+            </svg>
+          </button>
+        } @else {
+          <button
+            class="sidebar__toggle-btn sidebar__toggle-btn--collapsed"
+            (click)="toggleCollapse()"
+            data-tooltip="Ouvrir la barre latérale"
+            aria-label="Ouvrir la barre latérale"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/>
+            </svg>
+          </button>
         }
       </div>
 
@@ -43,6 +66,8 @@ interface NavGroup {
         @for (group of navGroups; track group.label) {
           @if (!collapsed) {
             <div class="sidebar__group-label">{{ group.label }}</div>
+          } @else {
+            <div class="sidebar__group-divider"></div>
           }
           @for (item of group.items; track item.route) {
             <a
@@ -67,30 +92,28 @@ interface NavGroup {
         }
       </nav>
 
-      <!-- COLLAPSE BUTTON -->
-      <button
-        class="sidebar__collapse"
-        (click)="toggleCollapse()"
-        [attr.aria-label]="collapsed ? 'Déplier le menu' : 'Replier le menu'"
-      >
-        <span [innerHTML]="(collapsed ? iconChevronRight : iconChevronLeft) | safeHtml"></span>
-        @if (!collapsed) {
-          <span>Replier</span>
-        }
-      </button>
-
       <!-- USER FOOTER -->
-      @if (!collapsed) {
-        <div class="sidebar__footer">
-          <div class="sidebar__user">
-            <div class="sidebar__user-avatar">SA</div>
+      <div class="sidebar__footer">
+        @if (!collapsed) {
+          <div class="sidebar__user" routerLink="/parametres">
+            <div class="sidebar__user-avatar">
+              SA
+              <span class="sidebar__user-dot"></span>
+            </div>
             <div class="sidebar__user-info">
               <div class="sidebar__user-name">Super Admin</div>
               <div class="sidebar__user-email">admin&#64;alternia.io</div>
             </div>
           </div>
-        </div>
-      }
+        } @else {
+          <div class="sidebar__user-collapsed" routerLink="/parametres" data-tooltip="Super Admin (admin@alternia.io)">
+            <div class="sidebar__user-avatar">
+              SA
+              <span class="sidebar__user-dot"></span>
+            </div>
+          </div>
+        }
+      </div>
     </aside>
   `,
   styles: [`
@@ -105,23 +128,77 @@ interface NavGroup {
       display: flex;
       flex-direction: column;
       z-index: 100;
-      transition: width var(--t-slow);
-      overflow: hidden;
+      transition: width var(--t-slow) cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: var(--s-xs);
+      overflow: visible;
 
       &--collapsed {
         width: var(--sidebar-collapsed);
+
+        .sidebar__header {
+          justify-content: center;
+          padding: 0;
+        }
+
+        .sidebar__nav {
+          padding: 10px 0;
+          align-items: center;
+        }
+
+        .sidebar__item {
+          width: 42px;
+          height: 42px;
+          padding: 0;
+          justify-content: center;
+          margin: 3px auto;
+          border-radius: var(--r-md);
+
+          &::before { display: none; }
+
+          &:hover {
+            background: var(--c-surface-alt);
+            color: var(--c-brand);
+            transform: scale(1.06);
+          }
+
+          &--active {
+            background: var(--c-brand);
+            color: white;
+            box-shadow: 0 4px 12px rgba(49, 73, 153, 0.32);
+
+            .sidebar__item-icon {
+              color: white;
+            }
+
+            &:hover {
+              background: var(--c-brand-hover);
+              color: white;
+            }
+          }
+        }
+
+        .sidebar__footer {
+          padding: 10px 0;
+          justify-content: center;
+        }
       }
     }
 
-    /* ── LOGO ─────────────────────────────────────────────────── */
+    .sidebar__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      height: var(--topbar-height);
+      border-bottom: 1px solid var(--c-border-light);
+      flex-shrink: 0;
+    }
+
     .sidebar__logo {
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 14px 12px;
-      border-bottom: 1px solid var(--c-border-light);
-      min-height: 60px;
-      flex-shrink: 0;
+      min-width: 0;
     }
 
     .sidebar__logo-mark {
@@ -138,34 +215,67 @@ interface NavGroup {
     }
 
     .sidebar__logo-name {
-      font-family: var(--font-tight);
+      font-family: var(--font-sans);
       font-size: 15px;
       font-weight: 700;
-      color: var(--c-text);
-      letter-spacing: -0.03em;
-      line-height: 1;
+      color: var(--c-brand);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
       white-space: nowrap;
     }
 
     .sidebar__logo-tag {
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.06em;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.10em;
       text-transform: uppercase;
-      color: var(--c-brand);
-      margin-top: 3px;
+      color: var(--c-secondary);
+      margin-top: 1px;
       white-space: nowrap;
     }
 
-    /* ── NAVIGATION ───────────────────────────────────────────── */
+    .sidebar__toggle-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border: 1px solid transparent;
+      border-radius: var(--r-md);
+      background: transparent;
+      color: var(--c-secondary);
+      cursor: pointer;
+      transition: all var(--t-fast);
+      flex-shrink: 0;
+
+      &:hover {
+        background: var(--c-surface-alt);
+        border-color: var(--c-border);
+        color: var(--c-brand);
+      }
+
+      &--collapsed {
+        width: 38px;
+        height: 38px;
+        background: var(--c-surface-alt);
+        border-color: var(--c-border-light);
+        color: var(--c-brand);
+
+        &:hover {
+          background: var(--c-brand-bg);
+          border-color: var(--c-brand-border);
+        }
+      }
+    }
+
     .sidebar__nav {
       flex: 1;
       overflow-y: auto;
-      overflow-x: hidden;
-      padding: 10px 8px;
+      overflow-x: visible;
+      padding: 12px 10px;
       display: flex;
       flex-direction: column;
-      gap: 1px;
+      gap: 2px;
     }
 
     .sidebar__group-label {
@@ -173,22 +283,29 @@ interface NavGroup {
       font-weight: 700;
       letter-spacing: 0.10em;
       text-transform: uppercase;
-      color: var(--c-muted);
-      padding: 10px 8px 4px;
+      color: var(--c-subtle);
+      padding: 12px 10px 4px;
       white-space: nowrap;
+    }
+
+    .sidebar__group-divider {
+      width: 24px;
+      height: 1px;
+      background: var(--c-border-light);
+      margin: 6px auto;
     }
 
     .sidebar__separator {
       height: 1px;
       background: var(--c-border-light);
-      margin: 6px 0;
+      margin: 8px 6px;
     }
 
     .sidebar__item {
       display: flex;
       align-items: center;
-      gap: 9px;
-      padding: 6px 8px; // Adjusted for border
+      gap: 10px;
+      padding: 8px 12px;
       border: 1px solid transparent;
       border-radius: var(--r-md);
       color: var(--c-secondary);
@@ -205,13 +322,13 @@ interface NavGroup {
         color: var(--c-text);
 
         .sidebar__item-icon {
-          color: var(--c-text);
+          color: var(--c-brand);
         }
       }
 
       &--active {
-        background: var(--c-success-bg);
-        color: var(--c-text);
+        background: var(--c-brand-bg);
+        color: var(--c-brand);
         font-weight: 600;
         border-color: transparent;
 
@@ -221,13 +338,13 @@ interface NavGroup {
           left: 0;
           top: 15%;
           bottom: 15%;
-          width: 3px;
-          background: var(--c-success);
+          width: 3.5px;
+          background: var(--c-brand);
           border-radius: 0 4px 4px 0;
         }
 
         .sidebar__item-icon {
-          color: var(--c-success);
+          color: var(--c-brand);
         }
       }
     }
@@ -237,15 +354,15 @@ interface NavGroup {
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      width: 18px;
-      height: 18px;
+      width: 20px;
+      height: 20px;
       color: var(--c-subtle);
       transition: color var(--t-fast);
 
       ::ng-deep svg {
-        width: 16px;
-        height: 16px;
-        stroke-width: 1.75;
+        width: 17px;
+        height: 17px;
+        stroke-width: 1.8;
       }
     }
 
@@ -265,32 +382,8 @@ interface NavGroup {
       flex-shrink: 0;
     }
 
-    /* ── COLLAPSE BUTTON ──────────────────────────────────────── */
-    .sidebar__collapse {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 9px 14px;
-      border: none;
-      background: transparent;
-      color: var(--c-subtle);
-      font-size: 12px;
-      font-weight: 500;
-      font-family: var(--font-sans);
-      cursor: pointer;
-      border-top: 1px solid var(--c-border-light);
-      transition: color var(--t-fast);
-      text-align: left;
-      width: 100%;
-
-      &:hover { color: var(--c-text); }
-
-      ::ng-deep svg { width: 14px; height: 14px; }
-    }
-
-    /* ── USER FOOTER ──────────────────────────────────────────── */
     .sidebar__footer {
-      padding: 10px 10px;
+      padding: 10px 12px;
       border-top: 1px solid var(--c-border-light);
       flex-shrink: 0;
     }
@@ -298,28 +391,55 @@ interface NavGroup {
     .sidebar__user {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 6px 4px;
+      gap: 10px;
+      padding: 6px 8px;
       border-radius: var(--r-md);
       cursor: pointer;
       transition: background var(--t-fast);
 
-      &:hover { background: var(--c-surface); }
+      &:hover { background: var(--c-surface-alt); }
+    }
+
+    .sidebar__user-collapsed {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      padding: 4px;
+      border-radius: var(--r-md);
+      transition: transform var(--t-fast);
+
+      &:hover {
+        transform: scale(1.08);
+      }
     }
 
     .sidebar__user-avatar {
-      width: 30px;
-      height: 30px;
-      border-radius: var(--r-md);
+      position: relative;
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
       background: linear-gradient(135deg, var(--c-brand) 0%, var(--c-cyan) 100%);
       display: flex;
       align-items: center;
       justify-content: center;
       color: white;
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 700;
       letter-spacing: 0.05em;
       flex-shrink: 0;
+      box-shadow: 0 2px 6px rgba(49, 73, 153, 0.25);
+    }
+
+    .sidebar__user-dot {
+      position: absolute;
+      bottom: -1px;
+      right: -1px;
+      width: 8px;
+      height: 8px;
+      background: var(--c-success);
+      border: 1.5px solid var(--c-white);
+      border-radius: 50%;
     }
 
     .sidebar__user-info { min-width: 0; }
@@ -341,31 +461,52 @@ interface NavGroup {
       text-overflow: ellipsis;
     }
 
-    /* ── TOOLTIP MODE COMPACT ─────────────────────────────────── */
-    .sidebar--collapsed .sidebar__item[data-tooltip] {
+    /* ── HIGH-END FLOATING TOOLTIP (COMPACT MODE) ─────────────── */
+    .sidebar--collapsed [data-tooltip] {
       position: relative;
 
       &::after {
         content: attr(data-tooltip);
         position: absolute;
-        left: calc(100% + 12px);
+        left: calc(100% + 14px);
         top: 50%;
-        transform: translateY(-50%);
-        background: var(--c-text);
-        color: var(--c-white);
-        padding: 5px 10px;
-        border-radius: var(--r-md);
+        transform: translateY(-50%) translateX(-4px);
+        background: #0F172A;
+        color: #FFFFFF;
+        padding: 6px 12px;
+        border-radius: 8px;
         font-size: 12px;
         font-weight: 500;
+        font-family: var(--font-sans);
         white-space: nowrap;
         pointer-events: none;
         opacity: 0;
-        transition: opacity var(--t-fast);
-        z-index: 200;
-        box-shadow: var(--s-md);
+        transition: opacity var(--t-fast), transform var(--t-fast);
+        z-index: 999;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.25), 0 8px 10px -6px rgba(0, 0, 0, 0.2);
+        letter-spacing: normal;
       }
 
-      &:hover::after { opacity: 1; }
+      &::before {
+        content: '';
+        position: absolute;
+        left: calc(100% + 8px);
+        top: 50%;
+        transform: translateY(-50%) translateX(-4px);
+        border-width: 5px 6px 5px 0;
+        border-style: solid;
+        border-color: transparent #0F172A transparent transparent;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity var(--t-fast), transform var(--t-fast);
+        z-index: 999;
+      }
+
+      &:hover::after,
+      &:hover::before {
+        opacity: 1;
+        transform: translateY(-50%) translateX(0);
+      }
     }
   `]
 })

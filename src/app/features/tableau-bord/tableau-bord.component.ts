@@ -40,7 +40,7 @@ interface PointGraphique {
       <!-- ── EN-TÊTE ──────────────────────────────────────────── -->
       <div class="tdb__header">
         <div class="tdb__header-left">
-          <div class="tdb__eyebrow">Bonjour Super Admin 👋</div>
+          <div class="tdb__eyebrow">Bonjour Super Admin</div>
           <h1 class="tdb__title">Tableau de Bord</h1>
           <p class="tdb__subtitle">Pilotage global de l'écosystème éducatif Alternia</p>
         </div>
@@ -252,6 +252,112 @@ interface PointGraphique {
           </div>
           
         </div>
+      </div>
+
+      <!-- ── ZONE 3 — 3 CARTES INFÉRIEURES ───────────────────── -->
+      <div class="tdb__bottom-grid">
+        
+        <!-- CARTE 1 : Questions les plus posées -->
+        <div class="card tdb__bottom-card">
+          <div class="tdb__bottom-card-header">
+            <div>
+              <h3 class="tdb__bottom-card-title">Questions les plus posées</h3>
+              <span class="tdb__bottom-card-sub">Ce mois</span>
+            </div>
+            <a routerLink="/statistiques" class="tdb__bottom-card-link">Voir tout</a>
+          </div>
+
+          <div class="tdb__questions-list">
+            @for (q of questionsPlusPosees; track q.rang) {
+              <div class="tdb__question-item">
+                <div class="tdb__question-rank">{{ q.rang }}</div>
+                <div class="tdb__question-info">
+                  <div class="tdb__question-title">{{ q.titre }}</div>
+                  <span class="tdb__tag" [ngClass]="q.badgeClass">{{ q.matiere }}</span>
+                </div>
+                <div class="tdb__question-count">{{ q.total }}</div>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- CARTE 2 : Établissements les plus actifs -->
+        <div class="card tdb__bottom-card">
+          <div class="tdb__bottom-card-header">
+            <div>
+              <h3 class="tdb__bottom-card-title">Établissements les plus actifs</h3>
+              <span class="tdb__bottom-card-sub">Ce mois</span>
+            </div>
+            <a routerLink="/etablissements" class="tdb__bottom-card-link">Voir tout</a>
+          </div>
+
+          <div class="tdb__etabs-list">
+            @for (e of etablissementsPlusActifs; track e.nom) {
+              <div class="tdb__etab-row">
+                <div class="tdb__etab-badge">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                    <polyline points="9 22 9 12 15 12 15 22"/>
+                  </svg>
+                </div>
+                <div class="tdb__etab-details">
+                  <div class="tdb__etab-name">{{ e.nom }}</div>
+                  <div class="tdb__etab-city">{{ e.ville }}</div>
+                </div>
+                <div class="tdb__etab-pill">
+                  <span class="tdb__pill-dot"></span>
+                  {{ e.progression }}
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- CARTE 3 : Alertes & notifications -->
+        <div class="card tdb__bottom-card">
+          <div class="tdb__bottom-card-header">
+            <div>
+              <h3 class="tdb__bottom-card-title">Alertes & notifications</h3>
+              <span class="tdb__bottom-card-sub">3 nouvelles alertes</span>
+            </div>
+            <a routerLink="/licences" class="tdb__bottom-card-link">Voir tout</a>
+          </div>
+
+          <div class="tdb__alerts-list">
+            @for (a of alertesNotifications; track a.titre) {
+              <a [routerLink]="a.route" class="tdb__alert-pill" [ngClass]="'tdb__alert-pill--' + a.type">
+                <div class="tdb__alert-icon">
+                  @if (a.type === 'danger') {
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+                      <polyline points="2 17 12 22 22 17"/>
+                      <polyline points="2 12 12 17 22 12"/>
+                    </svg>
+                  } @else if (a.type === 'warning') {
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10"/>
+                      <polyline points="12 6 12 12 16 14"/>
+                    </svg>
+                  } @else {
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                    </svg>
+                  }
+                </div>
+                <div class="tdb__alert-body">
+                  <div class="tdb__alert-title">{{ a.titre }}</div>
+                  <div class="tdb__alert-sub">{{ a.action }}</div>
+                </div>
+                <div class="tdb__alert-arrow">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"/>
+                  </svg>
+                </div>
+              </a>
+            }
+          </div>
+        </div>
+
       </div>
     </div>
   `,
@@ -732,11 +838,349 @@ interface PointGraphique {
       color: var(--c-text);
       line-height: 1;
     }
+
+    /* ── ZONE 3 — 3 CARTES INFÉRIEURES ───────────────────────── */
+    .tdb__bottom-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+
+      @media (max-width: 1100px) {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .tdb__bottom-card {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      background: var(--c-white);
+      border: 1px solid var(--c-border);
+      border-radius: var(--r-xl);
+      box-shadow: var(--s-xs);
+    }
+
+    .tdb__bottom-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+    }
+
+    .tdb__bottom-card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--c-text);
+      line-height: 1.2;
+    }
+
+    .tdb__bottom-card-sub {
+      font-size: 11px;
+      color: var(--c-subtle);
+      margin-top: 3px;
+      display: block;
+    }
+
+    .tdb__bottom-card-link {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--c-brand);
+      text-decoration: none;
+      transition: color var(--t-fast);
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    /* List 1: Questions */
+    .tdb__questions-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .tdb__question-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 4px 0;
+    }
+
+    .tdb__question-rank {
+      width: 28px;
+      height: 28px;
+      border-radius: var(--r-sm);
+      background: var(--c-surface-alt);
+      border: 1px solid var(--c-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--c-text);
+      flex-shrink: 0;
+    }
+
+    .tdb__question-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .tdb__question-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--c-text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 3px;
+    }
+
+    .tdb__tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 1px 6px;
+      border-radius: var(--r-xs);
+
+      &.badge--brand-soft {
+        background: rgba(99, 102, 241, 0.08);
+        color: var(--c-brand);
+      }
+      &.badge--cyan-soft {
+        background: rgba(16, 185, 129, 0.10);
+        color: var(--c-success);
+      }
+      &.badge--indigo-soft {
+        background: rgba(14, 165, 233, 0.10);
+        color: var(--c-cyan);
+      }
+    }
+
+    .tdb__question-count {
+      font-family: var(--font-tight);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--c-text);
+      flex-shrink: 0;
+    }
+
+    /* List 2: Etablissements */
+    .tdb__etabs-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .tdb__etab-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 4px 0;
+    }
+
+    .tdb__etab-badge {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--r-sm);
+      background: rgba(99, 102, 241, 0.10);
+      color: var(--c-brand);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .tdb__etab-details {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .tdb__etab-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--c-text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .tdb__etab-city {
+      font-size: 11px;
+      color: var(--c-subtle);
+      margin-top: 1px;
+    }
+
+    .tdb__etab-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--c-success);
+      background: var(--c-success-bg);
+      padding: 3px 8px;
+      border-radius: var(--r-full);
+      flex-shrink: 0;
+
+      .tdb__pill-dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: var(--c-success);
+      }
+    }
+
+    /* List 3: Alerts */
+    .tdb__alerts-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .tdb__alert-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: var(--r-lg);
+      text-decoration: none;
+      transition: transform var(--t-fast), box-shadow var(--t-fast);
+      cursor: pointer;
+
+      &:hover {
+        transform: translateY(-1px);
+      }
+
+      &--danger {
+        background: rgba(239, 68, 68, 0.05);
+        border: 1px solid rgba(239, 68, 68, 0.15);
+        .tdb__alert-icon { color: var(--c-danger); background: rgba(239, 68, 68, 0.12); }
+        .tdb__alert-arrow { color: var(--c-danger); }
+      }
+
+      &--warning {
+        background: rgba(245, 158, 11, 0.05);
+        border: 1px solid rgba(245, 158, 11, 0.15);
+        .tdb__alert-icon { color: var(--c-accent); background: rgba(245, 158, 11, 0.12); }
+        .tdb__alert-arrow { color: var(--c-accent); }
+      }
+
+      &--info {
+        background: rgba(99, 102, 241, 0.05);
+        border: 1px solid rgba(99, 102, 241, 0.15);
+        .tdb__alert-icon { color: var(--c-brand); background: rgba(99, 102, 241, 0.12); }
+        .tdb__alert-arrow { color: var(--c-brand); }
+      }
+    }
+
+    .tdb__alert-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: var(--r-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .tdb__alert-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .tdb__alert-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--c-text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .tdb__alert-sub {
+      font-size: 10px;
+      color: var(--c-subtle);
+      margin-top: 1px;
+    }
+
+    .tdb__alert-arrow {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+    }
   `]
 })
 export class TableauBordComponent implements OnInit {
 
   readonly boitiersHorsLigne = 1_044;
+
+  readonly questionsPlusPosees = [
+    {
+      rang: 1,
+      titre: 'Résoudre une équation du second degré',
+      matiere: 'Mathématiques',
+      badgeClass: 'badge--brand-soft',
+      total: '12 432'
+    },
+    {
+      rang: 2,
+      titre: 'Définition de la photosynthèse',
+      matiere: 'SVT',
+      badgeClass: 'badge--cyan-soft',
+      total: '8 931'
+    },
+    {
+      rang: 3,
+      titre: 'Conjugaison des verbes du 3e groupe',
+      matiere: 'Français',
+      badgeClass: 'badge--indigo-soft',
+      total: '6 512'
+    }
+  ];
+
+  readonly etablissementsPlusActifs = [
+    {
+      initiale: 'L',
+      nom: 'Lycée Moderne de Bamako',
+      ville: 'Bamako',
+      progression: '+98%'
+    },
+    {
+      initiale: 'G',
+      nom: 'Groupe Scolaire Excellence',
+      ville: 'Sikasso',
+      progression: '+95%'
+    },
+    {
+      initiale: 'C',
+      nom: 'Collège Horizon',
+      ville: 'Kati',
+      progression: '+92%'
+    }
+  ];
+
+  readonly alertesNotifications = [
+    {
+      type: 'danger',
+      titre: '12 boîtiers hors ligne depuis +24h',
+      action: 'Voir les détails',
+      route: '/boitiers'
+    },
+    {
+      type: 'warning',
+      titre: 'Expiration de 5 licences dans 7 jours',
+      action: 'Voir les détails',
+      route: '/licences'
+    },
+    {
+      type: 'info',
+      titre: 'Nouveau message du support',
+      action: 'Voir les détails',
+      route: '/parametres'
+    }
+  ];
 
   readonly kpisPrincipaux: KpiPrincipal[] = [
     {
