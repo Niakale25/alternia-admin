@@ -1,0 +1,35 @@
+.params-section {
+  padding: 24px;
+  background: var(--c-white);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-lg);
+
+  &__title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--c-text);
+    margin: 0 0 4px;
+  }
+
+  &__desc {
+    font-size: 12px;
+    color: var(--c-secondary);
+    margin: 0 0 20px;
+  }
+}
+
+.ia-params-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ia-param-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: var(--c-surface-alt);
+  border: 1px solid var(--c-border-light);
+  border-radius: var(--r-md);
+}

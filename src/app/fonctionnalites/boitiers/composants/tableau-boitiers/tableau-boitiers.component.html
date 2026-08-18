@@ -1,0 +1,64 @@
+<div class="card table-container">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Numéro de Série</th>
+        <th>Établissement Associé</th>
+        <th>Ville</th>
+        <th>Version Firmware</th>
+        <th>Statut</th>
+        <th>Dernière Synchronisation</th>
+        <th class="text-right">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (b of boitiers; track b.id) {
+        <tr>
+          <td>
+            <div class="font-mono font-bold text-brand">{{ b.serialNumber }}</div>
+            <div class="text-xs text-subtle">{{ b.id }}</div>
+          </td>
+          <td>
+            <div class="font-semibold text-text">{{ b.etablissementNom }}</div>
+            <div class="text-xs text-subtle">ID: {{ b.etablissementId }}</div>
+          </td>
+          <td class="text-xs text-secondary">{{ b.ville }}</td>
+          <td>
+            <span class="badge badge--neutre font-mono text-xs">{{ b.versionFirmware }}</span>
+          </td>
+          <td>
+            <app-badge
+              [variante]="b.statut === 'Actif' ? 'succes' : (b.statut === 'Hors ligne' ? 'danger' : 'avertissement')"
+              [avecPoint]="true"
+              [texte]="b.statut"
+            ></app-badge>
+          </td>
+          <td class="text-xs text-secondary">{{ b.derniereConnexion }}</td>
+          <td class="text-right">
+            <div class="flex justify-end gap-1">
+              <select
+                class="select select--sm"
+                style="padding: 2px 6px; font-size: 11px; height: 26px;"
+                [value]="b.statut"
+                (change)="changerStatut.emit({ id: b.id, statut: $any($event.target).value })"
+              >
+                <option value="Actif">Actif</option>
+                <option value="Hors ligne">Hors ligne</option>
+                <option value="Maintenance">Maintenance</option>
+              </select>
+              <button
+                class="btn btn--ghost btn--icon btn--sm text-danger"
+                data-tooltip="Retirer"
+                (click)="supprimer.emit(b.id)"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                </svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

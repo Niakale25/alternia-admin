@@ -1,0 +1,58 @@
+<app-fenetre-modale
+  [ouvert]="ouvert"
+  titre="Ajouter un Compte Parent"
+  sousTitre="Création d'un accès tuteur à l'écosystème Alternia"
+  (fermer)="fermer.emit()"
+>
+  <div class="form-grid" corps>
+    <div class="form-group">
+      <label class="form-label">Nom de famille *</label>
+      <input type="text" class="input" placeholder="Ex: Traoré" [(ngModel)]="nomFamille" required />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Prénom & Nom du Tuteur</label>
+      <input type="text" class="input" placeholder="Ex: Amadou Traoré" [(ngModel)]="tuteur" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Email de contact *</label>
+      <input type="email" class="input" placeholder="amadou.traore@gmail.com" [(ngModel)]="email" required />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Téléphone (WhatsApp)</label>
+      <input type="text" class="input" placeholder="+223 76 00 00 00" [(ngModel)]="telephone" />
+    </div>
+
+    <div class="form-group full-width">
+      <label class="form-label">Établissement rattaché</label>
+      <input type="text" class="input" [(ngModel)]="etablissement" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Formule d'Abonnement</label>
+      <select class="select" [(ngModel)]="abonnementsType">
+        <option value="Premium Annuel">Premium Annuel</option>
+        <option value="Standard Mensuel">Standard Mensuel</option>
+        <option value="Découverte">Découverte</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Nombre d'enfants / Licences</label>
+      <input type="number" class="input" [(ngModel)]="licencesAssocies" min="1" />
+    </div>
+  </div>
+
+  <div class="flex gap-2" pied>
+    <button class="btn btn--secondary" (click)="fermer.emit()">Annuler</button>
+    <button
+      class="btn btn--primary"
+      [disabled]="!nomFamille.trim() || !email.trim()"
+      (click)="valider()"
+    >
+      Créer le Compte Parent
+    </button>
+  </div>
+</app-fenetre-modale>

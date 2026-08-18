@@ -1,0 +1,69 @@
+<div class="card table-container">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Code de Licence</th>
+        <th>Titulaire / Bénéficiaire</th>
+        <th>Type de Pack</th>
+        <th>Période de Validité</th>
+        <th>Montant</th>
+        <th>Statut</th>
+        <th class="text-right">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (l of licences; track l.id) {
+        <tr>
+          <td>
+            <div class="font-mono font-bold text-brand">{{ l.code }}</div>
+            <div class="text-xs text-subtle">ID: {{ l.id }}</div>
+          </td>
+          <td>
+            <div class="font-semibold text-text">{{ l.titulaire }}</div>
+          </td>
+          <td>
+            <span class="badge badge--brand">{{ l.type }}</span>
+          </td>
+          <td>
+            <div class="text-xs">{{ l.dateActivation }} → {{ l.dateExpiration }}</div>
+            <div class="text-xs text-subtle">{{ l.dureeMois }} mois</div>
+          </td>
+          <td>
+            <span class="font-semibold">{{ l.prix | formatFcfa }}</span>
+          </td>
+          <td>
+            <app-badge
+              [variante]="l.statut === 'Active' ? 'succes' : (l.statut === 'Renouvelée' ? 'cyan' : (l.statut === 'En attente' ? 'avertissement' : 'danger'))"
+              [avecPoint]="true"
+              [texte]="l.statut"
+            ></app-badge>
+          </td>
+          <td class="text-right">
+            <div class="flex justify-end gap-1">
+              <select
+                class="select select--sm"
+                style="padding: 2px 6px; font-size: 11px; height: 26px;"
+                [value]="l.statut"
+                (change)="changerStatut.emit({ id: l.id, statut: $any($event.target).value })"
+              >
+                <option value="Active">Active</option>
+                <option value="Renouvelée">Renouvelée</option>
+                <option value="En attente">En attente</option>
+                <option value="Expirée">Expirée</option>
+              </select>
+              <button
+                class="btn btn--ghost btn--icon btn--sm text-danger"
+                data-tooltip="Révoquer"
+                (click)="supprimer.emit(l.id)"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                </svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

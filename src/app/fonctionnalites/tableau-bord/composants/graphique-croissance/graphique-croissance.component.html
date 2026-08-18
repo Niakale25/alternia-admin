@@ -1,0 +1,40 @@
+<div class="card tdb-chart-card">
+  <div class="tdb-chart-card__header">
+    <div>
+      <h3 class="tdb-chart-card__title">Croissance de l'Écosystème Alternia</h3>
+      <p class="tdb-chart-card__subtitle">Progression des centres scolaires et tuteurs connectés — 6 derniers mois</p>
+    </div>
+    <div class="tdb-chart-card__legendes">
+      <span class="legende-item"><span class="dot" style="background: var(--c-brand)"></span> Établissements</span>
+      <span class="legende-item"><span class="dot" style="background: var(--c-cyan)"></span> Parents (x50)</span>
+      <span class="legende-item"><span class="dot" style="background: var(--c-success)"></span> Boîtiers</span>
+    </div>
+  </div>
+
+  <div class="tdb-chart-card__visual">
+    <div class="chart-bars-container">
+      @for (point of points; track point.mois) {
+        <div class="chart-bar-col">
+          <div class="chart-bars-group">
+            <div
+              class="chart-bar chart-bar--brand"
+              [style.height.%]="(point.etablissements / 1500) * 100"
+              [attr.data-tooltip]="point.etablissements + ' Établissements'"
+            ></div>
+            <div
+              class="chart-bar chart-bar--cyan"
+              [style.height.%]="(point.parents / 50000) * 100"
+              [attr.data-tooltip]="point.parents + ' Parents'"
+            ></div>
+            <div
+              class="chart-bar chart-bar--success"
+              [style.height.%]="(point.boitiers / 1500) * 100"
+              [attr.data-tooltip]="point.boitiers + ' Boîtiers'"
+            ></div>
+          </div>
+          <span class="chart-bar-label">{{ point.mois }}</span>
+        </div>
+      }
+    </div>
+  </div>
+</div>

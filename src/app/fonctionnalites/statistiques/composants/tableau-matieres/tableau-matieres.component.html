@@ -1,0 +1,37 @@
+<div class="card table-container">
+  <div class="table-container__header">
+    <h3 class="table-container__title">Disciplines & Matières les Plus Sollicitées</h3>
+  </div>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Matière Pédagogique</th>
+        <th>Part d'Utilisation</th>
+        <th>Volume d'Heures</th>
+        <th>Progression</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (m of matieres; track m.matiere) {
+        <tr>
+          <td>
+            <div class="font-semibold text-text">{{ m.matiere }}</div>
+          </td>
+          <td>
+            <div class="flex items-center gap-2">
+              <div class="progress-bar-sm">
+                <div class="progress-bar-sm__fill" [style.width.%]="m.pourcentage"></div>
+              </div>
+              <span class="text-xs font-bold">{{ m.pourcentage }}%</span>
+            </div>
+          </td>
+          <td class="font-semibold text-xs">{{ m.heuresTotal | number }} h</td>
+          <td>
+            <span class="badge badge--succes">+{{ m.croissance }}%</span>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

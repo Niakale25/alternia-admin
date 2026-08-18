@@ -1,0 +1,51 @@
+<div class="page-content">
+
+  <!-- En-tête de la Page -->
+  <div class="page-header">
+    <div class="page-header__eyebrow">Administration & Configuration</div>
+    <h1 class="page-header__title">Paramètres Système</h1>
+    <p class="page-header__subtitle">
+      Configuration technique, gouvernance des donnees et règles d'intelligence artificielle
+    </p>
+  </div>
+
+  <div class="params-layout">
+    <!-- Menu Latéral Paramètres -->
+    <nav class="params-nav card">
+      @for (section of service.sections; track section.id) {
+        <button
+          class="params-nav__item"
+          [class.params-nav__item--active]="service.sectionActive() === section.id"
+          (click)="service.sectionActive.set(section.id)"
+        >
+          <span class="params-nav__icon" [innerHTML]="section.icon | htmlSecurise"></span>
+          {{ section.label }}
+        </button>
+      }
+    </nav>
+
+    <!-- Zone de Contenu Paramètres -->
+    <div class="params-content">
+      @if (service.parametres(); as p) {
+        @switch (service.sectionActive()) {
+          @case ('plateforme') {
+            <app-section-plateforme
+              [parametres]="p"
+              (enregistrer)="onEnregistrer($event)"
+            ></app-section-plateforme>
+          }
+          @case ('securite') {
+            <app-section-securite
+              [parametres]="p"
+              (enregistrer)="onEnregistrer($event)"
+            ></app-section-securite>
+          }
+          @case ('ia') {
+            <app-section-ia></app-section-ia>
+          }
+        }
+      }
+    </div>
+  </div>
+
+</div>

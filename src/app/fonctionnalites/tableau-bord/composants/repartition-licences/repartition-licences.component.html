@@ -1,0 +1,34 @@
+<div class="card tdb-repartition-card">
+  <div class="tdb-repartition-card__header">
+    <h3 class="tdb-repartition-card__title">Répartition des Licences</h3>
+    <span class="badge badge--brand">52 104 Total</span>
+  </div>
+
+  <div class="tdb-repartition-card__bars">
+    <div class="multi-progress-bar">
+      @for (item of repartition; track item.type) {
+        <div
+          class="multi-progress-seg"
+          [style.width.%]="item.pourcentage"
+          [style.background]="item.couleur"
+          [attr.data-tooltip]="item.type + ' : ' + item.pourcentage + '%'"
+        ></div>
+      }
+    </div>
+  </div>
+
+  <div class="tdb-repartition-card__details">
+    @for (item of repartition; track item.type) {
+      <div class="repartition-item">
+        <div class="repartition-item__left">
+          <span class="repartition-item__dot" [style.background]="item.couleur"></span>
+          <span class="repartition-item__label">{{ item.type }}</span>
+        </div>
+        <div class="repartition-item__right">
+          <span class="repartition-item__count">{{ item.total | number }}</span>
+          <span class="repartition-item__pct">({{ item.pourcentage }}%)</span>
+        </div>
+      </div>
+    }
+  </div>
+</div>

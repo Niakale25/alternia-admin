@@ -1,0 +1,38 @@
+.disposition-app {
+  display: flex;
+  min-height: 100vh;
+  background: var(--c-surface-alt);
+
+  &__conteneur {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    margin-left: var(--sidebar-width);
+    transition: margin-left var(--t-slow) cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  &--barre-repliee {
+    .disposition-app__conteneur {
+      margin-left: var(--sidebar-collapsed);
+    }
+  }
+
+  &__principal {
+    flex: 1;
+    padding: 24px;
+    max-width: 1440px;
+    width: 100%;
+    margin: 0 auto;
+
+    @media (max-width: 768px) {
+      padding: 16px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    &__conteneur {
+      margin-left: 0 !important;
+    }
+  }
+}

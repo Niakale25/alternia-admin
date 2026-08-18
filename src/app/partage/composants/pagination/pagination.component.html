@@ -1,0 +1,41 @@
+<div class="pagination">
+  <div class="pagination__info">
+    Affichage de <strong>{{ pageCourante * taillePage + 1 }}</strong> à
+    <strong>{{ Math.min((pageCourante + 1) * taillePage, totalElements) }}</strong> sur
+    <strong>{{ totalElements }}</strong> éléments
+  </div>
+
+  <div class="pagination__controles">
+    <button
+      class="pagination__btn"
+      [disabled]="pageCourante === 0"
+      (click)="allerPage(pageCourante - 1)"
+      aria-label="Page précédente"
+    >
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+    </button>
+
+    @for (p of pagesAffichees(); track p) {
+      <button
+        class="pagination__btn pagination__btn--num"
+        [class.pagination__btn--actif]="p === pageCourante"
+        (click)="allerPage(p)"
+      >
+        {{ p + 1 }}
+      </button>
+    }
+
+    <button
+      class="pagination__btn"
+      [disabled]="pageCourante >= totalPages - 1"
+      (click)="allerPage(pageCourante + 1)"
+      aria-label="Page suivante"
+    >
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <polyline points="9 18 15 12 9 6"/>
+      </svg>
+    </button>
+  </div>
+</div>

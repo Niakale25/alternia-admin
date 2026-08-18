@@ -1,0 +1,22 @@
+<div class="etat-vide">
+  <div class="etat-vide__icone-conteneur">
+    @if (iconeSvg) {
+      <div class="etat-vide__icone" [innerHTML]="iconeSvg | htmlSecurise"></div>
+    } @else {
+      <svg class="etat-vide__icone-defaut" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M20 12V8H4v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/>
+        <path d="M4 8l8-4 8 4"/>
+        <path d="m10 13 4 4m0-4-4 4"/>
+      </svg>
+    }
+  </div>
+
+  <h3 class="etat-vide__titre">{{ titre }}</h3>
+  <p class="etat-vide__message">{{ message }}</p>
+
+  @if (texteAction) {
+    <button class="btn btn--primary btn--sm etat-vide__btn" (click)="action.emit()">
+      {{ texteAction }}
+    </button>
+  }
+</div>

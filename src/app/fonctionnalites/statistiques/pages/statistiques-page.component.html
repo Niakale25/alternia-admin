@@ -1,0 +1,114 @@
+<div class="page-content">
+
+  <!-- En-tête de la Page -->
+  <div class="page-header flex justify-between items-start">
+    <div>
+      <div class="page-header__eyebrow text-cyan">Données Agrégées & Anonymisées</div>
+      <h1 class="page-header__title">Statistiques Pédagogiques</h1>
+      <p class="page-header__subtitle">
+        Métriques d'impact scolaire à l'échelle de l'écosystème Alternia — Protection absolue des donnees apprenants
+      </p>
+    </div>
+
+    <div class="flex gap-2">
+      <div class="periodes-selector">
+        @for (p of service.periodesDisponibles; track p) {
+          <button
+            class="btn btn--sm"
+            [class.btn--primary]="service.periode() === p"
+            [class.btn--secondary]="service.periode() !== p"
+            (click)="service.changerPeriode(p)"
+          >
+            {{ p }}
+          </button>
+        }
+      </div>
+
+      <button class="btn btn--secondary" (click)="service.exporterRapport()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/>
+        </svg>
+        Exporter
+      </button>
+    </div>
+  </div>
+
+  <!-- Bannière de Confidentialité -->
+  <div class="confidentialite-banner card mb-6">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--c-brand)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>
+      <path d="m9 12 2 2 4-4"/>
+    </svg>
+    <div class="text-xs text-secondary">
+      <strong>Confidentialité garantie :</strong> Alternia ne collecte aucune donnée personnelle nominative sur les apprenants.
+      Toutes les métriques présentées sont agrégées et anonymisées conformément aux standards internationaux de protection des donnees scolaires.
+    </div>
+  </div>
+
+  @if (service.donnees(); as s) {
+    <!-- KPIs -->
+    <div class="kpi-grid mb-6">
+      <app-carte-statistique
+        titre="Temps d'Utilisation Global"
+        valeur="1,43M h"
+        sousTexte="Cumulé sur les boîtiers actifs ce mois"
+        evolution="+14,2%"
+        couleurAccent="var(--c-brand)"
+      ></app-carte-statistique>
+
+      <app-carte-statistique
+        titre="Volume Questions IA"
+        valeur="1,84M"
+        sousTexte="Interactions d'aide à l'apprentissage"
+        evolution="+18,5%"
+        couleurAccent="var(--c-cyan)"
+      ></app-carte-statistique>
+
+      <app-carte-statistique
+        titre="Taux de Disponibilité Boîtiers"
+        valeur="96,4%"
+        sousTexte="Connexion stable en classe"
+        evolution="Excellente"
+        couleurAccent="var(--c-success)"
+      ></app-carte-statistique>
+
+      <app-carte-statistique
+        titre="Taux de Satisfaction Global"
+        valeur="96,8%"
+        sousTexte="Retours positifs enseignants/élèves"
+        evolution="+1,2%"
+        couleurAccent="var(--c-accent)"
+      ></app-carte-statistique>
+    </div>
+
+    <!-- Graphique & Tableau des Matières -->
+    <div class="stat-layout mb-6">
+      <app-graphique-statistiques [evolution]="s.evolutionMensuelle"></app-graphique-statistiques>
+      <app-tableau-matieres [matieres]="s.matieresPlusConsultees"></app-tableau-matieres>
+    </div>
+
+    <!-- Sujets les plus fréquents -->
+    <div class="card p-4">
+      <h3 class="font-bold text-sm mb-3">Sujets d'Exercices les Plus Consultés par les Élèves</h3>
+      <div class="sujets-grid">
+        @for (sujet of s.sujetsFrequents; track sujet.sujet) {
+          <div class="sujet-card">
+            <div class="sujet-card__top">
+              <span class="badge badge--neutre text-xs">{{ sujet.matiere }}</span>
+              <span class="text-xs font-semibold text-brand">{{ sujet.occurrences | number }} requêtes</span>
+            </div>
+            <div class="sujet-card__nom font-semibold text-sm mt-1">{{ sujet.sujet }}</div>
+          </div>
+        }
+      </div>
+    </div>
+  } @else {
+    <div class="kpi-grid mb-6">
+      <app-chargeur-squelette hauteur="110px" rayon="var(--r-lg)"></app-chargeur-squelette>
+      <app-chargeur-squelette hauteur="110px" rayon="var(--r-lg)"></app-chargeur-squelette>
+      <app-chargeur-squelette hauteur="110px" rayon="var(--r-lg)"></app-chargeur-squelette>
+      <app-chargeur-squelette hauteur="110px" rayon="var(--r-lg)"></app-chargeur-squelette>
+    </div>
+  }
+
+</div>

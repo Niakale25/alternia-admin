@@ -1,0 +1,35 @@
+<div class="card params-section">
+  <h2 class="params-section__title">Sécurité, Sauvegardes & Alertes</h2>
+  <p class="params-section__desc">Contrôle des accès, seuils d'alertes boîtiers et politiques de sauvegarde</p>
+
+  <div class="params-form">
+    <div class="form-group">
+      <label class="form-label">Seuil d'alerte boîtier hors ligne (Heures)</label>
+      <input type="number" class="input" [(ngModel)]="parametres.seuilAlerteBoitierHeures" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Fréquence des sauvegardes</label>
+      <select class="select" [(ngModel)]="parametres.frequenceSauvegarde">
+        <option value="Quotidienne">Quotidienne (02:00 UTC)</option>
+        <option value="Hebdomadaire">Hebdomadaire (Dimanche 01:00 UTC)</option>
+      </select>
+    </div>
+
+    <div class="form-group flex items-center gap-2" style="margin-top: 16px;">
+      <input type="checkbox" id="sauvAuto" [(ngModel)]="parametres.sauvegardesAutomatiques" />
+      <label for="sauvAuto" class="text-xs font-medium cursor-pointer">Sauvegardes automatiques sur cloud souverain</label>
+    </div>
+
+    <div class="form-group flex items-center gap-2" style="margin-top: 16px;">
+      <input type="checkbox" id="maintMode" [(ngModel)]="parametres.modeMaintenance" />
+      <label for="maintMode" class="text-xs font-medium cursor-pointer text-danger">Activer le mode maintenance global</label>
+    </div>
+  </div>
+
+  <div class="params-section__actions">
+    <button class="btn btn--primary" (click)="onSauvegarder()">
+      Enregistrer les Paramètres de Sécurité
+    </button>
+  </div>
+</div>

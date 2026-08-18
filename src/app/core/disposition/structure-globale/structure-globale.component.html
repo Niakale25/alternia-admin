@@ -1,0 +1,22 @@
+<div class="disposition-app" [class.disposition-app--barre-repliee]="barreRepliee()">
+  <!-- Barre Latérale (Sidebar) -->
+  <app-barre-laterale
+    [repliee]="barreRepliee()"
+    (basculerRepli)="basculerRepliBarre()"
+  ></app-barre-laterale>
+
+  <!-- Zone Principale -->
+  <div class="disposition-app__conteneur">
+    <app-barre-superieure
+      [barreRepliee]="barreRepliee()"
+      (basculerBarre)="basculerRepliBarre()"
+    ></app-barre-superieure>
+
+    <main class="disposition-app__principal">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+
+  <!-- Système Global de Notifications Toasts -->
+  <app-notification-toast></app-notification-toast>
+</div>

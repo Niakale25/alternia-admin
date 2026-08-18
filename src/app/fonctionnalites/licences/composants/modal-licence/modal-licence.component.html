@@ -1,0 +1,50 @@
+<app-fenetre-modale
+  [ouvert]="ouvert"
+  titre="Générer un Pack de Licences"
+  sousTitre="Émission de clés d'activation et attributions commerciales"
+  (fermer)="fermer.emit()"
+>
+  <div class="form-grid" corps>
+    <div class="form-group full-width">
+      <label class="form-label">Bénéficiaire / Titulaire *</label>
+      <input
+        type="text"
+        class="input"
+        placeholder="Ex: Complexe Scolaire Notre-Dame (Bamako)"
+        [(ngModel)]="titulaire"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Type de Licence</label>
+      <select class="select" [(ngModel)]="type">
+        <option value="Établissement Bulk">Établissement Bulk (Écoles)</option>
+        <option value="Parent Solo">Parent Solo (Familles B2C)</option>
+        <option value="Institutionnel Pack">Institutionnel Pack (Ministère/ONG)</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Durée de validité (Mois)</label>
+      <input type="number" class="input" [(ngModel)]="dureeMois" min="1" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Montant (FCFA)</label>
+      <input type="number" class="input" [(ngModel)]="prix" min="0" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Date d'Expiration</label>
+      <input type="text" class="input" [(ngModel)]="dateExpiration" />
+    </div>
+  </div>
+
+  <div class="flex gap-2" pied>
+    <button class="btn btn--secondary" (click)="fermer.emit()">Annuler</button>
+    <button class="btn btn--primary" [disabled]="!titulaire.trim()" (click)="valider()">
+      Générer la Clé de Licence
+    </button>
+  </div>
+</app-fenetre-modale>

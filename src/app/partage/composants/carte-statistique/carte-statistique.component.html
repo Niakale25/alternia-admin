@@ -1,0 +1,21 @@
+<div class="stat-card card">
+  <div class="stat-card__top">
+    <div class="stat-card__titre">{{ titre }}</div>
+    @if (evolution) {
+      <span class="stat-card__badge" [class.stat-card__badge--positive]="tendancePositive" [class.stat-card__badge--negative]="!tendancePositive">
+        {{ evolution }}
+      </span>
+    }
+  </div>
+
+  <div class="stat-card__body">
+    @if (iconeSvg) {
+      <div class="stat-card__icone" [style.color]="couleurAccent" [innerHTML]="iconeSvg | htmlSecurise"></div>
+    }
+    <div class="stat-card__valeur" [style.color]="couleurAccent">{{ valeur }}</div>
+  </div>
+
+  @if (sousTexte) {
+    <div class="stat-card__sous-texte">{{ sousTexte }}</div>
+  }
+</div>

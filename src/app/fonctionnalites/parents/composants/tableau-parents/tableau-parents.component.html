@@ -1,0 +1,67 @@
+<div class="card table-container">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Famille & Tuteur</th>
+        <th>Contact</th>
+        <th>Établissement</th>
+        <th>Abonnement</th>
+        <th>Licences Liées</th>
+        <th>Statut</th>
+        <th>Dernière Activité</th>
+        <th class="text-right">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (p of parents; track p.id) {
+        <tr>
+          <td>
+            <div class="font-semibold text-text">Famille {{ p.nomFamille }}</div>
+            <div class="text-xs text-subtle">{{ p.tuteur }}</div>
+          </td>
+          <td>
+            <div class="text-xs font-medium">{{ p.email }}</div>
+            <div class="text-xs text-subtle">{{ p.telephone }}</div>
+          </td>
+          <td class="text-xs text-secondary">{{ p.etablissement }}</td>
+          <td>
+            <span class="badge badge--brand">{{ p.abonnementsType }}</span>
+          </td>
+          <td>
+            <span class="font-semibold">{{ p.licencesAssocies }}</span>
+          </td>
+          <td>
+            <app-badge
+              [variante]="p.statut === 'Actif' ? 'succes' : (p.statut === 'Inactif' ? 'neutre' : 'danger')"
+              [avecPoint]="true"
+              [texte]="p.statut"
+            ></app-badge>
+          </td>
+          <td class="text-xs text-secondary">{{ p.derniereActivite }}</td>
+          <td class="text-right">
+            <div class="flex justify-end gap-1">
+              <button
+                class="btn btn--ghost btn--icon btn--sm"
+                [attr.data-tooltip]="p.statut === 'Actif' ? 'Suspendre' : 'Activer'"
+                (click)="basculerStatut.emit(p.id)"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M18.36 6.64a9 9 0 1 1-12.73 0M12 2v10"/>
+                </svg>
+              </button>
+              <button
+                class="btn btn--ghost btn--icon btn--sm text-danger"
+                data-tooltip="Supprimer"
+                (click)="supprimer.emit(p.id)"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                </svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

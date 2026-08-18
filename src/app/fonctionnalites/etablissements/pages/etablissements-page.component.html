@@ -1,0 +1,127 @@
+<div class="page-content">
+
+  <!-- En-tête de la Page -->
+  <div class="page-header flex justify-between items-start">
+    <div>
+      <div class="page-header__eyebrow">Réseau National Alternia</div>
+      <h1 class="page-header__title">Établissements Scolaires au Mali</h1>
+      <p class="page-header__subtitle">
+        Supervision et administration des 1 247 centres d'enseignement et complexes partenaires
+      </p>
+    </div>
+
+    <div class="flex gap-2">
+      <button class="btn btn--primary" (click)="modalOuvert.set(true)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        Ajouter un Établissement
+      </button>
+    </div>
+  </div>
+
+  <!-- Bannière Régionale Mali -->
+  <app-banniere-regionale
+    [regions]="service.regions()"
+    [regionSelectionnee]="service.filtreRegion()"
+    (selectionnerRegion)="service.filtreRegion.set($event)"
+  ></app-banniere-regionale>
+
+  <!-- Métriques KPIs -->
+  <div class="kpi-grid mb-6">
+    <app-carte-statistique
+      titre="Établissements Actifs"
+      [valeur]="service.totalActifs()"
+      sousTexte="Centres déployés et opérationnels"
+      evolution="+8,4%"
+      couleurAccent="var(--c-brand)"
+    ></app-carte-statistique>
+
+    <app-carte-statistique
+      titre="En Attente de Validation"
+      [valeur]="service.totalEnAttente()"
+      sousTexte="Dossiers scolaires en cours d'audit"
+      evolution="Prioritaire"
+      couleurAccent="var(--c-accent)"
+    ></app-carte-statistique>
+
+    <app-carte-statistique
+      titre="Boîtiers en Classe"
+      [valeur]="service.totalBoitiers()"
+      sousTexte="Matériel Alternia installé"
+      evolution="96,4% en ligne"
+      couleurAccent="var(--c-cyan)"
+    ></app-carte-statistique>
+
+    <app-carte-statistique
+      titre="Licences Déployées"
+      [valeur]="(service.totalLicences() | number) || '0'"
+      sousTexte="Clés d'accès élèves et enseignants"
+      evolution="+12%"
+      couleurAccent="var(--c-success)"
+    ></app-carte-statistique>
+  </div>
+
+  <!-- Barre de Recherche & Filtres -->
+  <div class="table-controls mb-4">
+    <div class="table-controls__search">
+      <input
+        type="text"
+        class="input input--sm"
+        placeholder="Rechercher par nom, ville, email ou ID..."
+        [ngModel]="service.recherche()"
+        (ngModelChange)="service.recherche.set($event)"
+      />
+    </div>
+
+    <div class="flex gap-2">
+      <select
+        class="select select--sm"
+        [ngModel]="service.filtreStatut()"
+        (ngModelChange)="service.filtreStatut.set($event)"
+      >
+        <option value="Tous">Tous les statuts</option>
+        <option value="Actif">Actif</option>
+        <option value="En attente">En attente</option>
+        <option value="Suspendu">Suspendu</option>
+      </select>
+
+      <select
+        class="select select--sm"
+        [ngModel]="service.filtreOffre()"
+        (ngModelChange)="service.filtreOffre.set($event)"
+      >
+        <option value="Toutes">Toutes les offres</option>
+        <option value="Standard">Standard</option>
+        <option value="Institutionnel">Institutionnel</option>
+        <option value="Enterprise">Enterprise</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Tableau ou État Vide -->
+  @if (service.etablissementsFiltres().length > 0) {
+    <app-tableau-etablissements
+      [etablissements]="service.etablissementsFiltres()"
+      (basculerStatut)="service.basculerStatut($event)"
+      (supprimer)="service.supprimer($event)"
+    ></app-tableau-etablissements>
+  } @else {
+    <div class="card">
+      <app-etat-vide
+        titre="Aucun établissement trouvé"
+        message="Aucun établissement ne correspond à vos filtres actuels."
+        texteAction="Réinitialiser les filtres"
+        (action)="service.recherche.set(''); service.filtreStatut.set('Tous'); service.filtreOffre.set('Toutes'); service.filtreRegion.set('Toutes')"
+      ></app-etat-vide>
+    </div>
+  }
+
+  <!-- Modale de Création -->
+  <app-modal-etablissement
+    [ouvert]="modalOuvert()"
+    (fermer)="modalOuvert.set(false)"
+    (soumettre)="onCreerEtablissement($event)"
+  ></app-modal-etablissement>
+
+</div>

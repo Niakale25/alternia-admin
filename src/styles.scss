@@ -138,6 +138,12 @@ body {
   overflow-x: hidden;
 }
 
+// Page de connexion — pas de scroll, tout en viewport
+body.connexion-active {
+  overflow: hidden;
+  height: 100vh;
+}
+
 // ── SCROLLBAR ─────────────────────────────────────────────────
 ::-webkit-scrollbar {
   width: 6px;

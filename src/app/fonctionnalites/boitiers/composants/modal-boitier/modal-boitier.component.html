@@ -1,0 +1,50 @@
+<app-fenetre-modale
+  [ouvert]="ouvert"
+  titre="Associer un Boîtier Alternia"
+  sousTitre="Enregistrement matériel et affectation à un centre scolaire"
+  (fermer)="fermer.emit()"
+>
+  <div class="form-grid" corps>
+    <div class="form-group full-width">
+      <label class="form-label">Numéro de Série Matériel *</label>
+      <input
+        type="text"
+        class="input font-mono"
+        placeholder="Ex: ALT-ED-5520-ML"
+        [(ngModel)]="serialNumber"
+        required
+      />
+    </div>
+
+    <div class="form-group full-width">
+      <label class="form-label">Établissement d'affectation</label>
+      <input type="text" class="input" [(ngModel)]="etablissementNom" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Ville de déploiement</label>
+      <input type="text" class="input" [(ngModel)]="ville" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Version Firmware</label>
+      <input type="text" class="input font-mono" [(ngModel)]="versionFirmware" />
+    </div>
+
+    <div class="form-group full-width">
+      <label class="form-label">Statut Initial</label>
+      <select class="select" [(ngModel)]="statut">
+        <option value="Actif">Actif (Connecté en classe)</option>
+        <option value="Hors ligne">Hors ligne (En transit / Stock)</option>
+        <option value="Maintenance">Maintenance</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="flex gap-2" pied>
+    <button class="btn btn--secondary" (click)="fermer.emit()">Annuler</button>
+    <button class="btn btn--primary" [disabled]="!serialNumber.trim()" (click)="valider()">
+      Associer le Boîtier
+    </button>
+  </div>
+</app-fenetre-modale>

@@ -1,0 +1,67 @@
+<div class="page-content tdb-page">
+
+  <!-- En-tête de la Page -->
+  <div class="page-header flex justify-between items-start">
+    <div>
+      <div class="page-header__eyebrow">Bonjour Super Admin</div>
+      <h1 class="page-header__title">Tableau de Bord</h1>
+      <p class="page-header__subtitle">Pilotage global et supervision en direct de l'écosystème éducatif Alternia</p>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <div class="tdb-page__date-info">
+        <span class="tdb-page__date-label">Statut</span>
+        <span class="tdb-page__date-valeur">{{ tdbService.derniereMiseAJour() }}</span>
+      </div>
+
+      <button class="btn btn--secondary btn--sm" (click)="tdbService.chargerDonnees()" [disabled]="tdbService.chargement()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" [class.animate-spin]="tdbService.chargement()">
+          <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
+        </svg>
+        Actualiser
+      </button>
+
+      <button class="btn btn--primary btn--sm" (click)="tdbService.telechargerRapport()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/>
+        </svg>
+        Rapport Global
+      </button>
+    </div>
+  </div>
+
+  @if (tdbService.donnees(); as d) {
+    <!-- Zone 1 : 4 KPIs Clés -->
+    <div class="tdb-page__kpi-grid mb-6">
+      @for (kpi of d.kpis; track kpi.label) {
+        <app-tdb-carte-kpi [kpi]="kpi"></app-tdb-carte-kpi>
+      }
+    </div>
+
+    <!-- Zone 2 : Graphique de Croissance & Répartition des Licences -->
+    <div class="tdb-page__middle-grid mb-6">
+      <app-tdb-graphique-croissance [points]="d.graphiqueCroissance"></app-tdb-graphique-croissance>
+      <app-tdb-repartition-licences [repartition]="d.repartitionLicences"></app-tdb-repartition-licences>
+    </div>
+
+    <!-- Zone 3 : Alertes & Actions Rapides -->
+    <div class="tdb-page__bottom-grid">
+      <app-tdb-liste-alertes
+        [alertes]="d.alertes"
+        (traiterAlerte)="onTraiterAlerte($event)"
+      ></app-tdb-liste-alertes>
+      <app-tdb-actions-rapides></app-tdb-actions-rapides>
+    </div>
+  } @else {
+    <!-- État de chargement avec Skeleton -->
+    <div class="tdb-page__kpi-grid mb-6">
+      <app-chargeur-squelette hauteur="110px" rayon="var(--r-lg)"></app-chargeur-squelette>
+      <app-chargeur-squelette hauteur="110px" rayon="var(--r-lg)"></app-chargeur-squelette>
+      <app-chargeur-squelette hauteur="110px" rayon="var(--r-lg)"></app-chargeur-squelette>
+      <app-chargeur-squelette hauteur="110px" rayon="var(--r-lg)"></app-chargeur-squelette>
+    </div>
+    <div class="mb-6">
+      <app-chargeur-squelette hauteur="260px" rayon="var(--r-lg)"></app-chargeur-squelette>
+    </div>
+  }
+</div>

@@ -1,0 +1,14 @@
+<div class="card tdb-kpi-card" [style.--kpi-color]="kpi.couleur">
+  <div class="tdb-kpi-card__top">
+    <div class="tdb-kpi-card__icon" [innerHTML]="kpi.icon | htmlSecurise"></div>
+    <div class="tdb-kpi-card__label">{{ kpi.label }}</div>
+  </div>
+  <div class="tdb-kpi-card__valeur">{{ kpi.valeur }}</div>
+  <div class="tdb-kpi-card__sous">{{ kpi.sousTexte }}</div>
+  <div class="tdb-kpi-card__tendance" [class.tdb-kpi-card__tendance--hausse]="kpi.tendance > 0">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/>
+    </svg>
+    {{ kpi.tendanceLabel }}
+  </div>
+</div>

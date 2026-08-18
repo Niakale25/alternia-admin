@@ -1,0 +1,34 @@
+<div class="card stat-chart-card">
+  <div class="stat-chart-card__header">
+    <div>
+      <h3 class="stat-chart-card__title">Évolution du Volume de Questions & Sessions</h3>
+      <p class="stat-chart-card__subtitle">Activité pédagogique agrégée et anonymisée sur 6 mois</p>
+    </div>
+    <div class="stat-chart-card__legend">
+      <span class="legend-item"><span class="dot" style="background: var(--c-brand)"></span> Questions IA</span>
+      <span class="legend-item"><span class="dot" style="background: var(--c-cyan)"></span> Sessions Classes</span>
+    </div>
+  </div>
+
+  <div class="stat-chart-card__visual">
+    <div class="chart-bars-container">
+      @for (pt of evolution; track pt.mois) {
+        <div class="chart-col">
+          <div class="bars-pair">
+            <div
+              class="bar bar--questions"
+              [style.height.%]="(pt.questions / 2000000) * 100"
+              [attr.data-tooltip]="(pt.questions | number) + ' Questions'"
+            ></div>
+            <div
+              class="bar bar--sessions"
+              [style.height.%]="(pt.sessions / 800000) * 100"
+              [attr.data-tooltip]="(pt.sessions | number) + ' Sessions'"
+            ></div>
+          </div>
+          <span class="col-label">{{ pt.mois }}</span>
+        </div>
+      }
+    </div>
+  </div>
+</div>

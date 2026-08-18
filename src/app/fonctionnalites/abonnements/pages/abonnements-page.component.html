@@ -1,0 +1,128 @@
+<div class="page-content">
+
+  <!-- En-tête de la Page -->
+  <div class="page-header flex justify-between items-start">
+    <div>
+      <div class="page-header__eyebrow">Commercial & Revenus</div>
+      <h1 class="page-header__title">Abonnements Parents B2C</h1>
+      <p class="page-header__subtitle">
+        Gestion des abonnements individuels tuteurs et suivi des renouvellements automatiques
+      </p>
+    </div>
+
+    <div class="flex gap-2">
+      <button class="btn btn--secondary" (click)="service.exporter()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/>
+        </svg>
+        Exporter
+      </button>
+
+      <button class="btn btn--primary" (click)="modalOuvert.set(true)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        Nouvel Abonnement
+      </button>
+    </div>
+  </div>
+
+  <!-- Métriques KPIs -->
+  <div class="kpi-grid mb-6">
+    <app-carte-statistique
+      titre="Abonnements Actifs"
+      valeur="48 391"
+      sousTexte="Abonnements en cours de validité"
+      evolution="+12,4%"
+      couleurAccent="var(--c-brand)"
+    ></app-carte-statistique>
+
+    <app-carte-statistique
+      titre="MRR Abonnements Parents"
+      valeur="81M FCFA"
+      sousTexte="Revenu mensuel récurrent B2C"
+      evolution="+9,3%"
+      couleurAccent="var(--c-cyan)"
+    ></app-carte-statistique>
+
+    <app-carte-statistique
+      titre="En Attente de Règlement"
+      [valeur]="service.totalEnAttente()"
+      sousTexte="Paiements Wave / Orange Money"
+      evolution="À relancer"
+      couleurAccent="var(--c-accent)"
+    ></app-carte-statistique>
+
+    <app-carte-statistique
+      titre="Taux d'Auto-Renouvellement"
+      valeur="86,2%"
+      sousTexte="Reconduction automatique active"
+      evolution="Très élevé"
+      couleurAccent="var(--c-success)"
+    ></app-carte-statistique>
+  </div>
+
+  <!-- Barre de Recherche & Filtres -->
+  <div class="table-controls mb-4">
+    <div class="table-controls__search">
+      <input
+        type="text"
+        class="input input--sm"
+        placeholder="Rechercher un abonné, parent, email..."
+        [ngModel]="service.recherche()"
+        (ngModelChange)="service.recherche.set($event)"
+      />
+    </div>
+
+    <div class="flex gap-2">
+      <select
+        class="select select--sm"
+        [ngModel]="service.filtreStatut()"
+        (ngModelChange)="service.filtreStatut.set($event)"
+      >
+        <option value="Tous">Tous les statuts</option>
+        <option value="Actif">Actif</option>
+        <option value="En attente de paiement">En attente de paiement</option>
+        <option value="Suspendu">Suspendu</option>
+        <option value="Résilié">Résilié</option>
+      </select>
+
+      <select
+        class="select select--sm"
+        [ngModel]="service.filtreType()"
+        (ngModelChange)="service.filtreType.set($event)"
+      >
+        <option value="Tous">Toutes les formules</option>
+        <option value="Premium Annuel">Premium Annuel</option>
+        <option value="Standard Mensuel">Standard Mensuel</option>
+        <option value="Découverte">Découverte</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Tableau ou État Vide -->
+  @if (service.abonnementsFiltres().length > 0) {
+    <app-tableau-abonnements
+      [abonnements]="service.abonnementsFiltres()"
+      (changerStatut)="service.changerStatut($event.id, $event.statut)"
+      (supprimer)="service.supprimer($event)"
+    ></app-tableau-abonnements>
+  } @else {
+    <div class="card">
+      <app-etat-vide
+        titre="Aucun abonnement trouvé"
+        message="Aucun abonnement ne correspond à vos filtres."
+        texteAction="Réinitialiser les filtres"
+        (action)="service.recherche.set(''); service.filtreStatut.set('Tous'); service.filtreType.set('Tous')"
+      ></app-etat-vide>
+    </div>
+  }
+
+  <!-- Modale de Création -->
+  <app-modal-abonnement
+    [ouvert]="modalOuvert()"
+    (fermer)="modalOuvert.set(false)"
+    (soumettre)="onCreerAbonnement($event)"
+  ></app-modal-abonnement>
+
+</div>

@@ -1,0 +1,86 @@
+.tdb-repartition-card {
+  padding: 20px;
+  background: var(--c-white);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--s-xs);
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+  }
+
+  &__title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--c-text);
+    margin: 0;
+  }
+
+  &__bars {
+    margin-bottom: 20px;
+  }
+
+  .multi-progress-bar {
+    height: 10px;
+    background: var(--c-surface-alt);
+    border-radius: var(--r-full);
+    overflow: hidden;
+    display: flex;
+    gap: 2px;
+  }
+
+  .multi-progress-seg {
+    height: 100%;
+    transition: width var(--t-slow) cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  &__details {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+.repartition-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12.5px;
+
+  &__left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  &__label {
+    color: var(--c-text);
+    font-weight: 500;
+  }
+
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  &__count {
+    font-weight: 700;
+    color: var(--c-text);
+  }
+
+  &__pct {
+    color: var(--c-subtle);
+    font-size: 11px;
+  }
+}

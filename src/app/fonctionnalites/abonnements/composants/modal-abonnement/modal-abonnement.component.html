@@ -1,0 +1,65 @@
+<app-fenetre-modale
+  [ouvert]="ouvert"
+  titre="Nouvel Abonnement Parent B2C"
+  sousTitre="Souscription directe d'une formule d'accompagnement familial"
+  (fermer)="fermer.emit()"
+>
+  <div class="form-grid" corps>
+    <div class="form-group full-width">
+      <label class="form-label">Nom du Parent / Tuteur *</label>
+      <input
+        type="text"
+        class="input"
+        placeholder="Ex: Fatoumata Coulibaly"
+        [(ngModel)]="parentNom"
+        required
+      />
+    </div>
+
+    <div class="form-group full-width">
+      <label class="form-label">Email du Parent *</label>
+      <input
+        type="email"
+        class="input"
+        placeholder="parent@orange.ml"
+        [(ngModel)]="parentEmail"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Formule</label>
+      <select class="select" [ngModel]="type" (ngModelChange)="onTypeChange($event)">
+        <option value="Premium Annuel">Premium Annuel (45 000 FCFA)</option>
+        <option value="Standard Mensuel">Standard Mensuel (5 000 FCFA)</option>
+        <option value="Découverte">Découverte (Gratuit)</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Montant (FCFA)</label>
+      <input type="number" class="input" [(ngModel)]="montant" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Date de Prochain Renouvellement</label>
+      <input type="text" class="input" [(ngModel)]="dateRenouvellement" />
+    </div>
+
+    <div class="form-group flex items-center gap-2" style="margin-top: 24px;">
+      <input type="checkbox" id="autoRenouv" [(ngModel)]="autoRenouvellement" />
+      <label for="autoRenouv" class="text-xs font-medium cursor-pointer">Renouvellement automatique</label>
+    </div>
+  </div>
+
+  <div class="flex gap-2" pied>
+    <button class="btn btn--secondary" (click)="fermer.emit()">Annuler</button>
+    <button
+      class="btn btn--primary"
+      [disabled]="!parentNom.trim() || !parentEmail.trim()"
+      (click)="valider()"
+    >
+      Activer l'Abonnement
+    </button>
+  </div>
+</app-fenetre-modale>

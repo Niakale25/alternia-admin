@@ -1,0 +1,84 @@
+.tdb-kpi-card {
+  padding: 18px;
+  position: relative;
+  overflow: hidden;
+  background: var(--c-white);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--s-xs);
+  transition: transform var(--t-fast), box-shadow var(--t-fast);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--kpi-color, var(--c-brand));
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--s-md);
+  }
+
+  &__top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  &__icon {
+    width: 28px;
+    height: 28px;
+    border-radius: var(--r-sm);
+    background: var(--c-surface-alt);
+    color: var(--kpi-color, var(--c-brand));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  &__label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--c-subtle);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  &__valeur {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--c-text);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+  }
+
+  &__sous {
+    font-size: 11.5px;
+    color: var(--c-secondary);
+    margin-bottom: 8px;
+  }
+
+  &__tendance {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: var(--r-full);
+    background: var(--c-surface-alt);
+    color: var(--c-secondary);
+
+    &--hausse {
+      background: var(--c-success-bg);
+      color: var(--c-success);
+    }
+  }
+}

@@ -1,0 +1,128 @@
+<div class="page-content">
+
+  <!-- En-tête de la Page -->
+  <div class="page-header flex justify-between items-start">
+    <div>
+      <div class="page-header__eyebrow">Modèle Économique & Revenus</div>
+      <h1 class="page-header__title">Licences & Clés d'Activation</h1>
+      <p class="page-header__subtitle">
+        Supervision des licences actives, prévisions de renouvellement et attribution de packs
+      </p>
+    </div>
+
+    <div class="flex gap-2">
+      <button class="btn btn--secondary" (click)="service.exporterFinancier()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/>
+        </svg>
+        Export Financier
+      </button>
+
+      <button class="btn btn--primary" (click)="modalOuvert.set(true)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        Générer un Pack
+      </button>
+    </div>
+  </div>
+
+  <!-- Métriques KPIs -->
+  <div class="kpi-grid mb-6">
+    <app-carte-statistique
+      titre="Revenu Mensuel Récurrent (MRR)"
+      valeur="122M FCFA"
+      sousTexte="ARR estimé : 1,46 Mrd FCFA"
+      evolution="+9,3%"
+      couleurAccent="var(--c-brand)"
+    ></app-carte-statistique>
+
+    <app-carte-statistique
+      titre="Licences Actives"
+      valeur="52 104"
+      sousTexte="92,8% de taux d'activation"
+      evolution="Actives"
+      couleurAccent="var(--c-cyan)"
+    ></app-carte-statistique>
+
+    <app-carte-statistique
+      titre="Renouvellements < 30j"
+      valeur="14 Écoles"
+      sousTexte="Procédure groupée prête"
+      evolution="Prioritaire"
+      couleurAccent="var(--c-accent)"
+    ></app-carte-statistique>
+
+    <app-carte-statistique
+      titre="Taux de Rétention"
+      valeur="98,4%"
+      sousTexte="Établissements reconduits"
+      evolution="Excellente"
+      couleurAccent="var(--c-success)"
+    ></app-carte-statistique>
+  </div>
+
+  <!-- Barre de Recherche & Filtres -->
+  <div class="table-controls mb-4">
+    <div class="table-controls__search">
+      <input
+        type="text"
+        class="input input--sm"
+        placeholder="Rechercher par code, titulaire, établissement..."
+        [ngModel]="service.recherche()"
+        (ngModelChange)="service.recherche.set($event)"
+      />
+    </div>
+
+    <div class="flex gap-2">
+      <select
+        class="select select--sm"
+        [ngModel]="service.filtreStatut()"
+        (ngModelChange)="service.filtreStatut.set($event)"
+      >
+        <option value="Tous">Tous les statuts</option>
+        <option value="Active">Active</option>
+        <option value="Renouvelée">Renouvelée</option>
+        <option value="En attente">En attente</option>
+        <option value="Expirée">Expirée</option>
+      </select>
+
+      <select
+        class="select select--sm"
+        [ngModel]="service.filtreType()"
+        (ngModelChange)="service.filtreType.set($event)"
+      >
+        <option value="Tous">Tous les types</option>
+        <option value="Établissement Bulk">Établissement Bulk</option>
+        <option value="Parent Solo">Parent Solo</option>
+        <option value="Institutionnel Pack">Institutionnel Pack</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Tableau ou État Vide -->
+  @if (service.licencesFiltrees().length > 0) {
+    <app-tableau-licences
+      [licences]="service.licencesFiltrees()"
+      (changerStatut)="service.changerStatut($event.id, $event.statut)"
+      (supprimer)="service.supprimer($event)"
+    ></app-tableau-licences>
+  } @else {
+    <div class="card">
+      <app-etat-vide
+        titre="Aucune licence trouvée"
+        message="Aucune licence ne correspond à vos filtres."
+        texteAction="Réinitialiser les filtres"
+        (action)="service.recherche.set(''); service.filtreStatut.set('Tous'); service.filtreType.set('Tous')"
+      ></app-etat-vide>
+    </div>
+  }
+
+  <!-- Modale de Création -->
+  <app-modal-licence
+    [ouvert]="modalOuvert()"
+    (fermer)="modalOuvert.set(false)"
+    (soumettre)="onCreerLicence($event)"
+  ></app-modal-licence>
+
+</div>

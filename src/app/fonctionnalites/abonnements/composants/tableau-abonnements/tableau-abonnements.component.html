@@ -1,0 +1,76 @@
+<div class="card table-container">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Parent & Tuteur</th>
+        <th>Formule</th>
+        <th>Montant</th>
+        <th>Renouvellement</th>
+        <th>Statut</th>
+        <th>Auto-Renouvellement</th>
+        <th class="text-right">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (a of abonnements; track a.id) {
+        <tr>
+          <td>
+            <div class="font-semibold text-text">{{ a.parentNom }}</div>
+            <div class="text-xs text-subtle">{{ a.parentEmail }}</div>
+          </td>
+          <td>
+            <span class="badge badge--brand">{{ a.type }}</span>
+          </td>
+          <td>
+            <span class="font-semibold">{{ a.montant | formatFcfa }}</span>
+          </td>
+          <td>
+            <div class="text-xs">{{ a.dateRenouvellement }}</div>
+            <div class="text-xs text-subtle">Depuis le {{ a.dateDebut }}</div>
+          </td>
+          <td>
+            <app-badge
+              [variante]="a.statut === 'Actif' ? 'succes' : (a.statut === 'En attente de paiement' ? 'avertissement' : 'danger')"
+              [avecPoint]="true"
+              [texte]="a.statut"
+            ></app-badge>
+          </td>
+          <td>
+            @if (a.autoRenouvellement) {
+              <span class="text-xs text-success font-medium flex items-center gap-1">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                Activé
+              </span>
+            } @else {
+              <span class="text-xs text-subtle font-medium">Manuel</span>
+            }
+          </td>
+          <td class="text-right">
+            <div class="flex justify-end gap-1">
+              <select
+                class="select select--sm"
+                style="padding: 2px 6px; font-size: 11px; height: 26px;"
+                [value]="a.statut"
+                (change)="changerStatut.emit({ id: a.id, statut: $any($event.target).value })"
+              >
+                <option value="Actif">Actif</option>
+                <option value="En attente de paiement">En attente</option>
+                <option value="Suspendu">Suspendu</option>
+                <option value="Résilié">Résilié</option>
+              </select>
+              <button
+                class="btn btn--ghost btn--icon btn--sm text-danger"
+                data-tooltip="Supprimer"
+                (click)="supprimer.emit(a.id)"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                </svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

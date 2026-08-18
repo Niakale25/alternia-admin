@@ -1,0 +1,193 @@
+<section class="page-connexion">
+  <!-- Panneau gauche : illustration -->
+  <div class="panneau-illustration">
+
+    <div class="contenu-illustration">
+      <div class="logo-marque">
+        <img src="logo-alternia.svg" alt="Logo AlterniA" class="logo-image" />
+      </div>
+      <img
+        class="illustration"
+        src="illustration-connexion.jpg"
+        alt="Plateforme éducative Alternia"
+        loading="eager"
+      />
+      <div class="texte-hero">
+        <h1 class="titre-hero">Bienvenue dans votre espace d'administration</h1>
+        <p class="sous-titre-hero">
+          Gérez établissements, licences, boîtiers et profils pédagogiques depuis un tableau de bord centralisé.
+        </p>
+        <div class="stats-rapides">
+          <div class="stat">
+            <span class="stat-valeur">360°</span>
+            <span class="stat-label">Vue d'ensemble</span>
+          </div>
+          <div class="separateur-stat"></div>
+          <div class="stat">
+            <span class="stat-valeur">IA</span>
+            <span class="stat-label">Profils adaptés</span>
+          </div>
+          <div class="separateur-stat"></div>
+          <div class="stat">
+            <span class="stat-valeur">Pro</span>
+            <span class="stat-label">Sécurisé</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panneau droit : formulaire -->
+  <div class="panneau-formulaire">
+    <div class="carte-connexion">
+      <!-- En-tête -->
+      <div class="entete-carte">
+        <div class="badge-admin">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+          Super Admin
+        </div>
+        <h2 class="titre-connexion">Connexion</h2>
+        <p class="sous-titre-connexion">Accédez au tableau de bord Alternia</p>
+      </div>
+
+      <!-- Formulaire -->
+      <form
+        class="formulaire"
+        [formGroup]="formulaireConnexion"
+        (ngSubmit)="soumettre()"
+        novalidate
+        id="form-connexion-admin"
+      >
+        <!-- Champ Email -->
+        <div class="groupe-champ" [class.erreur]="estChampInvalide('email')" [class.focus]="focusEmail">
+          <label class="etiquette" for="email-admin">Adresse e-mail</label>
+          <div class="conteneur-input">
+            <span class="icone-input">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+            </span>
+            <input
+              id="email-admin"
+              type="email"
+              class="input"
+              formControlName="email"
+              placeholder="superadmin@gmail.com"
+              autocomplete="email"
+              (focus)="focusEmail = true"
+              (blur)="focusEmail = false"
+            />
+          </div>
+          @if (estChampInvalide('email')) {
+            <span class="message-erreur">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+              </svg>
+              {{ obtenirMessageErreurEmail() }}
+            </span>
+          }
+        </div>
+
+        <!-- Champ Mot de passe -->
+        <div class="groupe-champ" [class.erreur]="estChampInvalide('motDePasse')" [class.focus]="focusMotDePasse">
+          <label class="etiquette" for="mot-de-passe-admin">Mot de passe</label>
+          <div class="conteneur-input">
+            <span class="icone-input">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+            </span>
+            <input
+              id="mot-de-passe-admin"
+              [type]="motDePasseVisible ? 'text' : 'password'"
+              class="input"
+              formControlName="motDePasse"
+              placeholder="••••••••••••"
+              autocomplete="current-password"
+              (focus)="focusMotDePasse = true"
+              (blur)="focusMotDePasse = false"
+            />
+            <button
+              type="button"
+              class="btn-visibilite"
+              (click)="basculerVisibilite()"
+              [attr.aria-label]="motDePasseVisible ? 'Masquer le mot de passe' : 'Afficher le mot de passe'"
+              id="btn-toggle-mdp"
+            >
+              @if (motDePasseVisible) {
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                  <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                  <line x1="1" y1="1" x2="23" y2="23"/>
+                </svg>
+              } @else {
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+              }
+            </button>
+          </div>
+          @if (estChampInvalide('motDePasse')) {
+            <span class="message-erreur">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+              </svg>
+              {{ obtenirMessageErreurMotDePasse() }}
+            </span>
+          }
+        </div>
+
+        <!-- Message d'erreur serveur -->
+        @if (erreurServeur) {
+          <div class="alerte-erreur" role="alert" id="alerte-erreur-connexion">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+            </svg>
+            <span>{{ erreurServeur }}</span>
+          </div>
+        }
+
+        <!-- Bouton de connexion -->
+        <button
+          type="submit"
+          class="btn-connexion"
+          [class.chargement]="enChargement"
+          [disabled]="enChargement"
+          id="btn-soumettre-connexion"
+        >
+          @if (enChargement) {
+            <span class="spinner"></span>
+            <span>Connexion en cours…</span>
+          } @else {
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+              <polyline points="10,17 15,12 10,7"/>
+              <line x1="15" y1="12" x2="3" y2="12"/>
+            </svg>
+            <span>Se connecter</span>
+          }
+        </button>
+      </form>
+
+      <!-- Pied de carte -->
+      <div class="pied-carte">
+        <div class="separateur">
+          <span></span>
+          <small>Accès réservé</small>
+          <span></span>
+        </div>
+        <p class="mention-securite">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+          Connexion sécurisée — Super Administrateur uniquement
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

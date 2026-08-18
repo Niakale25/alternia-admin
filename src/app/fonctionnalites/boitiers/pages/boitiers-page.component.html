@@ -1,0 +1,116 @@
+<div class="page-content">
+
+  <!-- En-tête de la Page -->
+  <div class="page-header flex justify-between items-start">
+    <div>
+      <div class="page-header__eyebrow">Parc Matériel & Dispositifs</div>
+      <h1 class="page-header__title">Gestion des Boîtiers Alternia</h1>
+      <p class="page-header__subtitle">
+        Supervision et statut en direct des 1 247 boîtiers intelligents déployés en établissement
+      </p>
+    </div>
+
+    <div class="flex gap-2">
+      <button class="btn btn--secondary" (click)="service.pingerBoitiers()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
+        </svg>
+        Diagnostic Réseau
+      </button>
+
+      <button class="btn btn--primary" (click)="modalOuvert.set(true)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        Associer un Boîtier
+      </button>
+    </div>
+  </div>
+
+  <!-- Métriques KPIs -->
+  <div class="kpi-grid mb-6">
+    <app-carte-statistique
+      titre="Total Déployés"
+      [valeur]="service.totalDeployes()"
+      sousTexte="Installés dans les établissements"
+      evolution="Actifs"
+      couleurAccent="var(--c-brand)"
+    ></app-carte-statistique>
+
+    <app-carte-statistique
+      titre="En Ligne (En Classe)"
+      [valeur]="service.totalActifs()"
+      sousTexte="Taux de disponibilité : 96,4%"
+      evolution="96,4%"
+      couleurAccent="var(--c-success)"
+    ></app-carte-statistique>
+
+    <app-carte-statistique
+      titre="Hors Ligne"
+      [valeur]="service.totalHorsLigne()"
+      sousTexte="En attente de reconnexion"
+      evolution="31 unités"
+      couleurAccent="var(--c-danger)"
+    ></app-carte-statistique>
+
+    <app-carte-statistique
+      titre="En Maintenance"
+      [valeur]="service.totalMaintenance()"
+      sousTexte="Mise à jour firmware en cours"
+      evolution="14 unités"
+      couleurAccent="var(--c-accent)"
+    ></app-carte-statistique>
+  </div>
+
+  <!-- Barre de Recherche & Filtres -->
+  <div class="table-controls mb-4">
+    <div class="table-controls__search">
+      <input
+        type="text"
+        class="input input--sm"
+        placeholder="Rechercher par numéro de série, établissement, ville..."
+        [ngModel]="service.recherche()"
+        (ngModelChange)="service.recherche.set($event)"
+      />
+    </div>
+
+    <div class="flex gap-2">
+      <select
+        class="select select--sm"
+        [ngModel]="service.filtreStatut()"
+        (ngModelChange)="service.filtreStatut.set($event)"
+      >
+        <option value="Tous">Tous les statuts</option>
+        <option value="Actif">Actif</option>
+        <option value="Hors ligne">Hors ligne</option>
+        <option value="Maintenance">Maintenance</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Tableau ou État Vide -->
+  @if (service.boitiersFiltres().length > 0) {
+    <app-tableau-boitiers
+      [boitiers]="service.boitiersFiltres()"
+      (changerStatut)="service.changerStatut($event.id, $event.statut)"
+      (supprimer)="service.supprimer($event)"
+    ></app-tableau-boitiers>
+  } @else {
+    <div class="card">
+      <app-etat-vide
+        titre="Aucun boîtier trouvé"
+        message="Aucun boîtier ne correspond à vos critères de recherche."
+        texteAction="Réinitialiser les filtres"
+        (action)="service.recherche.set(''); service.filtreStatut.set('Tous')"
+      ></app-etat-vide>
+    </div>
+  }
+
+  <!-- Modale de Création -->
+  <app-modal-boitier
+    [ouvert]="modalOuvert()"
+    (fermer)="modalOuvert.set(false)"
+    (soumettre)="onCreerBoitier($event)"
+  ></app-modal-boitier>
+
+</div>

@@ -1,0 +1,127 @@
+<div class="page-content">
+
+  <!-- En-tête de la Page -->
+  <div class="page-header flex justify-between items-start">
+    <div>
+      <div class="page-header__eyebrow">Comptes & Familles</div>
+      <h1 class="page-header__title">Gestion des Comptes Parents</h1>
+      <p class="page-header__subtitle">
+        Supervision des 48 391 comptes tuteurs et accès familles connectés
+      </p>
+    </div>
+
+    <div class="flex gap-2">
+      <button class="btn btn--secondary" (click)="service.exporterCsv()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/>
+        </svg>
+        Exporter (CSV)
+      </button>
+
+      <button class="btn btn--primary" (click)="modalOuvert.set(true)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        Nouveau Compte Parent
+      </button>
+    </div>
+  </div>
+
+  <!-- Métriques KPIs -->
+  <div class="kpi-grid mb-6">
+    <app-carte-statistique
+      titre="Parents Connectés ce mois"
+      valeur="48 391"
+      sousTexte="Activité régulière détectée"
+      evolution="+12,4%"
+      couleurAccent="var(--c-brand)"
+    ></app-carte-statistique>
+
+    <app-carte-statistique
+      titre="Licences Familles"
+      valeur="61 940"
+      sousTexte="1,28 licence par famille"
+      evolution="Actives"
+      couleurAccent="var(--c-cyan)"
+    ></app-carte-statistique>
+
+    <app-carte-statistique
+      titre="Abonnements Premium"
+      valeur="34 110"
+      sousTexte="Taux de conversion de 70,5%"
+      evolution="+9,8%"
+      couleurAccent="var(--c-success)"
+    ></app-carte-statistique>
+
+    <app-carte-statistique
+      titre="Comptes Inactifs"
+      valeur="1 420"
+      sousTexte="Sans activité > 30 jours"
+      evolution="À relancer"
+      couleurAccent="var(--c-accent)"
+    ></app-carte-statistique>
+  </div>
+
+  <!-- Barre de Recherche & Filtres -->
+  <div class="table-controls mb-4">
+    <div class="table-controls__search">
+      <input
+        type="text"
+        class="input input--sm"
+        placeholder="Rechercher par nom de famille, tuteur, email, école..."
+        [ngModel]="service.recherche()"
+        (ngModelChange)="service.recherche.set($event)"
+      />
+    </div>
+
+    <div class="flex gap-2">
+      <select
+        class="select select--sm"
+        [ngModel]="service.filtreStatut()"
+        (ngModelChange)="service.filtreStatut.set($event)"
+      >
+        <option value="Tous">Tous les statuts</option>
+        <option value="Actif">Actif</option>
+        <option value="Inactif">Inactif</option>
+        <option value="Suspendu">Suspendu</option>
+      </select>
+
+      <select
+        class="select select--sm"
+        [ngModel]="service.filtreAbonnement()"
+        (ngModelChange)="service.filtreAbonnement.set($event)"
+      >
+        <option value="Tous">Toutes les formules</option>
+        <option value="Premium Annuel">Premium Annuel</option>
+        <option value="Standard Mensuel">Standard Mensuel</option>
+        <option value="Découverte">Découverte</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Tableau ou État Vide -->
+  @if (service.parentsFiltres().length > 0) {
+    <app-tableau-parents
+      [parents]="service.parentsFiltres()"
+      (basculerStatut)="service.basculerStatut($event)"
+      (supprimer)="service.supprimer($event)"
+    ></app-tableau-parents>
+  } @else {
+    <div class="card">
+      <app-etat-vide
+        titre="Aucun parent trouvé"
+        message="Aucun compte parent ne correspond à vos critères de recherche."
+        texteAction="Réinitialiser les filtres"
+        (action)="service.recherche.set(''); service.filtreStatut.set('Tous'); service.filtreAbonnement.set('Tous')"
+      ></app-etat-vide>
+    </div>
+  }
+
+  <!-- Modale de Création -->
+  <app-modal-parent
+    [ouvert]="modalOuvert()"
+    (fermer)="modalOuvert.set(false)"
+    (soumettre)="onCreerParent($event)"
+  ></app-modal-parent>
+
+</div>

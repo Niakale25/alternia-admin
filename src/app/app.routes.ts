@@ -1,73 +1,105 @@
 import { Routes } from '@angular/router';
-import { ShellComponent } from './core/layout/shell/shell.component';
+import { StructureGlobaleComponent } from '@core/disposition/structure-globale/structure-globale.component';
+import { gardienAuthentification, gardienDejaConnecte } from '@core/gardiens/authentification.gardien';
 
 export const routes: Routes = [
+  // ── Page de connexion (accessible uniquement si non connecté) ──────────────
+  {
+    path: 'connexion',
+    loadComponent: () =>
+      import('./fonctionnalites/authentification/pages/connexion/connexion-page.component').then(
+        m => m.ConnexionPageComponent
+      ),
+    canActivate: [gardienDejaConnecte],
+    title: 'Connexion — Alternia Admin'
+  },
+
+  // ── Zone protégée (dashboard) ─────────────────────────────────────────────
   {
     path: '',
-    component: ShellComponent,
+    component: StructureGlobaleComponent,
+    canActivate: [gardienAuthentification],
     children: [
       {
         path: '',
         redirectTo: 'tableau-bord',
         pathMatch: 'full'
       },
-      // Ancienne route commandement redirigée pour compatibilité
-      {
-        path: 'commandement',
-        redirectTo: 'tableau-bord',
-        pathMatch: 'full'
-      },
       {
         path: 'tableau-bord',
-        loadComponent: () => import('./features/tableau-bord/tableau-bord.component').then(m => m.TableauBordComponent),
+        loadComponent: () =>
+          import('./fonctionnalites/tableau-bord/pages/tableau-bord-page.component').then(
+            m => m.TableauBordPageComponent
+          ),
         title: 'Tableau de Bord — Alternia'
       },
       {
         path: 'etablissements',
-        loadComponent: () => import('./features/etablissements/etablissements.component').then(m => m.EtablissementsComponent),
+        loadComponent: () =>
+          import('./fonctionnalites/etablissements/pages/etablissements-page.component').then(
+            m => m.EtablissementsPageComponent
+          ),
         title: 'Établissements — Alternia'
       },
       {
         path: 'parents',
-        loadComponent: () => import('./features/parents/parents.component').then(m => m.ParentsComponent),
-        title: 'Parents — Alternia'
+        loadComponent: () =>
+          import('./fonctionnalites/parents/pages/parents-page.component').then(
+            m => m.ParentsPageComponent
+          ),
+        title: 'Comptes Parents — Alternia'
       },
       {
         path: 'boitiers',
-        loadComponent: () => import('./features/boitiers/boitiers.component').then(m => m.BoitiersComponent),
-        title: 'Boîtiers — Alternia'
+        loadComponent: () =>
+          import('./fonctionnalites/boitiers/pages/boitiers-page.component').then(
+            m => m.BoitiersPageComponent
+          ),
+        title: 'Boîtiers Alternia — Alternia'
       },
 
       {
-        path: 'moteurs-ia',
-        loadComponent: () => import('./features/moteurs-ia/moteurs-ia.component').then(m => m.MoteursIAComponent),
-        title: 'Moteurs IA Pédagogiques — Alternia'
-      },
-      {
         path: 'licences',
-        loadComponent: () => import('./features/licences/licences.component').then(m => m.LicencesComponent),
-        title: 'Licences & Abonnements — Alternia'
+        loadComponent: () =>
+          import('./fonctionnalites/licences/pages/licences-page.component').then(
+            m => m.LicencesPageComponent
+          ),
+        title: 'Licences & Clés — Alternia'
       },
       {
         path: 'abonnements',
-        loadComponent: () => import('./features/abonnements/abonnements.component').then(m => m.AbonnementsComponent),
+        loadComponent: () =>
+          import('./fonctionnalites/abonnements/pages/abonnements-page.component').then(
+            m => m.AbonnementsPageComponent
+          ),
         title: 'Abonnements Parents — Alternia'
       },
       {
         path: 'statistiques',
-        loadComponent: () => import('./features/statistiques/statistiques.component').then(m => m.StatistiquesComponent),
+        loadComponent: () =>
+          import('./fonctionnalites/statistiques/pages/statistiques-page.component').then(
+            m => m.StatistiquesPageComponent
+          ),
         title: 'Statistiques Pédagogiques — Alternia'
       },
       {
         path: 'parametres',
-        loadComponent: () => import('./features/parametres/parametres.component').then(m => m.ParametresComponent),
-        title: 'Paramètres — Alternia'
+        loadComponent: () =>
+          import('./fonctionnalites/parametres/pages/parametres-page.component').then(
+            m => m.ParametresPageComponent
+          ),
+        title: 'Paramètres Système — Alternia'
       }
     ]
   },
+
+  // ── Page 404 ─────────────────────────────────────────────────────────────
   {
     path: '**',
-    loadComponent: () => import('./shared/components/not-found/not-found.component').then(m => m.NotFoundComponent),
+    loadComponent: () =>
+      import('./partage/composants/page-introuvable/page-introuvable.component').then(
+        m => m.PageIntrouvableComponent
+      ),
     title: 'Page introuvable — Alternia'
   }
 ];

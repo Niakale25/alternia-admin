@@ -1,0 +1,6 @@
+<span class="badge badge--{{ variante }}" [class.badge--avec-point]="avecPoint">
+  @if (avecPoint) {
+    <span class="badge__point"></span>
+  }
+  <ng-content>{{ texte }}</ng-content>
+</span>

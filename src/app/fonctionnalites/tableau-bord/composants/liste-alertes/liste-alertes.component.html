@@ -1,0 +1,24 @@
+<div class="card tdb-alertes-card">
+  <div class="tdb-alertes-card__header">
+    <div class="flex items-center gap-2">
+      <span class="tdb-alertes-card__dot"></span>
+      <h3 class="tdb-alertes-card__title">Alertes Prioritaires du Réseau</h3>
+    </div>
+    <span class="badge badge--danger">{{ alertes.length }} à traiter</span>
+  </div>
+
+  <div class="tdb-alertes-card__list">
+    @for (alerte of alertes; track alerte.id) {
+      <div class="alerte-item alerte-item--{{ alerte.urgence }}">
+        <div class="alerte-item__content">
+          <div class="alerte-item__msg">{{ alerte.message }}</div>
+          <div class="alerte-item__detail">{{ alerte.detail }}</div>
+          <div class="alerte-item__date">{{ alerte.date }}</div>
+        </div>
+        <button class="btn btn--secondary btn--sm alerte-item__btn" (click)="traiterAlerte.emit(alerte)">
+          {{ alerte.actionLabel }}
+        </button>
+      </div>
+    }
+  </div>
+</div>

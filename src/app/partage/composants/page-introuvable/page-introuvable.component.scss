@@ -1,0 +1,46 @@
+.page-404 {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+
+  &__carte {
+    max-width: 480px;
+    width: 100%;
+    padding: 48px 32px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: var(--c-white);
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-xl);
+    box-shadow: var(--s-md);
+  }
+
+  &__code {
+    font-size: 72px;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    background: linear-gradient(135deg, var(--c-brand) 0%, var(--c-cyan) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 12px;
+  }
+
+  &__titre {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--c-text);
+    margin: 0 0 10px;
+  }
+
+  &__description {
+    font-size: 13px;
+    color: var(--c-secondary);
+    line-height: 1.5;
+    margin-bottom: 24px;
+  }
+}

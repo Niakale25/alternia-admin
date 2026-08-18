@@ -1,0 +1,91 @@
+.geo-banner {
+  padding: 24px;
+  background: linear-gradient(135deg, rgba(49, 73, 153, 0.04) 0%, rgba(64, 187, 204, 0.08) 100%);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-xl);
+  margin-bottom: 20px;
+
+  &__tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--c-brand);
+    margin-bottom: 8px;
+  }
+
+  &__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--c-success);
+  }
+
+  &__title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--c-text);
+    margin: 0 0 6px;
+  }
+
+  &__subtitle {
+    font-size: 13px;
+    color: var(--c-secondary);
+    max-width: 780px;
+    line-height: 1.4;
+    margin: 0 0 16px;
+  }
+
+  &__regions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+}
+
+.geo-region-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: var(--c-white);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-full);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--c-text);
+  cursor: pointer;
+  transition: all var(--t-fast);
+
+  &:hover {
+    border-color: var(--c-brand-border);
+    background: var(--c-brand-bg);
+    color: var(--c-brand);
+  }
+
+  &--active {
+    background: var(--c-brand) !important;
+    color: white !important;
+    border-color: var(--c-brand) !important;
+  }
+
+  .geo-region-count {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: var(--r-full);
+    background: var(--c-surface-alt);
+    color: var(--c-secondary);
+  }
+
+  &--active .geo-region-count {
+    background: rgba(255, 255, 255, 0.25);
+    color: white;
+  }
+}

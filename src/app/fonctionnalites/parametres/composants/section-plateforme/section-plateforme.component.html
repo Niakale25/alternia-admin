@@ -1,0 +1,42 @@
+<div class="card params-section">
+  <h2 class="params-section__title">Informations Générales de la Plateforme</h2>
+  <p class="params-section__desc">Configuration globale du tenant Alternia et informations régionales</p>
+
+  <div class="params-form">
+    <div class="form-group">
+      <label class="form-label">Nom de la Plateforme</label>
+      <input type="text" class="input" [(ngModel)]="parametres.nomPlateforme" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Pays Principal</label>
+      <input type="text" class="input" [(ngModel)]="parametres.paysPrincipal" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Email Administrateur Principal</label>
+      <input type="email" class="input" [(ngModel)]="parametres.emailAdmin" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Fuseau Horaire</label>
+      <input type="text" class="input" [(ngModel)]="parametres.fuseauHoraire" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Devise Commerciale</label>
+      <input type="text" class="input" [(ngModel)]="parametres.devise" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Taux TVA / Taxes Locales (%)</label>
+      <input type="number" class="input" [(ngModel)]="parametres.tauxTvaPourcent" />
+    </div>
+  </div>
+
+  <div class="params-section__actions">
+    <button class="btn btn--primary" (click)="onSauvegarder()">
+      Enregistrer les Modifications
+    </button>
+  </div>
+</div>
