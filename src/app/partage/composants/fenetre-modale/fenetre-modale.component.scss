@@ -1,8 +1,9 @@
 .modale-arriere-plan {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.6);
-  backdrop-filter: blur(4px);
+  background: rgba(10, 15, 29, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   z-index: 1000;
   display: flex;
   align-items: center;
@@ -14,20 +15,29 @@
 .modale {
   background: var(--c-white);
   width: 100%;
-  border-radius: var(--r-xl);
-  box-shadow: var(--s-xl);
+  border-radius: var(--r-2xl);
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.4), 0 0 0 1px var(--c-border);
   border: 1px solid var(--c-border);
   display: flex;
   flex-direction: column;
   max-height: 90vh;
-  animation: modalSlideUp 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+  animation: modalSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 
   &__en-tete {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    padding: 20px 24px;
-    border-bottom: 1px solid var(--c-border-light);
+    padding: 22px 28px;
+    border-bottom: 1px solid var(--c-border);
+    background: var(--c-white);
+    gap: 16px;
+  }
+
+  &__titre-bloc {
+    flex: 1;
+    min-width: 0;
   }
 
   &__titre {
@@ -35,46 +45,55 @@
     font-weight: 700;
     color: var(--c-text);
     margin: 0;
+    letter-spacing: -0.01em;
   }
 
   &__sous-titre {
-    font-size: 12px;
+    font-size: 12.5px;
     color: var(--c-secondary);
     margin: 4px 0 0;
+    line-height: 1.4;
   }
 
   &__fermer {
-    background: none;
-    border: none;
+    background: var(--c-surface-alt);
+    border: 1px solid var(--c-border);
     cursor: pointer;
-    color: var(--c-subtle);
-    padding: 4px;
-    border-radius: var(--r-xs);
+    color: var(--c-secondary);
+    width: 32px;
+    height: 32px;
+    border-radius: var(--r-md);
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: color 0.15s;
+    flex-shrink: 0;
+    transition: all var(--t-fast);
 
     &:hover {
+      background: var(--c-border);
       color: var(--c-text);
+      transform: scale(1.05);
     }
   }
 
   &__corps {
-    padding: 24px;
+    padding: 24px 28px;
     overflow-y: auto;
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
   }
 
   &__pied {
-    padding: 16px 24px;
-    border-top: 1px solid var(--c-border-light);
+    padding: 18px 28px;
+    border-top: 1px solid var(--c-border);
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    gap: 10px;
+    gap: 12px;
     background: var(--c-surface-alt);
-    border-radius: 0 0 var(--r-xl) var(--r-xl);
+    border-radius: 0 0 var(--r-2xl) var(--r-2xl);
   }
 }
 
@@ -86,7 +105,7 @@
 @keyframes modalSlideUp {
   from {
     opacity: 0;
-    transform: translateY(20px) scale(0.97);
+    transform: translateY(24px) scale(0.96);
   }
   to {
     opacity: 1;

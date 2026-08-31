@@ -1,66 +1,316 @@
 .tdb-chart-card {
-  padding: 20px 24px;
+  padding: 24px;
   background: var(--c-white);
   border: 1px solid var(--c-border);
-  border-radius: var(--r-lg);
+  border-radius: var(--r-xl);
   box-shadow: var(--s-xs);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+  transition: box-shadow var(--t-base), border-color var(--t-base);
 
+  &:hover {
+    box-shadow: var(--s-md);
+  }
+
+  // ── HEADER ──────────────────────────────────────────────────
   &__header {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap: 12px;
-    margin-bottom: 24px;
+    gap: 16px;
   }
 
   &__title {
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 700;
     color: var(--c-text);
     margin: 0;
+    letter-spacing: -0.01em;
   }
 
   &__subtitle {
     font-size: 12px;
     color: var(--c-secondary);
-    margin: 2px 0 0;
+    margin: 4px 0 0;
   }
 
-  &__legendes {
+  .badge--glow {
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.25);
+    animation: pulse-dot 3s infinite ease-in-out;
+  }
+
+  &__controls {
     display: flex;
     align-items: center;
-    gap: 14px;
-    font-size: 11.5px;
-    color: var(--c-secondary);
+    gap: 10px;
+    flex-wrap: wrap;
   }
 
-  .legende-item {
+  // Pill Filter Group
+  .pill-group {
+    display: inline-flex;
+    align-items: center;
+    background: var(--c-border-light);
+    padding: 3px;
+    border-radius: var(--r-full);
+    gap: 2px;
+  }
+
+  .pill-btn {
+    border: none;
+    background: transparent;
+    padding: 5px 12px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--c-secondary);
+    border-radius: var(--r-full);
+    cursor: pointer;
     display: inline-flex;
     align-items: center;
     gap: 6px;
+    transition: all var(--t-fast);
+
+    &:hover {
+      color: var(--c-text);
+    }
+
+    &--active {
+      background: var(--c-white);
+      color: var(--c-text);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
 
     .dot {
-      width: 8px;
-      height: 8px;
+      width: 6px;
+      height: 6px;
       border-radius: 50%;
+
+      &--brand   { background: var(--c-brand); }
+      &--cyan    { background: var(--c-cyan); }
+      &--success { background: var(--c-success); }
     }
   }
 
-  &__visual {
-    height: 190px;
-    display: flex;
-    align-items: flex-end;
-    padding-top: 10px;
+  // Mode Toggle (Spline vs Bars)
+  .mode-toggle {
+    display: inline-flex;
+    align-items: center;
+    background: var(--c-border-light);
+    padding: 3px;
+    border-radius: var(--r-md);
+    gap: 2px;
   }
 
+  .mode-btn {
+    border: none;
+    background: transparent;
+    padding: 5px 7px;
+    border-radius: var(--r-sm);
+    color: var(--c-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--t-fast);
+
+    &:hover {
+      color: var(--c-text);
+    }
+
+    &--active {
+      background: var(--c-white);
+      color: var(--c-brand);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+    }
+  }
+
+  // ── ZONE DU GRAPHIQUE ───────────────────────────────────────
+  &__visual {
+    position: relative;
+    width: 100%;
+    min-height: 230px;
+    display: flex;
+    align-items: center;
+  }
+
+  .chart-svg-container {
+    position: relative;
+    width: 100%;
+    height: 230px;
+  }
+
+  .chart-svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  // Lignes de repère
+  .grid-line {
+    stroke: var(--c-border-light);
+    stroke-width: 1;
+    stroke-dasharray: 4 4;
+
+    &--base {
+      stroke: var(--c-border);
+      stroke-dasharray: none;
+    }
+  }
+
+  .grid-label {
+    font-size: 9.5px;
+    font-weight: 600;
+    fill: var(--c-subtle);
+    text-anchor: end;
+  }
+
+  .chart-crosshair {
+    stroke: var(--c-secondary);
+    stroke-width: 1;
+    stroke-dasharray: 3 3;
+    opacity: 0.6;
+    pointer-events: none;
+    transition: all var(--t-fast);
+  }
+
+  .chart-curve {
+    transition: stroke-width var(--t-fast);
+    cursor: pointer;
+  }
+
+  .chart-point {
+    transition: r var(--t-fast), transform var(--t-fast);
+    cursor: pointer;
+  }
+
+  .axis-month-label {
+    font-size: 11px;
+    font-weight: 600;
+    fill: var(--c-secondary);
+    transition: fill var(--t-fast), font-weight var(--t-fast);
+
+    &--active {
+      fill: var(--c-brand);
+      font-weight: 700;
+    }
+  }
+
+  .chart-hover-zone {
+    cursor: pointer;
+  }
+
+  // ── FLOATING TOOLTIP GLASSMORPHISM ──────────────────────────
+  .chart-floating-tooltip {
+    position: absolute;
+    top: -5px;
+    transform: translateX(-50%);
+    background: rgba(15, 23, 42, 0.92);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--r-lg);
+    padding: 10px 14px;
+    color: #FFFFFF;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 0 1px 1px rgba(255, 255, 255, 0.1);
+    pointer-events: none;
+    z-index: 50;
+    min-width: 190px;
+    transition: left var(--t-fast) cubic-bezier(0.16, 1, 0.3, 1);
+    animation: fadeIn var(--t-fast) ease;
+
+    .tooltip-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      padding-bottom: 6px;
+      margin-bottom: 8px;
+    }
+
+    .tooltip-month {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #FFFFFF;
+      letter-spacing: 0.02em;
+    }
+
+    .tooltip-badge {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      background: rgba(255, 255, 255, 0.15);
+      color: #E2E8F0;
+      padding: 1px 6px;
+      border-radius: var(--r-full);
+      font-weight: 700;
+    }
+
+    .tooltip-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .tooltip-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 11.5px;
+    }
+
+    .tooltip-metric {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #CBD5E1;
+    }
+
+    .tooltip-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      box-shadow: 0 0 6px currentColor;
+    }
+
+    .tooltip-name {
+      font-weight: 500;
+    }
+
+    .tooltip-value-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tooltip-val {
+      font-weight: 700;
+      font-family: var(--font-tight);
+      color: #FFFFFF;
+    }
+
+    .tooltip-delta {
+      font-size: 10px;
+      font-weight: 600;
+      color: #34D399;
+      background: rgba(52, 211, 153, 0.15);
+      padding: 1px 5px;
+      border-radius: var(--r-sm);
+    }
+  }
+
+  // ── MODE BARRES CAPSULE ──────────────────────────────────────
   .chart-bars-container {
     display: flex;
     align-items: flex-end;
     justify-content: space-around;
     width: 100%;
-    height: 100%;
-    border-bottom: 1px solid var(--c-border-light);
+    height: 210px;
+    border-bottom: 1px solid var(--c-border);
+    padding-bottom: 10px;
   }
 
   .chart-bar-col {
@@ -69,38 +319,57 @@
     align-items: center;
     height: 100%;
     justify-content: flex-end;
-    gap: 8px;
+    gap: 10px;
     flex: 1;
+    cursor: pointer;
+    border-radius: var(--r-md);
+    padding: 6px 0;
+    transition: background var(--t-fast);
+
+    &:hover,
+    &--active {
+      background: var(--c-surface-alt);
+    }
   }
 
   .chart-bars-group {
     display: flex;
     align-items: flex-end;
-    gap: 4px;
-    height: 140px;
-    width: 38px;
+    gap: 5px;
+    height: 160px;
+    width: 44px;
   }
 
   .chart-bar {
     flex: 1;
-    border-radius: var(--r-xs) var(--r-xs) 0 0;
-    transition: height var(--t-slow) cubic-bezier(0.16, 1, 0.3, 1), opacity var(--t-fast);
+    border-radius: var(--r-full);
+    transition: height var(--t-slow) cubic-bezier(0.16, 1, 0.3, 1), transform var(--t-fast), opacity var(--t-fast);
     cursor: pointer;
 
     &:hover {
-      opacity: 0.85;
-      transform: scaleY(1.02);
+      opacity: 0.9;
+      transform: scaleY(1.03);
       transform-origin: bottom;
     }
 
-    &--brand { background: var(--c-brand); }
-    &--cyan { background: var(--c-cyan); }
-    &--success { background: var(--c-success); }
+    &--brand {
+      background: linear-gradient(180deg, #4A65C2 0%, #314999 100%);
+      box-shadow: 0 3px 8px rgba(49, 73, 153, 0.3);
+    }
+    &--cyan {
+      background: linear-gradient(180deg, #62D2E0 0%, #40BBCC 100%);
+      box-shadow: 0 3px 8px rgba(64, 187, 204, 0.3);
+    }
+    &--success {
+      background: linear-gradient(180deg, #34D399 0%, #10B981 100%);
+      box-shadow: 0 3px 8px rgba(16, 185, 129, 0.3);
+    }
   }
 
   .chart-bar-label {
     font-size: 11px;
     font-weight: 600;
-    color: var(--c-subtle);
+    color: var(--c-secondary);
   }
 }
+

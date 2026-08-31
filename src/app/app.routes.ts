@@ -3,6 +3,13 @@ import { StructureGlobaleComponent } from '@core/disposition/structure-globale/s
 import { gardienAuthentification, gardienDejaConnecte } from '@core/gardiens/authentification.gardien';
 
 export const routes: Routes = [
+  // ── Redirection initiale par défaut vers la page de connexion ──────────────
+  {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'connexion'
+  },
+
   // ── Page de connexion (accessible uniquement si non connecté) ──────────────
   {
     path: 'connexion',
@@ -14,17 +21,12 @@ export const routes: Routes = [
     title: 'Connexion — Alternia Admin'
   },
 
-  // ── Zone protégée (dashboard) ─────────────────────────────────────────────
+  // ── Zone protégée (dashboard et gestion) ──────────────────────────────────
   {
     path: '',
     component: StructureGlobaleComponent,
     canActivate: [gardienAuthentification],
     children: [
-      {
-        path: '',
-        redirectTo: 'tableau-bord',
-        pathMatch: 'full'
-      },
       {
         path: 'tableau-bord',
         loadComponent: () =>
@@ -57,7 +59,6 @@ export const routes: Routes = [
           ),
         title: 'Boîtiers Alternia — Alternia'
       },
-
       {
         path: 'licences',
         loadComponent: () =>

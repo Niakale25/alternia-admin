@@ -1,40 +1,357 @@
 <div class="card tdb-chart-card">
+  <!-- En-tête du Graphique Moderne -->
   <div class="tdb-chart-card__header">
-    <div>
-      <h3 class="tdb-chart-card__title">Croissance de l'Écosystème Alternia</h3>
-      <p class="tdb-chart-card__subtitle">Progression des centres scolaires et tuteurs connectés — 6 derniers mois</p>
+    <div class="tdb-chart-card__header-main">
+      <div class="flex items-center gap-2">
+        <h3 class="tdb-chart-card__title">Croissance de l'Écosystème Alternia</h3>
+        <span class="badge badge--success badge--glow">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+            <polyline points="17 6 23 6 23 12"></polyline>
+          </svg>
+          {{ statsGlobales().croissanceEtab }} Global
+        </span>
+      </div>
+      <p class="tdb-chart-card__subtitle">Progression multi-indicateurs des centres scolaires, parents et boîtiers — 6 derniers mois</p>
     </div>
-    <div class="tdb-chart-card__legendes">
-      <span class="legende-item"><span class="dot" style="background: var(--c-brand)"></span> Établissements</span>
-      <span class="legende-item"><span class="dot" style="background: var(--c-cyan)"></span> Parents (x50)</span>
-      <span class="legende-item"><span class="dot" style="background: var(--c-success)"></span> Boîtiers</span>
+
+    <div class="tdb-chart-card__controls">
+      <!-- Filtres Indicateurs (Tabs pills) -->
+      <div class="pill-group">
+        <button
+          type="button"
+          class="pill-btn"
+          [class.pill-btn--active]="filtreActif() === 'tous'"
+          (click)="changerFiltre('tous')"
+        >
+          Tous
+        </button>
+        <button
+          type="button"
+          class="pill-btn pill-btn--brand"
+          [class.pill-btn--active]="filtreActif() === 'etablissements'"
+          (click)="changerFiltre('etablissements')"
+        >
+          <span class="dot dot--brand"></span> Établissements
+        </button>
+        <button
+          type="button"
+          class="pill-btn pill-btn--cyan"
+          [class.pill-btn--active]="filtreActif() === 'parents'"
+          (click)="changerFiltre('parents')"
+        >
+          <span class="dot dot--cyan"></span> Parents
+        </button>
+        <button
+          type="button"
+          class="pill-btn pill-btn--success"
+          [class.pill-btn--active]="filtreActif() === 'boitiers'"
+          (click)="changerFiltre('boitiers')"
+        >
+          <span class="dot dot--success"></span> Boîtiers
+        </button>
+      </div>
+
+      <!-- Sélecteur de style (Spline / Barres) -->
+      <div class="mode-toggle">
+        <button
+          type="button"
+          class="mode-btn"
+          [class.mode-btn--active]="modeVisualisation() === 'spline'"
+          (click)="changerMode('spline')"
+          title="Vue Courbe Spline Moderne"
+        >
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 17c3-7 6-10 9-4s6 7 9-3"/>
+          </svg>
+        </button>
+        <button
+          type="button"
+          class="mode-btn"
+          [class.mode-btn--active]="modeVisualisation() === 'barres'"
+          (click)="changerMode('barres')"
+          title="Vue Barres Dynamiques"
+        >
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="20" x2="18" y2="10"/>
+            <line x1="12" y1="20" x2="12" y2="4"/>
+            <line x1="6" y1="20" x2="6" y2="14"/>
+          </svg>
+        </button>
+      </div>
     </div>
   </div>
 
+  <!-- Zone Visuelle du Graphique -->
   <div class="tdb-chart-card__visual">
-    <div class="chart-bars-container">
-      @for (point of points; track point.mois) {
-        <div class="chart-bar-col">
-          <div class="chart-bars-group">
-            <div
-              class="chart-bar chart-bar--brand"
-              [style.height.%]="(point.etablissements / 1500) * 100"
-              [attr.data-tooltip]="point.etablissements + ' Établissements'"
-            ></div>
-            <div
-              class="chart-bar chart-bar--cyan"
-              [style.height.%]="(point.parents / 50000) * 100"
-              [attr.data-tooltip]="point.parents + ' Parents'"
-            ></div>
-            <div
-              class="chart-bar chart-bar--success"
-              [style.height.%]="(point.boitiers / 1500) * 100"
-              [attr.data-tooltip]="point.boitiers + ' Boîtiers'"
-            ></div>
+    @if (modeVisualisation() === 'spline') {
+      <!-- Graphique SVG Interactif avec Courbes Splines et Gradients -->
+      <div class="chart-svg-container">
+        <svg
+          class="chart-svg"
+          [attr.viewBox]="'0 0 ' + svgWidth + ' ' + svgHeight"
+          preserveAspectRatio="none"
+        >
+          <defs>
+            <!-- Gradients d'aire -->
+            <linearGradient id="gradientEtab" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#314999" stop-opacity="0.38"/>
+              <stop offset="60%" stop-color="#314999" stop-opacity="0.08"/>
+              <stop offset="100%" stop-color="#314999" stop-opacity="0.00"/>
+            </linearGradient>
+
+            <linearGradient id="gradientParents" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#40BBCC" stop-opacity="0.35"/>
+              <stop offset="60%" stop-color="#40BBCC" stop-opacity="0.08"/>
+              <stop offset="100%" stop-color="#40BBCC" stop-opacity="0.00"/>
+            </linearGradient>
+
+            <linearGradient id="gradientBoitiers" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#10B981" stop-opacity="0.35"/>
+              <stop offset="60%" stop-color="#10B981" stop-opacity="0.08"/>
+              <stop offset="100%" stop-color="#10B981" stop-opacity="0.00"/>
+            </linearGradient>
+
+            <!-- Filtre d'ombre douce / glow pour les lignes -->
+            <filter id="glowEtab" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#314999" flood-opacity="0.3"/>
+            </filter>
+            <filter id="glowParents" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#40BBCC" flood-opacity="0.3"/>
+            </filter>
+            <filter id="glowBoitiers" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#10B981" flood-opacity="0.3"/>
+            </filter>
+          </defs>
+
+          <!-- Lignes de repère horizontales (Grid) -->
+          <g class="chart-grid-lines">
+            <line [attr.x1]="padLeft" [attr.y1]="padTop" [attr.x2]="svgWidth - padRight" [attr.y2]="padTop" class="grid-line"/>
+            <text [attr.x]="padLeft - 8" [attr.y]="padTop + 4" class="grid-label">1 500</text>
+
+            <line [attr.x1]="padLeft" [attr.y1]="padTop + (baselineY - padTop) * 0.33" [attr.x2]="svgWidth - padRight" [attr.y2]="padTop + (baselineY - padTop) * 0.33" class="grid-line"/>
+            <text [attr.x]="padLeft - 8" [attr.y]="padTop + (baselineY - padTop) * 0.33 + 4" class="grid-label">1 000</text>
+
+            <line [attr.x1]="padLeft" [attr.y1]="padTop + (baselineY - padTop) * 0.66" [attr.x2]="svgWidth - padRight" [attr.y2]="padTop + (baselineY - padTop) * 0.66" class="grid-line"/>
+            <text [attr.x]="padLeft - 8" [attr.y]="padTop + (baselineY - padTop) * 0.66 + 4" class="grid-label">500</text>
+
+            <line [attr.x1]="padLeft" [attr.y1]="baselineY" [attr.x2]="svgWidth - padRight" [attr.y2]="baselineY" class="grid-line grid-line--base"/>
+            <text [attr.x]="padLeft - 8" [attr.y]="baselineY + 4" class="grid-label">0</text>
+          </g>
+
+          <!-- Ligne de curseur / guide vertical au survol -->
+          @if (pointActif(); as pt) {
+            <line
+              [attr.x1]="pt.x"
+              [attr.y1]="padTop"
+              [attr.x2]="pt.x"
+              [attr.y2]="baselineY"
+              class="chart-crosshair"
+            />
+          }
+
+          <!-- Aires dégradées -->
+          @if (filtreActif() === 'tous' || filtreActif() === 'parents') {
+            <path [attr.d]="areaParents()" fill="url(#gradientParents)" class="chart-area animate-fade-in" />
+          }
+          @if (filtreActif() === 'tous' || filtreActif() === 'boitiers') {
+            <path [attr.d]="areaBoitiers()" fill="url(#gradientBoitiers)" class="chart-area animate-fade-in" />
+          }
+          @if (filtreActif() === 'tous' || filtreActif() === 'etablissements') {
+            <path [attr.d]="areaEtab()" fill="url(#gradientEtab)" class="chart-area animate-fade-in" />
+          }
+
+          <!-- Courbes principales (Strokes lumineuses) -->
+          @if (filtreActif() === 'tous' || filtreActif() === 'parents') {
+            <path
+              [attr.d]="pathParents()"
+              fill="none"
+              stroke="#40BBCC"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              filter="url(#glowParents)"
+              class="chart-curve chart-curve--cyan"
+            />
+          }
+
+          @if (filtreActif() === 'tous' || filtreActif() === 'boitiers') {
+            <path
+              [attr.d]="pathBoitiers()"
+              fill="none"
+              stroke="#10B981"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              filter="url(#glowBoitiers)"
+              class="chart-curve chart-curve--success"
+            />
+          }
+
+          @if (filtreActif() === 'tous' || filtreActif() === 'etablissements') {
+            <path
+              [attr.d]="pathEtab()"
+              fill="none"
+              stroke="#314999"
+              stroke-width="3.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              filter="url(#glowEtab)"
+              class="chart-curve chart-curve--brand"
+            />
+          }
+
+          <!-- Points interactifs sur les courbes -->
+          @for (pt of coords().etab; track pt.mois; let i = $index) {
+            @if (filtreActif() === 'tous' || filtreActif() === 'etablissements') {
+              <circle
+                [attr.cx]="pt.x"
+                [attr.cy]="pt.y"
+                [attr.r]="pointActif()?.index === i ? 6 : 3.5"
+                fill="#314999"
+                stroke="var(--c-white)"
+                stroke-width="2.5"
+                class="chart-point"
+              />
+            }
+            @if (filtreActif() === 'tous' || filtreActif() === 'parents') {
+              <circle
+                [attr.cx]="coords().parents[i].x"
+                [attr.cy]="coords().parents[i].y"
+                [attr.r]="pointActif()?.index === i ? 6 : 3.5"
+                fill="#40BBCC"
+                stroke="var(--c-white)"
+                stroke-width="2.5"
+                class="chart-point"
+              />
+            }
+            @if (filtreActif() === 'tous' || filtreActif() === 'boitiers') {
+              <circle
+                [attr.cx]="coords().boitiers[i].x"
+                [attr.cy]="coords().boitiers[i].y"
+                [attr.r]="pointActif()?.index === i ? 6 : 3.5"
+                fill="#10B981"
+                stroke="var(--c-white)"
+                stroke-width="2.5"
+                class="chart-point"
+              />
+            }
+
+            <!-- Libellés des mois en bas de l'axe X -->
+            <text
+              [attr.x]="pt.x"
+              [attr.y]="svgHeight - 10"
+              class="axis-month-label"
+              [class.axis-month-label--active]="pointActif()?.index === i"
+              text-anchor="middle"
+            >
+              {{ pt.mois }}
+            </text>
+
+            <!-- Zones interactives invisibles pour capturer le survol de chaque mois -->
+            <rect
+              [attr.x]="pt.x - 40"
+              [attr.y]="padTop"
+              width="80"
+              [attr.height]="svgHeight - padTop"
+              fill="transparent"
+              class="chart-hover-zone"
+              (mouseenter)="survolerIndex(i)"
+            />
+          }
+        </svg>
+
+        <!-- Tooltip Flottant Moderne en Verre (Glassmorphism) -->
+        @if (pointActif(); as pt) {
+          <div
+            class="chart-floating-tooltip"
+            [style.left.%]="(pt.x / svgWidth) * 100"
+          >
+            <div class="tooltip-header">
+              <span class="tooltip-month">{{ pt.data.mois }} 2026</span>
+              <span class="tooltip-badge">Activité</span>
+            </div>
+
+            <div class="tooltip-rows">
+              @if (filtreActif() === 'tous' || filtreActif() === 'etablissements') {
+                <div class="tooltip-row">
+                  <div class="tooltip-metric">
+                    <span class="tooltip-dot" style="background: #314999"></span>
+                    <span class="tooltip-name">Établissements</span>
+                  </div>
+                  <div class="tooltip-value-group">
+                    <span class="tooltip-val">{{ pt.data.etablissements | number }}</span>
+                    <span class="tooltip-delta">{{ pt.evolEtab }}</span>
+                  </div>
+                </div>
+              }
+
+              @if (filtreActif() === 'tous' || filtreActif() === 'parents') {
+                <div class="tooltip-row">
+                  <div class="tooltip-metric">
+                    <span class="tooltip-dot" style="background: #40BBCC"></span>
+                    <span class="tooltip-name">Parents</span>
+                  </div>
+                  <div class="tooltip-value-group">
+                    <span class="tooltip-val">{{ pt.data.parents | number }}</span>
+                    <span class="tooltip-delta">{{ pt.evolParents }}</span>
+                  </div>
+                </div>
+              }
+
+              @if (filtreActif() === 'tous' || filtreActif() === 'boitiers') {
+                <div class="tooltip-row">
+                  <div class="tooltip-metric">
+                    <span class="tooltip-dot" style="background: #10B981"></span>
+                    <span class="tooltip-name">Boîtiers</span>
+                  </div>
+                  <div class="tooltip-value-group">
+                    <span class="tooltip-val">{{ pt.data.boitiers | number }}</span>
+                    <span class="tooltip-delta">{{ pt.evolBoitiers }}</span>
+                  </div>
+                </div>
+              }
+            </div>
           </div>
-          <span class="chart-bar-label">{{ point.mois }}</span>
-        </div>
-      }
-    </div>
+        }
+      </div>
+    } @else {
+      <!-- Mode Barres Modernes 3D Capsule -->
+      <div class="chart-bars-container">
+        @for (point of points; track point.mois; let i = $index) {
+          <div
+            class="chart-bar-col"
+            [class.chart-bar-col--active]="pointActif()?.index === i"
+            (mouseenter)="survolerIndex(i)"
+          >
+            <div class="chart-bars-group">
+              @if (filtreActif() === 'tous' || filtreActif() === 'etablissements') {
+                <div
+                  class="chart-bar chart-bar--brand"
+                  [style.height.%]="(point.etablissements / maxEtab) * 100"
+                  [attr.data-tooltip]="point.etablissements + ' Établissements'"
+                ></div>
+              }
+              @if (filtreActif() === 'tous' || filtreActif() === 'parents') {
+                <div
+                  class="chart-bar chart-bar--cyan"
+                  [style.height.%]="(point.parents / maxParents) * 100"
+                  [attr.data-tooltip]="point.parents + ' Parents'"
+                ></div>
+              }
+              @if (filtreActif() === 'tous' || filtreActif() === 'boitiers') {
+                <div
+                  class="chart-bar chart-bar--success"
+                  [style.height.%]="(point.boitiers / maxBoitiers) * 100"
+                  [attr.data-tooltip]="point.boitiers + ' Boîtiers'"
+                ></div>
+              }
+            </div>
+            <span class="chart-bar-label">{{ point.mois }}</span>
+          </div>
+        }
+      </div>
+    }
   </div>
 </div>
+

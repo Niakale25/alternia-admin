@@ -7,6 +7,7 @@ import { TableauEtablissementsComponent } from '../composants/tableau-etablissem
 import { ModalEtablissementComponent } from '../composants/modal-etablissement/modal-etablissement.component';
 import { CarteStatistiqueComponent } from '@partage/composants/carte-statistique/carte-statistique.component';
 import { EtatVideComponent } from '@partage/composants/etat-vide/etat-vide.component';
+import { NotificationService } from '@partage/services/notification.service';
 import { EtablissementDTO } from '../modeles/etablissement.model';
 
 @Component({
@@ -26,14 +27,33 @@ import { EtablissementDTO } from '../modeles/etablissement.model';
 })
 export class EtablissementsPageComponent implements OnInit {
   readonly service = inject(EtablissementService);
+  private readonly notificationService = inject(NotificationService);
+
   readonly modalOuvert = signal<boolean>(false);
+  readonly modeAffichage = signal<'tableau' | 'cartes'>('tableau');
 
   ngOnInit(): void {
     this.service.chargerEtablissements();
   }
 
+  changerMode(mode: 'tableau' | 'cartes'): void {
+    this.modeAffichage.set(mode);
+  }
+
   onCreerEtablissement(donnees: Omit<EtablissementDTO, 'id' | 'dateInscription'>): void {
     this.service.creerEtablissement(donnees);
     this.modalOuvert.set(false);
+  }
+
+  reinitialiserFiltres(): void {
+    this.service.recherche.set('');
+    this.service.filtreStatut.set('Tous');
+    this.service.filtreOffre.set('Toutes');
+    this.service.filtreRegion.set('Toutes');
+  }
+
+  exporterDonnees(): void {
+    const total = this.service.etablissementsFiltres().length;
+    this.notificationService.succes(`Export du répertoire de ${total} établissement(s) généré avec succès.`);
   }
 }

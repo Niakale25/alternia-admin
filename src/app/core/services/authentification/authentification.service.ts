@@ -31,13 +31,19 @@ export class AuthentificationService {
   constructor(
     private readonly http: HttpClient,
     private readonly router: Router
-  ) {}
+  ) {
+    // Nettoyer d'anciens résidus de localStorage pour forcer l'authentification par session
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem(CLE_JETON);
+      localStorage.removeItem(CLE_ADMIN);
+    }
+  }
 
   seConnecter(identifiants: IdentifiantsConnexion) {
     return this.http.post<ReponseConnexion>('/api/v1/auth/login', identifiants).pipe(
       tap(reponse => {
-        localStorage.setItem(CLE_JETON, reponse.jeton);
-        localStorage.setItem(CLE_ADMIN, JSON.stringify(reponse.admin));
+        sessionStorage.setItem(CLE_JETON, reponse.jeton);
+        sessionStorage.setItem(CLE_ADMIN, JSON.stringify(reponse.admin));
         this._estConnecte.set(true);
         this._adminInfo.set(reponse.admin);
       }),
@@ -46,25 +52,29 @@ export class AuthentificationService {
   }
 
   seDeconnecter(): void {
-    localStorage.removeItem(CLE_JETON);
-    localStorage.removeItem(CLE_ADMIN);
+    if (typeof window !== 'undefined') {
+      sessionStorage.removeItem(CLE_JETON);
+      sessionStorage.removeItem(CLE_ADMIN);
+      localStorage.removeItem(CLE_JETON);
+      localStorage.removeItem(CLE_ADMIN);
+    }
     this._estConnecte.set(false);
     this._adminInfo.set(null);
     this.router.navigate(['/connexion']);
   }
 
   obtenirJeton(): string | null {
-    return typeof window !== 'undefined' ? localStorage.getItem(CLE_JETON) : null;
+    return typeof window !== 'undefined' ? sessionStorage.getItem(CLE_JETON) : null;
   }
 
   private _verifierJeton(): boolean {
     if (typeof window === 'undefined') return false;
-    return !!localStorage.getItem(CLE_JETON);
+    return !!sessionStorage.getItem(CLE_JETON);
   }
 
   private _chargerAdmin(): ReponseConnexion['admin'] | null {
     if (typeof window === 'undefined') return null;
-    const donnees = localStorage.getItem(CLE_ADMIN);
+    const donnees = sessionStorage.getItem(CLE_ADMIN);
     return donnees ? JSON.parse(donnees) : null;
   }
 }

@@ -1,18 +1,37 @@
-<div class="page-content">
+<div class="page-content etab-page">
 
   <!-- En-tête de la Page -->
   <div class="page-header flex justify-between items-start">
     <div>
       <div class="page-header__eyebrow">Réseau National Alternia</div>
-      <h1 class="page-header__title">Établissements Scolaires au Mali</h1>
+      <div class="flex items-center gap-3">
+        <h1 class="page-header__title">Établissements Scolaires au Mali</h1>
+        <span class="badge badge--brand">{{ service.etablissements().length }} Partenaires</span>
+      </div>
       <p class="page-header__subtitle">
-        Supervision et administration des 1 247 centres d'enseignement et complexes partenaires
+        Supervision, attribution des boîtiers et administration des licences pour tous les centres d'enseignement partenaires.
       </p>
     </div>
 
-    <div class="flex gap-2">
-      <button class="btn btn--primary" (click)="modalOuvert.set(true)">
+    <div class="flex items-center gap-2 flex-wrap">
+      <button
+        type="button"
+        class="btn btn--secondary btn--sm"
+        (click)="exporterDonnees()"
+        title="Exporter la liste au format CSV"
+      >
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/>
+        </svg>
+        Exporter CSV
+      </button>
+
+      <button
+        type="button"
+        class="btn btn--primary btn--sm"
+        (click)="modalOuvert.set(true)"
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
         </svg>
         Ajouter un Établissement
@@ -27,7 +46,7 @@
     (selectionnerRegion)="service.filtreRegion.set($event)"
   ></app-banniere-regionale>
 
-  <!-- Métriques KPIs -->
+  <!-- Métriques KPIs Clés -->
   <div class="kpi-grid mb-6">
     <app-carte-statistique
       titre="Établissements Actifs"
@@ -41,7 +60,7 @@
       titre="En Attente de Validation"
       [valeur]="service.totalEnAttente()"
       sousTexte="Dossiers scolaires en cours d'audit"
-      evolution="Prioritaire"
+      evolution="Audit requis"
       couleurAccent="var(--c-accent)"
     ></app-carte-statistique>
 
@@ -62,62 +81,148 @@
     ></app-carte-statistique>
   </div>
 
-  <!-- Barre de Recherche & Filtres -->
-  <div class="table-controls mb-4">
-    <div class="table-controls__search">
-      <input
-        type="text"
-        class="input input--sm"
-        placeholder="Rechercher par nom, ville, email ou ID..."
-        [ngModel]="service.recherche()"
-        (ngModelChange)="service.recherche.set($event)"
-      />
+  <!-- Barre de Recherche, Filtres Avancés & Bascule de Vue -->
+  <div class="card table-controls-card mb-4">
+    <div class="table-controls-bar">
+      <!-- Champ Recherche enrichi -->
+      <div class="search-input-wrap">
+        <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Rechercher par nom, ville, email ou identifiant..."
+          [ngModel]="service.recherche()"
+          (ngModelChange)="service.recherche.set($event)"
+        />
+        @if (service.recherche()) {
+          <button
+            type="button"
+            class="clear-search-btn"
+            (click)="service.recherche.set('')"
+            title="Effacer la recherche"
+          >
+            ✕
+          </button>
+        }
+      </div>
+
+      <!-- Sélecteurs et Filtres -->
+      <div class="filters-cluster">
+        <div class="filter-item">
+          <label class="filter-label">Statut</label>
+          <select
+            class="filter-select"
+            [ngModel]="service.filtreStatut()"
+            (ngModelChange)="service.filtreStatut.set($event)"
+          >
+            <option value="Tous">Tous les statuts</option>
+            <option value="Actif">Actif</option>
+            <option value="En attente">En attente</option>
+            <option value="Suspendu">Suspendu</option>
+          </select>
+        </div>
+
+        <div class="filter-item">
+          <label class="filter-label">Offre</label>
+          <select
+            class="filter-select"
+            [ngModel]="service.filtreOffre()"
+            (ngModelChange)="service.filtreOffre.set($event)"
+          >
+            <option value="Toutes">Toutes les offres</option>
+            <option value="Standard">Standard</option>
+            <option value="Institutionnel">Institutionnel</option>
+            <option value="Enterprise">Enterprise</option>
+          </select>
+        </div>
+
+        <!-- Bascule Vue Tableau / Vue Cartes Grille -->
+        <div class="view-switcher">
+          <button
+            type="button"
+            class="view-btn"
+            [class.view-btn--active]="modeAffichage() === 'tableau'"
+            (click)="changerMode('tableau')"
+            title="Affichage en Tableau"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
+          </button>
+          <button
+            type="button"
+            class="view-btn"
+            [class.view-btn--active]="modeAffichage() === 'cartes'"
+            (click)="changerMode('cartes')"
+            title="Affichage en Grille de Cartes"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+            </svg>
+          </button>
+        </div>
+      </div>
     </div>
 
-    <div class="flex gap-2">
-      <select
-        class="select select--sm"
-        [ngModel]="service.filtreStatut()"
-        (ngModelChange)="service.filtreStatut.set($event)"
-      >
-        <option value="Tous">Tous les statuts</option>
-        <option value="Actif">Actif</option>
-        <option value="En attente">En attente</option>
-        <option value="Suspendu">Suspendu</option>
-      </select>
+    <!-- Barre d'état des filtres & compteur de résultats -->
+    <div class="filters-meta">
+      <div class="results-count">
+        <span class="count-bold">{{ service.etablissementsFiltres().length }}</span>
+        <span>établissement(s) trouvé(s)</span>
+        @if (service.filtreRegion() !== 'Toutes') {
+          <span class="active-filter-badge">
+            Région : {{ service.filtreRegion() }}
+            <button class="remove-chip" (click)="service.filtreRegion.set('Toutes')">✕</button>
+          </span>
+        }
+        @if (service.filtreStatut() !== 'Tous') {
+          <span class="active-filter-badge">
+            Statut : {{ service.filtreStatut() }}
+            <button class="remove-chip" (click)="service.filtreStatut.set('Tous')">✕</button>
+          </span>
+        }
+        @if (service.filtreOffre() !== 'Toutes') {
+          <span class="active-filter-badge">
+            Offre : {{ service.filtreOffre() }}
+            <button class="remove-chip" (click)="service.filtreOffre.set('Toutes')">✕</button>
+          </span>
+        }
+      </div>
 
-      <select
-        class="select select--sm"
-        [ngModel]="service.filtreOffre()"
-        (ngModelChange)="service.filtreOffre.set($event)"
-      >
-        <option value="Toutes">Toutes les offres</option>
-        <option value="Standard">Standard</option>
-        <option value="Institutionnel">Institutionnel</option>
-        <option value="Enterprise">Enterprise</option>
-      </select>
+      @if (service.recherche() || service.filtreStatut() !== 'Tous' || service.filtreOffre() !== 'Toutes' || service.filtreRegion() !== 'Toutes') {
+        <button
+          type="button"
+          class="reset-filters-btn"
+          (click)="reinitialiserFiltres()"
+        >
+          Réinitialiser tous les filtres
+        </button>
+      }
     </div>
   </div>
 
-  <!-- Tableau ou État Vide -->
+  <!-- Tableau ou Cartes ou État Vide -->
   @if (service.etablissementsFiltres().length > 0) {
     <app-tableau-etablissements
       [etablissements]="service.etablissementsFiltres()"
+      [modeAffichage]="modeAffichage()"
       (basculerStatut)="service.basculerStatut($event)"
       (supprimer)="service.supprimer($event)"
     ></app-tableau-etablissements>
   } @else {
-    <div class="card">
+    <div class="card empty-container">
       <app-etat-vide
         titre="Aucun établissement trouvé"
-        message="Aucun établissement ne correspond à vos filtres actuels."
+        message="Aucun centre d'enseignement ne correspond aux critères de recherche ou filtres appliqués."
         texteAction="Réinitialiser les filtres"
-        (action)="service.recherche.set(''); service.filtreStatut.set('Tous'); service.filtreOffre.set('Toutes'); service.filtreRegion.set('Toutes')"
+        (action)="reinitialiserFiltres()"
       ></app-etat-vide>
     </div>
   }
 
-  <!-- Modale de Création -->
+  <!-- Modale de Création d'Établissement -->
   <app-modal-etablissement
     [ouvert]="modalOuvert()"
     (fermer)="modalOuvert.set(false)"

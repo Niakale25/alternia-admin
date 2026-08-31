@@ -1,69 +1,225 @@
-<div class="card table-container">
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Établissement</th>
-        <th>Région / Ville</th>
-        <th>Offre</th>
-        <th>Boîtiers</th>
-        <th>Licences</th>
-        <th>Statut</th>
-        <th>Inscription</th>
-        <th class="text-right">Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      @for (e of etablissements; track e.id) {
+@if (modeAffichage === 'tableau') {
+  <!-- VUE TABLEAU MODERNE -->
+  <div class="card table-container animate-fade-in">
+    <table class="table">
+      <thead>
         <tr>
-          <td>
-            <div class="font-semibold text-text">{{ e.nom }}</div>
-            <div class="text-xs text-subtle">{{ e.directeurEmail }}</div>
-          </td>
-          <td>
-            <div class="text-xs font-medium">{{ e.ville }}</div>
-            <div class="text-xs text-subtle">{{ e.region }}</div>
-          </td>
-          <td>
-            <span class="badge badge--brand">{{ e.offre }}</span>
-          </td>
-          <td>
-            <span class="font-semibold">{{ e.boitiersCount }}</span>
-          </td>
-          <td>
-            <span class="font-semibold">{{ e.licencesCount | number }}</span>
-          </td>
-          <td>
-            <app-badge
-              [variante]="e.statut === 'Actif' ? 'succes' : (e.statut === 'En attente' ? 'avertissement' : 'danger')"
-              [avecPoint]="true"
-              [texte]="e.statut"
-            ></app-badge>
-          </td>
-          <td class="text-xs text-secondary">{{ e.dateInscription }}</td>
-          <td class="text-right">
-            <div class="flex justify-end gap-1">
-              <button
-                class="btn btn--ghost btn--icon btn--sm"
-                [attr.data-tooltip]="e.statut === 'Actif' ? 'Suspendre' : 'Activer'"
-                (click)="basculerStatut.emit(e.id)"
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M18.36 6.64a9 9 0 1 1-12.73 0M12 2v10"/>
-                </svg>
-              </button>
-              <button
-                class="btn btn--ghost btn--icon btn--sm text-danger"
-                data-tooltip="Supprimer"
-                (click)="supprimer.emit(e.id)"
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                </svg>
-              </button>
-            </div>
-          </td>
+          <th>Établissement & Contact</th>
+          <th>Localisation</th>
+          <th>Offre & Formule</th>
+          <th>Boîtiers Alternia</th>
+          <th>Licences Actives</th>
+          <th>Statut</th>
+          <th>Date d'Adhésion</th>
+          <th class="text-right">Actions</th>
         </tr>
-      }
-    </tbody>
-  </table>
-</div>
+      </thead>
+      <tbody>
+        @for (e of etablissements; track e.id) {
+          <tr class="table-row-hover">
+            <td>
+              <div class="etab-identity">
+                <div
+                  class="etab-avatar"
+                  [style.background]="obtenirStyleAvatar(e.nom).bg"
+                  [style.color]="obtenirStyleAvatar(e.nom).text"
+                >
+                  {{ obtenirInitiales(e.nom) }}
+                </div>
+                <div class="etab-info">
+                  <div class="etab-name">{{ e.nom }}</div>
+                  <div class="etab-meta">
+                    <span class="etab-id">{{ e.id }}</span>
+                    <span class="etab-dot">•</span>
+                    <span class="etab-email" [title]="e.directeurEmail">{{ e.directeurEmail }}</span>
+                  </div>
+                </div>
+              </div>
+            </td>
+
+            <td>
+              <div class="location-cell">
+                <div class="location-city">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>
+                  </svg>
+                  {{ e.ville }}
+                </div>
+                <div class="location-region">{{ e.region }}</div>
+              </div>
+            </td>
+
+            <td>
+              <span
+                class="badge-offre"
+                [class.badge-offre--enterprise]="e.offre === 'Enterprise'"
+                [class.badge-offre--institutionnel]="e.offre === 'Institutionnel'"
+                [class.badge-offre--standard]="e.offre === 'Standard'"
+              >
+                {{ e.offre }}
+              </span>
+            </td>
+
+            <td>
+              <div class="boitiers-stat">
+                <span class="status-dot status-dot--online"></span>
+                <span class="boitiers-count">{{ e.boitiersCount }}</span>
+                <span class="boitiers-label">en classe</span>
+              </div>
+            </td>
+
+            <td>
+              <div class="licences-stat">
+                <span class="licences-num">{{ e.licencesCount | number }}</span>
+                <div class="licences-bar-bg">
+                  <div
+                    class="licences-bar-fill"
+                    [style.width.%]="(e.licencesCount / 2000) * 100 > 100 ? 100 : (e.licencesCount / 2000) * 100"
+                  ></div>
+                </div>
+              </div>
+            </td>
+
+            <td>
+              <app-badge
+                [variante]="e.statut === 'Actif' ? 'succes' : (e.statut === 'En attente' ? 'avertissement' : 'danger')"
+                [avecPoint]="true"
+                [texte]="e.statut"
+              ></app-badge>
+            </td>
+
+            <td>
+              <span class="date-adhesion">{{ e.dateInscription }}</span>
+            </td>
+
+            <td class="text-right">
+              <div class="table-actions">
+                <button
+                  type="button"
+                  class="action-btn"
+                  [class.action-btn--active]="e.statut === 'Actif'"
+                  [attr.data-tooltip]="e.statut === 'Actif' ? 'Mettre en pause / Suspendre' : 'Activer l\'établissement'"
+                  (click)="basculerStatut.emit(e.id)"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18.36 6.64a9 9 0 1 1-12.73 0M12 2v10"/>
+                  </svg>
+                </button>
+
+                <button
+                  type="button"
+                  class="action-btn action-btn--danger"
+                  data-tooltip="Supprimer du répertoire"
+                  (click)="supprimer.emit(e.id)"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                  </svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+} @else {
+  <!-- VUE CARTES GRILLE MODERNE -->
+  <div class="cards-grid animate-fade-in">
+    @for (e of etablissements; track e.id) {
+      <div class="card etab-card">
+        <!-- En-tête de la carte -->
+        <div class="etab-card__header">
+          <div class="flex items-center gap-3">
+            <div
+              class="etab-avatar etab-avatar--lg"
+              [style.background]="obtenirStyleAvatar(e.nom).bg"
+              [style.color]="obtenirStyleAvatar(e.nom).text"
+            >
+              {{ obtenirInitiales(e.nom) }}
+            </div>
+            <div class="min-w-0">
+              <h4 class="etab-card__title" [title]="e.nom">{{ e.nom }}</h4>
+              <div class="etab-card__location">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>
+                </svg>
+                {{ e.ville }} • {{ e.region }}
+              </div>
+            </div>
+          </div>
+
+          <app-badge
+            [variante]="e.statut === 'Actif' ? 'succes' : (e.statut === 'En attente' ? 'avertissement' : 'danger')"
+            [avecPoint]="true"
+            [texte]="e.statut"
+          ></app-badge>
+        </div>
+
+        <!-- Contact & Métadonnées -->
+        <div class="etab-card__contact">
+          <div class="contact-row">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+            </svg>
+            <span class="contact-text" [title]="e.directeurEmail">{{ e.directeurEmail }}</span>
+          </div>
+
+          <div class="contact-row">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+            </svg>
+            <span class="offre-pill">{{ e.offre }}</span>
+            <span class="id-pill">{{ e.id }}</span>
+          </div>
+        </div>
+
+        <!-- Métriques Boîtiers & Licences -->
+        <div class="etab-card__metrics">
+          <div class="metric-box">
+            <span class="metric-lbl">Boîtiers Déployés</span>
+            <div class="metric-val flex items-center gap-2">
+              <span class="status-dot status-dot--online"></span>
+              <span>{{ e.boitiersCount }}</span>
+            </div>
+          </div>
+
+          <div class="metric-box">
+            <span class="metric-lbl">Licences Actives</span>
+            <span class="metric-val text-brand">{{ e.licencesCount | number }}</span>
+          </div>
+        </div>
+
+        <!-- Pied de carte avec actions -->
+        <div class="etab-card__footer">
+          <span class="date-adhesion">Inscrit le {{ e.dateInscription }}</span>
+
+          <div class="flex items-center gap-1">
+            <button
+              type="button"
+              class="action-btn"
+              [class.action-btn--active]="e.statut === 'Actif'"
+              [attr.data-tooltip]="e.statut === 'Actif' ? 'Suspendre' : 'Activer'"
+              (click)="basculerStatut.emit(e.id)"
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18.36 6.64a9 9 0 1 1-12.73 0M12 2v10"/>
+              </svg>
+            </button>
+
+            <button
+              type="button"
+              class="action-btn action-btn--danger"
+              data-tooltip="Supprimer"
+              (click)="supprimer.emit(e.id)"
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+}

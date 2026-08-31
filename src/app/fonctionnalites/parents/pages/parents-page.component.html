@@ -1,25 +1,37 @@
-<div class="page-content">
+<div class="page-content parents-page">
 
   <!-- En-tête de la Page -->
   <div class="page-header flex justify-between items-start">
     <div>
       <div class="page-header__eyebrow">Comptes & Familles</div>
-      <h1 class="page-header__title">Gestion des Comptes Parents</h1>
+      <div class="flex items-center gap-3">
+        <h1 class="page-header__title">Gestion des Comptes Parents</h1>
+        <span class="badge badge--brand">{{ service.parents().length }} Tuteurs Actifs</span>
+      </div>
       <p class="page-header__subtitle">
-        Supervision des 48 391 comptes tuteurs et accès familles connectés
+        Supervision des accès tuteurs, accompagnement scolaire à domicile et suivi des licences élèves connectées.
       </p>
     </div>
 
-    <div class="flex gap-2">
-      <button class="btn btn--secondary" (click)="service.exporterCsv()">
+    <div class="flex items-center gap-2 flex-wrap">
+      <button
+        type="button"
+        class="btn btn--secondary btn--sm"
+        (click)="service.exporterCsv()"
+        title="Exporter la liste en CSV"
+      >
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/>
         </svg>
         Exporter (CSV)
       </button>
 
-      <button class="btn btn--primary" (click)="modalOuvert.set(true)">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <button
+        type="button"
+        class="btn btn--primary btn--sm"
+        (click)="modalOuvert.set(true)"
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
         </svg>
         Nouveau Compte Parent
@@ -27,7 +39,60 @@
     </div>
   </div>
 
-  <!-- Métriques KPIs -->
+  <!-- Bannière d'Engagement Familial & Formules -->
+  <div class="card family-banner mb-6">
+    <div class="family-banner__glow"></div>
+    <div class="family-banner__content">
+      <div class="family-banner__top">
+        <div class="family-banner__tag">
+          <span class="pulse-dot"></span>
+          <span>Écosystème B2C Alternia</span>
+        </div>
+        <div class="family-banner__status">
+          <span class="whatsapp-badge">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+            </svg>
+            Canal WhatsApp Connecté
+          </span>
+        </div>
+      </div>
+
+      <div class="family-banner__main">
+        <div class="family-banner__info">
+          <h3 class="family-banner__title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="text-cyan">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            Accompagnement Parental & Devoirs Connectés
+          </h3>
+          <p class="family-banner__subtitle">
+            Les tuteurs reçoivent les bilans hebdomadaires de devoirs, alertes d'assiduité et cours numériques via l'application mobile et notifications SMS/WhatsApp.
+          </p>
+        </div>
+
+        <!-- Filtres rapides par Formules d'abonnement -->
+        <div class="family-banner__pills-box">
+          <span class="pills-title">Filtrer par formule :</span>
+          <div class="pills-row">
+            @for (f of formulesStats(); track f.nom) {
+              <button
+                type="button"
+                class="formula-pill"
+                [class.formula-pill--active]="service.filtreAbonnement() === f.nom"
+                (click)="filtrerFormule(f.nom)"
+              >
+                <span class="formula-name">{{ f.nom }}</span>
+                <span class="formula-badge">{{ f.count | number }}</span>
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Métriques KPIs Clés -->
   <div class="kpi-grid mb-6">
     <app-carte-statistique
       titre="Parents Connectés ce mois"
@@ -50,7 +115,7 @@
       valeur="34 110"
       sousTexte="Taux de conversion de 70,5%"
       evolution="+9,8%"
-      couleurAccent="var(--c-success)"
+      couleurAccent="var(--c-accent)"
     ></app-carte-statistique>
 
     <app-carte-statistique
@@ -58,66 +123,146 @@
       valeur="1 420"
       sousTexte="Sans activité > 30 jours"
       evolution="À relancer"
-      couleurAccent="var(--c-accent)"
+      couleurAccent="var(--c-danger)"
     ></app-carte-statistique>
   </div>
 
-  <!-- Barre de Recherche & Filtres -->
-  <div class="table-controls mb-4">
-    <div class="table-controls__search">
-      <input
-        type="text"
-        class="input input--sm"
-        placeholder="Rechercher par nom de famille, tuteur, email, école..."
-        [ngModel]="service.recherche()"
-        (ngModelChange)="service.recherche.set($event)"
-      />
+  <!-- Barre de Recherche, Filtres & Bascule de Vue -->
+  <div class="card table-controls-card mb-4">
+    <div class="table-controls-bar">
+      <!-- Champ Recherche -->
+      <div class="search-input-wrap">
+        <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Rechercher par famille, nom tuteur, email, téléphone ou école..."
+          [ngModel]="service.recherche()"
+          (ngModelChange)="service.recherche.set($event)"
+        />
+        @if (service.recherche()) {
+          <button
+            type="button"
+            class="clear-search-btn"
+            (click)="service.recherche.set('')"
+            title="Effacer la recherche"
+          >
+            ✕
+          </button>
+        }
+      </div>
+
+      <!-- Filtres et Switcher -->
+      <div class="filters-cluster">
+        <div class="filter-item">
+          <label class="filter-label">Statut</label>
+          <select
+            class="filter-select"
+            [ngModel]="service.filtreStatut()"
+            (ngModelChange)="service.filtreStatut.set($event)"
+          >
+            <option value="Tous">Tous les statuts</option>
+            <option value="Actif">Actif</option>
+            <option value="Inactif">Inactif</option>
+            <option value="Suspendu">Suspendu</option>
+          </select>
+        </div>
+
+        <div class="filter-item">
+          <label class="filter-label">Formule</label>
+          <select
+            class="filter-select"
+            [ngModel]="service.filtreAbonnement()"
+            (ngModelChange)="service.filtreAbonnement.set($event)"
+          >
+            <option value="Tous">Toutes les formules</option>
+            <option value="Premium Annuel">Premium Annuel</option>
+            <option value="Standard Mensuel">Standard Mensuel</option>
+            <option value="Découverte">Découverte</option>
+          </select>
+        </div>
+
+        <!-- Bascule Vue Tableau / Vue Cartes Grille -->
+        <div class="view-switcher">
+          <button
+            type="button"
+            class="view-btn"
+            [class.view-btn--active]="modeAffichage() === 'tableau'"
+            (click)="changerMode('tableau')"
+            title="Affichage en Tableau"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
+          </button>
+          <button
+            type="button"
+            class="view-btn"
+            [class.view-btn--active]="modeAffichage() === 'cartes'"
+            (click)="changerMode('cartes')"
+            title="Affichage en Grille de Cartes"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+            </svg>
+          </button>
+        </div>
+      </div>
     </div>
 
-    <div class="flex gap-2">
-      <select
-        class="select select--sm"
-        [ngModel]="service.filtreStatut()"
-        (ngModelChange)="service.filtreStatut.set($event)"
-      >
-        <option value="Tous">Tous les statuts</option>
-        <option value="Actif">Actif</option>
-        <option value="Inactif">Inactif</option>
-        <option value="Suspendu">Suspendu</option>
-      </select>
+    <!-- Barre d'état des filtres & compteur de résultats -->
+    <div class="filters-meta">
+      <div class="results-count">
+        <span class="count-bold">{{ service.parentsFiltres().length }}</span>
+        <span>compte(s) parent(s) affiché(s)</span>
+        @if (service.filtreStatut() !== 'Tous') {
+          <span class="active-filter-badge">
+            Statut : {{ service.filtreStatut() }}
+            <button class="remove-chip" (click)="service.filtreStatut.set('Tous')">✕</button>
+          </span>
+        }
+        @if (service.filtreAbonnement() !== 'Tous') {
+          <span class="active-filter-badge">
+            Formule : {{ service.filtreAbonnement() }}
+            <button class="remove-chip" (click)="service.filtreAbonnement.set('Tous')">✕</button>
+          </span>
+        }
+      </div>
 
-      <select
-        class="select select--sm"
-        [ngModel]="service.filtreAbonnement()"
-        (ngModelChange)="service.filtreAbonnement.set($event)"
-      >
-        <option value="Tous">Toutes les formules</option>
-        <option value="Premium Annuel">Premium Annuel</option>
-        <option value="Standard Mensuel">Standard Mensuel</option>
-        <option value="Découverte">Découverte</option>
-      </select>
+      @if (service.recherche() || service.filtreStatut() !== 'Tous' || service.filtreAbonnement() !== 'Tous') {
+        <button
+          type="button"
+          class="reset-filters-btn"
+          (click)="reinitialiserFiltres()"
+        >
+          Réinitialiser les filtres
+        </button>
+      }
     </div>
   </div>
 
-  <!-- Tableau ou État Vide -->
+  <!-- Tableau ou Cartes ou État Vide -->
   @if (service.parentsFiltres().length > 0) {
     <app-tableau-parents
       [parents]="service.parentsFiltres()"
+      [modeAffichage]="modeAffichage()"
       (basculerStatut)="service.basculerStatut($event)"
       (supprimer)="service.supprimer($event)"
     ></app-tableau-parents>
   } @else {
-    <div class="card">
+    <div class="card empty-container">
       <app-etat-vide
-        titre="Aucun parent trouvé"
-        message="Aucun compte parent ne correspond à vos critères de recherche."
+        titre="Aucun compte parent trouvé"
+        message="Aucun tuteur ou parent ne correspond aux critères de recherche actuels."
         texteAction="Réinitialiser les filtres"
-        (action)="service.recherche.set(''); service.filtreStatut.set('Tous'); service.filtreAbonnement.set('Tous')"
+        (action)="reinitialiserFiltres()"
       ></app-etat-vide>
     </div>
   }
 
-  <!-- Modale de Création -->
+  <!-- Modale de Création de Parent -->
   <app-modal-parent
     [ouvert]="modalOuvert()"
     (fermer)="modalOuvert.set(false)"

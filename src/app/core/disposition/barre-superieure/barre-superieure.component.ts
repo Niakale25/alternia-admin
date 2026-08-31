@@ -3,17 +3,19 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ThemeService } from '../../services/theme.service';
 import { NotificationService } from '../../../partage/services/notification.service';
+import { AuthentificationService } from '../../services/authentification/authentification.service';
 
 @Component({
   selector: 'app-barre-superieure',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule],
   templateUrl: './barre-superieure.component.html',
   styleUrls: ['./barre-superieure.component.scss']
 })
 export class BarreSuperieureComponent {
   readonly themeService = inject(ThemeService);
   readonly notificationService = inject(NotificationService);
+  readonly authService = inject(AuthentificationService);
 
   @Input() barreRepliee: boolean = false;
   @Output() basculerBarre = new EventEmitter<void>();

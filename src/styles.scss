@@ -40,7 +40,7 @@
   // Neutrals (dominant palette — 80%)
   --c-white:          #FFFFFF;
   --c-surface:        #FFFFFF; // Pure white background for all interfaces
-  --c-surface-alt:    #F8FAFC;
+  --c-surface-alt:    #FFFFFF; // Pure white background across all interfaces
   --c-border:         #E2E8F0;
   --c-border-light:   #F1F5F9;
   --c-muted:          #E5E7EB;
@@ -84,31 +84,49 @@
 }
 
 [data-theme="dark"] {
-  // Dark Mode Palette
-  --c-white:          #1E293B;
-  --c-surface:        #0B0F19;
-  --c-surface-alt:    #161E2E;
-  --c-border:         #2A364F;
-  --c-border-light:   #1E293B;
-  --c-muted:          #475569;
-  --c-subtle:         #94A3B8;
+  // Dark Mode Palette — Deep Sleek Cyber/SaaS
+  --c-white:          #131B2E; // Primary card & component surface
+  --c-surface:        #0A0F1D; // Main application canvas
+  --c-surface-alt:    #18233C; // Secondary surface (inputs, hover, sub-panels)
+  --c-border:         #202F4D; // Crisp subtle borders
+  --c-border-light:   #18243A; // Very subtle dividers
+  --c-muted:          #334566;
+  --c-subtle:         #7E8FA9;
   --c-secondary:      #94A3B8;
-  --c-text:           #F8FAFC;
-  --c-text-secondary: #CBD5E1;
+  --c-text:           #F8FAFC; // Primary bright text
+  --c-text-secondary: #CBD5E1; // Secondary readable text
 
-  --c-brand-bg:       rgba(49, 73, 153, 0.25);
-  --c-brand-bg-hover: rgba(49, 73, 153, 0.35);
-  --c-cyan-bg:        rgba(64, 187, 204, 0.15);
-  --c-accent-bg:      rgba(241, 133, 31, 0.15);
-  --c-success-bg:     rgba(34, 197, 94, 0.15);
-  --c-danger-bg:      rgba(239, 68, 68, 0.15);
+  --c-brand:          #4E6FE0;
+  --c-brand-hover:    #6384F0;
+  --c-brand-bg:       rgba(78, 111, 224, 0.20);
+  --c-brand-bg-hover: rgba(78, 111, 224, 0.30);
+  --c-brand-border:   rgba(78, 111, 224, 0.35);
 
-  --s-xs:  0 1px 2px rgba(0, 0, 0, 0.3);
-  --s-sm:  0 2px 6px rgba(0, 0, 0, 0.4);
-  --s-md:  0 8px 18px rgba(0, 0, 0, 0.5);
-  --s-lg:  0 16px 28px rgba(0, 0, 0, 0.6);
-  --s-xl:  0 24px 48px rgba(0, 0, 0, 0.7);
+  --c-cyan:           #38BDF8;
+  --c-cyan-hover:     #60A5FA;
+  --c-cyan-bg:        rgba(56, 189, 248, 0.15);
+  --c-cyan-border:    rgba(56, 189, 248, 0.30);
+
+  --c-accent:         #FB923C;
+  --c-accent-hover:   #F97316;
+  --c-accent-bg:      rgba(251, 146, 60, 0.15);
+  --c-accent-border:  rgba(251, 146, 60, 0.30);
+
+  --c-success:        #34D399;
+  --c-success-bg:     rgba(52, 211, 153, 0.15);
+  --c-success-border: rgba(52, 211, 153, 0.30);
+
+  --c-danger:         #F87171;
+  --c-danger-bg:      rgba(248, 113, 113, 0.15);
+  --c-danger-border:  rgba(248, 113, 113, 0.30);
+
+  --s-xs:  0 1px 2px rgba(0, 0, 0, 0.4);
+  --s-sm:  0 2px 6px rgba(0, 0, 0, 0.5);
+  --s-md:  0 8px 18px rgba(0, 0, 0, 0.6);
+  --s-lg:  0 16px 28px rgba(0, 0, 0, 0.7);
+  --s-xl:  0 24px 48px rgba(0, 0, 0, 0.8);
 }
+
 
 // ── RESET ─────────────────────────────────────────────────────
 *,
@@ -136,7 +154,14 @@ body {
   background: var(--c-surface);
   min-height: 100vh;
   overflow-x: hidden;
+  transition: background-color var(--t-base), color var(--t-base);
 }
+
+// Fluid theme transition for key structural surfaces
+.disposition-app, .sidebar, .topbar, .card, .table-container, .input, .select, .badge, .btn {
+  transition: background-color var(--t-base), border-color var(--t-base), color var(--t-base), box-shadow var(--t-base);
+}
+
 
 // Page de connexion — pas de scroll, tout en viewport
 body.connexion-active {
@@ -322,14 +347,14 @@ a { color: var(--c-brand); text-decoration: none; }
   &:active { transform: scale(0.97); }
 
   &--primary {
-    background: var(--c-text); // Modern linear style (black buttons)
-    color: var(--c-white);
-    border-color: var(--c-text);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    background: var(--c-brand);
+    color: #FFFFFF;
+    border-color: var(--c-brand);
+    box-shadow: 0 2px 8px rgba(49, 73, 153, 0.25);
     &:hover {
-      background: var(--c-text-secondary);
-      border-color: var(--c-text-secondary);
-      box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+      background: var(--c-brand-hover);
+      border-color: var(--c-brand-hover);
+      box-shadow: 0 4px 12px rgba(49, 73, 153, 0.35);
       transform: translateY(-1px);
     }
   }
@@ -373,8 +398,8 @@ a { color: var(--c-brand); text-decoration: none; }
   &--icon { padding: 8px; border-radius: var(--r-md); }
 }
 
-// ── INPUTS ────────────────────────────────────────────────────
-.input {
+// ── INPUTS & SELECTS ──────────────────────────────────────────
+.input, input[type="text"], input[type="search"], input[type="email"], input[type="password"] {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -385,16 +410,113 @@ a { color: var(--c-brand); text-decoration: none; }
   font-size: 13px;
   font-family: var(--font-sans);
   color: var(--c-text);
-  transition: border-color var(--t-fast), box-shadow var(--t-fast);
+  transition: border-color var(--t-fast), box-shadow var(--t-fast), background var(--t-fast);
   outline: none;
   width: 100%;
 
   &::placeholder { color: var(--c-subtle); }
   &:focus {
-    border-color: var(--c-cyan);
-    box-shadow: 0 0 0 3px var(--c-cyan-bg);
+    border-color: var(--c-brand);
+    box-shadow: 0 0 0 3px var(--c-brand-bg);
   }
 }
+
+.select, select {
+  padding: 8px 12px;
+  background: var(--c-white);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-md);
+  font-size: 12.5px;
+  font-family: var(--font-sans);
+  color: var(--c-text);
+  outline: none;
+  cursor: pointer;
+  width: 100%;
+  transition: border-color var(--t-fast), box-shadow var(--t-fast), background var(--t-fast);
+
+  &:focus {
+    border-color: var(--c-brand);
+    box-shadow: 0 0 0 3px var(--c-brand-bg);
+  }
+
+  option {
+    background: var(--c-white);
+    color: var(--c-text);
+  }
+}
+
+input[type="number"] {
+  padding: 9px 14px;
+  background: var(--c-white);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-md);
+  font-size: 13px;
+  font-family: var(--font-sans);
+  color: var(--c-text);
+  outline: none;
+  width: 100%;
+  transition: border-color var(--t-fast), box-shadow var(--t-fast);
+
+  &:focus {
+    border-color: var(--c-brand);
+    box-shadow: 0 0 0 3px var(--c-brand-bg);
+  }
+}
+
+input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  border-radius: var(--r-xs);
+  border: 1px solid var(--c-border);
+  accent-color: var(--c-brand);
+  cursor: pointer;
+}
+
+// ── FORM GROUPS & GRIDS ───────────────────────────────────────
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  width: 100%;
+
+  .full-width {
+    grid-column: 1 / -1;
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+    .full-width {
+      grid-column: 1;
+    }
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+.form-label, label.form-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--c-text);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  letter-spacing: 0.01em;
+}
+
+// Disabled States
+.btn:disabled, button:disabled, .btn[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed !important;
+  pointer-events: none;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
 
 // ── TABLES ────────────────────────────────────────────────────
 .table-wrap {

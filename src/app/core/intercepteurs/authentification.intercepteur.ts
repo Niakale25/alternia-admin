@@ -4,7 +4,10 @@ import { HttpInterceptorFn } from '@angular/common/http';
  * Intercepteur HTTP pour injecter le jeton JWT dans les en-têtes Authorization
  */
 export const intercepteurAuthentification: HttpInterceptorFn = (req, next) => {
-  const jeton = typeof window !== 'undefined' ? localStorage.getItem('alternia_jeton_auth') : null;
+  const jeton =
+    typeof window !== 'undefined'
+      ? sessionStorage.getItem('alternia_jeton_auth') || localStorage.getItem('alternia_jeton_auth')
+      : null;
 
   if (jeton) {
     const requeteAuthentifiee = req.clone({

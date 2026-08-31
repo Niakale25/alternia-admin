@@ -1,30 +1,66 @@
 <div class="geo-banner card">
-  <div class="geo-banner__text">
-    <div class="geo-banner__tag">
-      <span class="geo-banner__dot"></span>
-      Déploiement Territorial — République du Mali
-    </div>
-    <h2 class="geo-banner__title">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>
-      </svg>
-      Couverture Nationale dans 8 Régions & le District de Bamako
-    </h2>
-    <p class="geo-banner__subtitle">
-      Alternia équipe les salles de classe connectées du District de Bamako, de Koulikoro, Sikasso, Ségou, Kayes jusqu'à Mopti, Gao et Tombouctou.
-    </p>
+  <div class="geo-banner__background-glow"></div>
+  <div class="geo-banner__content">
+    <div class="geo-banner__top">
+      <div class="geo-banner__tag">
+        <span class="geo-banner__pulse-dot"></span>
+        <span>Déploiement Territorial — République du Mali</span>
+      </div>
 
-    <div class="geo-banner__regions">
-      @for (r of regions; track r.region) {
+      <div class="geo-banner__badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
+        </svg>
+        Couverture 100% Active
+      </div>
+    </div>
+
+    <div class="geo-banner__main">
+      <div class="geo-banner__info">
+        <h2 class="geo-banner__title">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="geo-icon">
+            <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>
+          </svg>
+          Établissements Scolaires Partenaires
+        </h2>
+        <p class="geo-banner__subtitle">
+          Supervision et administration en temps réel des centres éducatifs connectés à l'écosystème Alternia à travers le District de Bamako et les régions du Mali.
+        </p>
+      </div>
+
+      <div class="geo-banner__stats-pill">
+        <span class="geo-banner__stats-num">{{ totalEtablissements | number }}</span>
+        <span class="geo-banner__stats-lbl">Centres Référencés</span>
+      </div>
+    </div>
+
+    <!-- Filtres des Régions (Pills Interactives) -->
+    <div class="geo-banner__regions-wrapper">
+      <span class="geo-regions-label">Filtrer par zone :</span>
+      <div class="geo-banner__regions">
         <button
+          type="button"
           class="geo-region-pill"
-          [class.geo-region-pill--active]="regionSelectionnee === r.region"
-          (click)="filtrer(r.region)"
+          [class.geo-region-pill--active]="regionSelectionnee === 'Toutes'"
+          (click)="filtrer('Toutes')"
         >
-          <span class="geo-region-nom">{{ r.region }}</span>
-          <span class="geo-region-count">{{ r.count }}</span>
+          <span class="geo-region-nom">Toutes les régions</span>
+          <span class="geo-region-count">{{ totalEtablissements }}</span>
         </button>
-      }
+
+        @for (r of regions; track r.region) {
+          <button
+            type="button"
+            class="geo-region-pill"
+            [class.geo-region-pill--active]="regionSelectionnee === r.region"
+            (click)="filtrer(r.region)"
+            [title]="r.villePhares"
+          >
+            <span class="geo-region-nom">{{ r.region }}</span>
+            <span class="geo-region-count">{{ r.count }}</span>
+          </button>
+        }
+      </div>
     </div>
   </div>
 </div>

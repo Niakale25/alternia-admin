@@ -1,9 +1,11 @@
+// ── VUE TABLEAU MODERNE ──────────────────────────────────────
 .table-container {
   overflow-x: auto;
   background: var(--c-white);
   border: 1px solid var(--c-border);
-  border-radius: var(--r-lg);
+  border-radius: var(--r-xl);
   box-shadow: var(--s-xs);
+  padding: 0;
 }
 
 .table {
@@ -12,32 +14,400 @@
   text-align: left;
   font-size: 13px;
 
-  th {
-    padding: 12px 16px;
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--c-subtle);
+  thead {
     background: var(--c-surface-alt);
     border-bottom: 1px solid var(--c-border);
-  }
 
-  td {
-    padding: 14px 16px;
-    border-bottom: 1px solid var(--c-border-light);
-    vertical-align: middle;
-  }
-
-  tr:last-child td {
-    border-bottom: none;
+    th {
+      padding: 14px 18px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--c-subtle);
+      white-space: nowrap;
+      user-select: none;
+    }
   }
 
   tbody tr {
+    border-bottom: 1px solid var(--c-border-light);
     transition: background var(--t-fast);
 
     &:hover {
-      background: var(--c-surface-alt);
+      background: rgba(64, 187, 204, 0.03);
     }
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    td {
+      padding: 14px 18px;
+      vertical-align: middle;
+    }
+  }
+}
+
+// Identité Parent (Nom de famille sur une seule ligne)
+.parent-identity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  white-space: nowrap;
+  min-width: max-content;
+}
+
+.parent-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12.5px;
+  font-weight: 800;
+  font-family: var(--font-tight);
+  flex-shrink: 0;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+
+  &--lg {
+    width: 42px;
+    height: 42px;
+    border-radius: var(--r-lg);
+    font-size: 14px;
+  }
+}
+
+.parent-name {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--c-text);
+  white-space: nowrap;
+  line-height: 1;
+}
+
+// Coordonnées Directes
+.contact-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.contact-email {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--c-text);
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  svg {
+    color: var(--c-subtle);
+    flex-shrink: 0;
+  }
+}
+
+.contact-phone {
+  display: flex;
+  align-items: center;
+}
+
+.whatsapp-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #10B981;
+  text-decoration: none;
+  transition: opacity var(--t-fast);
+
+  &:hover {
+    opacity: 0.85;
+    text-decoration: underline;
+  }
+
+  .whatsapp-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #10B981;
+    box-shadow: 0 0 4px #10B981;
+  }
+}
+
+// Établissement pill
+.school-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: var(--c-surface-alt);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-md);
+  font-size: 11.5px;
+  color: var(--c-secondary);
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  svg {
+    color: var(--c-brand);
+    flex-shrink: 0;
+  }
+}
+
+// Badges Formules
+.badge-formule {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: var(--r-full);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+
+  &--premium {
+    background: rgba(241, 133, 31, 0.12);
+    color: #EA580C;
+    border: 1px solid rgba(241, 133, 31, 0.25);
+    box-shadow: 0 0 8px rgba(241, 133, 31, 0.15);
+
+    .star-icon {
+      font-size: 10px;
+      color: #F59E0B;
+    }
+  }
+
+  &--standard {
+    background: var(--c-brand-bg);
+    color: var(--c-brand);
+    border: 1px solid var(--c-brand-border);
+  }
+
+  &--decouverte {
+    background: var(--c-cyan-bg);
+    color: #0891B2;
+    border: 1px solid var(--c-cyan-border);
+  }
+}
+
+// Licences / Enfants Pill
+.licences-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--c-text);
+
+  .licences-count {
+    background: var(--c-brand-bg);
+    color: var(--c-brand);
+    padding: 1px 7px;
+    border-radius: var(--r-full);
+    font-size: 11px;
+  }
+
+  .licences-text {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--c-subtle);
+  }
+}
+
+.activity-date {
+  font-size: 11.5px;
+  color: var(--c-secondary);
+}
+
+// Actions
+.table-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.action-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--c-border);
+  background: var(--c-white);
+  color: var(--c-secondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all var(--t-fast);
+
+  &:hover {
+    background: var(--c-surface-alt);
+    color: var(--c-text);
+    border-color: var(--c-muted);
+  }
+
+  &--whatsapp {
+    color: #10B981;
+    &:hover {
+      background: rgba(16, 185, 129, 0.1);
+      border-color: rgba(16, 185, 129, 0.3);
+      color: #059669;
+    }
+  }
+
+  &--active {
+    color: var(--c-success);
+    &:hover {
+      background: var(--c-success-bg);
+      border-color: var(--c-success-border);
+    }
+  }
+
+  &--danger {
+    &:hover {
+      background: var(--c-danger-bg);
+      color: var(--c-danger);
+      border-color: var(--c-danger-border);
+    }
+  }
+}
+
+// ── VUE CARTES GRILLE MODERNE ────────────────────────────────
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+}
+
+.parent-card {
+  padding: 20px;
+  background: var(--c-white);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-xl);
+  box-shadow: var(--s-xs);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: transform var(--t-fast), box-shadow var(--t-fast), border-color var(--t-fast);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--s-md);
+    border-color: rgba(64, 187, 204, 0.3);
+  }
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  &__title {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: var(--c-text);
+    margin: 0;
+    line-height: 1.25;
+  }
+
+  &__tuteur {
+    font-size: 11.5px;
+    color: var(--c-secondary);
+    margin-top: 3px;
+  }
+
+  &__details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    background: var(--c-surface-alt);
+    border-radius: var(--r-lg);
+    font-size: 12px;
+  }
+
+  .detail-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--c-secondary);
+
+    svg {
+      color: var(--c-subtle);
+      flex-shrink: 0;
+    }
+  }
+
+  .detail-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--c-text);
+    font-weight: 500;
+  }
+
+  .whatsapp-card-link {
+    color: #10B981;
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .school-name {
+    color: var(--c-secondary);
+    font-size: 11.5px;
+  }
+
+  &__metrics {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 10px;
+  }
+
+  .metric-box {
+    padding: 10px 12px;
+    background: var(--c-white);
+    border: 1px solid var(--c-border-light);
+    border-radius: var(--r-md);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+  }
+
+  .metric-lbl {
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--c-subtle);
+    display: block;
+  }
+
+  .metric-val {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--c-text);
+    font-family: var(--font-tight);
+  }
+
+  &__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 12px;
+    border-top: 1px solid var(--c-border-light);
+    font-size: 11px;
+    color: var(--c-subtle);
   }
 }

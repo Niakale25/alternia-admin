@@ -1,13 +1,412 @@
-.table-controls {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
+.parents-page {
+  // ── BANNIÈRE D'ENGAGEMENT FAMILIAL ──────────────────────────
+  .family-banner {
+    padding: 24px 28px;
+    background: linear-gradient(135deg, rgba(64, 187, 204, 0.06) 0%, rgba(49, 73, 153, 0.08) 100%);
+    border: 1px solid rgba(64, 187, 204, 0.2);
+    border-radius: var(--r-xl);
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--s-xs);
+    transition: border-color var(--t-base), box-shadow var(--t-base);
 
-  &__search {
+    &:hover {
+      border-color: rgba(64, 187, 204, 0.35);
+      box-shadow: var(--s-sm);
+    }
+
+    &__glow {
+      position: absolute;
+      top: -40px;
+      right: -40px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(64, 187, 204, 0.2) 0%, rgba(49, 73, 153, 0.0) 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    &__content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    &__top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    &__tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #0E7490;
+      background: rgba(64, 187, 204, 0.12);
+      padding: 3px 10px;
+      border-radius: var(--r-full);
+    }
+
+    .pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10B981;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25);
+      animation: pulse-dot 2s infinite;
+    }
+
+    .whatsapp-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #10B981;
+      background: var(--c-white);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      padding: 4px 10px;
+      border-radius: var(--r-full);
+    }
+
+    &__main {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    &__info {
+      flex: 1;
+      min-width: 280px;
+    }
+
+    &__title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--c-text);
+      margin: 0 0 6px;
+      letter-spacing: -0.02em;
+    }
+
+    &__subtitle {
+      font-size: 13px;
+      color: var(--c-secondary);
+      max-width: 800px;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    &__pills-box {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .pills-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--c-secondary);
+    }
+
+    .pills-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .formula-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: var(--c-white);
+      border: 1px solid var(--c-border);
+      border-radius: var(--r-full);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--c-text);
+      cursor: pointer;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+      transition: all var(--t-fast);
+
+      &:hover {
+        border-color: var(--c-cyan);
+        background: rgba(64, 187, 204, 0.1);
+        color: #0E7490;
+        transform: translateY(-1px);
+      }
+
+      &--active {
+        background: #0E7490 !important;
+        color: #FFFFFF !important;
+        border-color: #0E7490 !important;
+        box-shadow: 0 4px 12px rgba(14, 116, 144, 0.35);
+        transform: translateY(-1px);
+
+        .formula-badge {
+          background: rgba(255, 255, 255, 0.25);
+          color: #FFFFFF;
+        }
+      }
+
+      .formula-badge {
+        font-size: 10.5px;
+        font-weight: 700;
+        padding: 1px 7px;
+        border-radius: var(--r-full);
+        background: var(--c-surface-alt);
+        color: var(--c-secondary);
+        transition: all var(--t-fast);
+      }
+    }
+  }
+
+  // ── TABLE CONTROLS CARD ──────────────────────────────────────
+  .table-controls-card {
+    padding: 16px 20px;
+    background: var(--c-white);
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-xl);
+    box-shadow: var(--s-xs);
+  }
+
+  .table-controls-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  // Barre de recherche
+  .search-input-wrap {
     flex: 1;
-    min-width: 260px;
-    max-width: 420px;
+    min-width: 280px;
+    max-width: 480px;
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 14px;
+    color: var(--c-subtle);
+    pointer-events: none;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 9px 36px 9px 38px;
+    background: var(--c-surface-alt);
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-md);
+    font-size: 13px;
+    font-family: var(--font-sans);
+    color: var(--c-text);
+    transition: all var(--t-fast);
+
+    &::placeholder {
+      color: var(--c-subtle);
+    }
+
+    &:focus {
+      background: var(--c-white);
+      border-color: var(--c-cyan);
+      box-shadow: 0 0 0 3px var(--c-cyan-bg);
+      outline: none;
+    }
+  }
+
+  .clear-search-btn {
+    position: absolute;
+    right: 10px;
+    border: none;
+    background: var(--c-border);
+    color: var(--c-secondary);
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--t-fast);
+
+    &:hover {
+      background: var(--c-subtle);
+      color: var(--c-white);
+    }
+  }
+
+  // Filtres et Switcher
+  .filters-cluster {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .filter-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .filter-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--c-subtle);
+  }
+
+  .filter-select {
+    padding: 8px 12px;
+    background: var(--c-surface-alt);
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-md);
+    font-size: 12.5px;
+    font-family: var(--font-sans);
+    color: var(--c-text);
+    cursor: pointer;
+    outline: none;
+    transition: all var(--t-fast);
+
+    &:hover {
+      border-color: var(--c-muted);
+    }
+
+    &:focus {
+      background: var(--c-white);
+      border-color: var(--c-brand);
+      box-shadow: 0 0 0 2px var(--c-brand-bg);
+    }
+  }
+
+  // View Switcher (Tableau vs Cartes)
+  .view-switcher {
+    display: inline-flex;
+    align-items: center;
+    background: var(--c-border-light);
+    padding: 3px;
+    border-radius: var(--r-md);
+    gap: 2px;
+  }
+
+  .view-btn {
+    border: none;
+    background: transparent;
+    padding: 6px 8px;
+    border-radius: var(--r-sm);
+    color: var(--c-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--t-fast);
+
+    &:hover {
+      color: var(--c-text);
+    }
+
+    &--active {
+      background: var(--c-white);
+      color: var(--c-brand);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+    }
+  }
+
+  // ── FILTERS META ────────────────────────────────────────────
+  .filters-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--c-border-light);
+    font-size: 12px;
+    color: var(--c-secondary);
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .results-count {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .count-bold {
+    font-weight: 700;
+    color: var(--c-text);
+  }
+
+  .active-filter-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 2px 8px;
+    background: var(--c-brand-bg);
+    color: var(--c-brand);
+    border: 1px solid var(--c-brand-border);
+    border-radius: var(--r-full);
+    font-size: 11px;
+    font-weight: 600;
+
+    .remove-chip {
+      border: none;
+      background: transparent;
+      color: var(--c-brand);
+      cursor: pointer;
+      font-size: 10px;
+      padding: 0;
+      line-height: 1;
+      opacity: 0.7;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+
+  .reset-filters-btn {
+    border: none;
+    background: transparent;
+    color: var(--c-brand);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: var(--r-sm);
+    transition: background var(--t-fast);
+
+    &:hover {
+      background: var(--c-brand-bg);
+      text-decoration: underline;
+    }
+  }
+
+  .empty-container {
+    padding: 3rem;
   }
 }

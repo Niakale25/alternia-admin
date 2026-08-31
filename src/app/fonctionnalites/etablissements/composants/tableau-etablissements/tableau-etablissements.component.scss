@@ -1,9 +1,11 @@
+// ── VUE TABLEAU MODERNE ──────────────────────────────────────
 .table-container {
   overflow-x: auto;
   background: var(--c-white);
   border: 1px solid var(--c-border);
-  border-radius: var(--r-lg);
+  border-radius: var(--r-xl);
   box-shadow: var(--s-xs);
+  padding: 0;
 }
 
 .table {
@@ -12,32 +14,375 @@
   text-align: left;
   font-size: 13px;
 
-  th {
-    padding: 12px 16px;
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--c-subtle);
+  thead {
     background: var(--c-surface-alt);
     border-bottom: 1px solid var(--c-border);
-  }
 
-  td {
-    padding: 14px 16px;
-    border-bottom: 1px solid var(--c-border-light);
-    vertical-align: middle;
-  }
-
-  tr:last-child td {
-    border-bottom: none;
+    th {
+      padding: 14px 18px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--c-subtle);
+      white-space: nowrap;
+      user-select: none;
+    }
   }
 
   tbody tr {
-    transition: background var(--t-fast);
+    border-bottom: 1px solid var(--c-border-light);
+    transition: background var(--t-fast), box-shadow var(--t-fast);
 
     &:hover {
-      background: var(--c-surface-alt);
+      background: rgba(49, 73, 153, 0.02);
     }
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    td {
+      padding: 14px 18px;
+      vertical-align: middle;
+    }
+  }
+}
+
+// Identité de l'établissement
+.etab-identity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.etab-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12.5px;
+  font-weight: 800;
+  font-family: var(--font-tight);
+  flex-shrink: 0;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+
+  &--lg {
+    width: 42px;
+    height: 42px;
+    border-radius: var(--r-lg);
+    font-size: 14px;
+  }
+}
+
+.etab-info {
+  min-width: 0;
+}
+
+.etab-name {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--c-text);
+  line-height: 1.2;
+}
+
+.etab-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 3px;
+  font-size: 11px;
+  color: var(--c-subtle);
+}
+
+.etab-id {
+  font-family: var(--font-mono);
+  background: var(--c-surface-alt);
+  padding: 1px 5px;
+  border-radius: var(--r-xs);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--c-secondary);
+}
+
+.etab-email {
+  max-width: 170px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// Localisation
+.location-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.location-city {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--c-text);
+}
+
+.location-region {
+  font-size: 11px;
+  color: var(--c-subtle);
+}
+
+// Badges Offres
+.badge-offre {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: var(--r-full);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+
+  &--enterprise {
+    background: rgba(139, 92, 246, 0.12);
+    color: #6D28D9;
+    border: 1px solid rgba(139, 92, 246, 0.25);
+  }
+  &--institutionnel {
+    background: var(--c-brand-bg);
+    color: var(--c-brand);
+    border: 1px solid var(--c-brand-border);
+  }
+  &--standard {
+    background: var(--c-cyan-bg);
+    color: #0891B2;
+    border: 1px solid var(--c-cyan-border);
+  }
+}
+
+// Boîtiers Stat
+.boitiers-stat {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.boitiers-count {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--c-text);
+}
+
+.boitiers-label {
+  font-size: 11px;
+  color: var(--c-subtle);
+}
+
+// Licences Stat
+.licences-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 90px;
+}
+
+.licences-num {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--c-text);
+  font-family: var(--font-tight);
+}
+
+.licences-bar-bg {
+  width: 100%;
+  height: 4px;
+  background: var(--c-border-light);
+  border-radius: var(--r-full);
+  overflow: hidden;
+}
+
+.licences-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--c-cyan) 0%, var(--c-brand) 100%);
+  border-radius: var(--r-full);
+}
+
+.date-adhesion {
+  font-size: 11.5px;
+  color: var(--c-secondary);
+}
+
+// Boutons d'action
+.table-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.action-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--c-border);
+  background: var(--c-white);
+  color: var(--c-secondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--t-fast);
+
+  &:hover {
+    background: var(--c-surface-alt);
+    color: var(--c-text);
+    border-color: var(--c-muted);
+  }
+
+  &--active {
+    color: var(--c-success);
+    &:hover {
+      background: var(--c-success-bg);
+      border-color: var(--c-success-border);
+    }
+  }
+
+  &--danger {
+    &:hover {
+      background: var(--c-danger-bg);
+      color: var(--c-danger);
+      border-color: var(--c-danger-border);
+    }
+  }
+}
+
+// ── VUE CARTES GRILLE MODERNE ────────────────────────────────
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+}
+
+.etab-card {
+  padding: 20px;
+  background: var(--c-white);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-xl);
+  box-shadow: var(--s-xs);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: transform var(--t-fast), box-shadow var(--t-fast), border-color var(--t-fast);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--s-md);
+    border-color: rgba(49, 73, 153, 0.25);
+  }
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  &__title {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: var(--c-text);
+    margin: 0;
+    line-height: 1.25;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__location {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11.5px;
+    color: var(--c-secondary);
+    margin-top: 3px;
+  }
+
+  &__contact {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 12px;
+    background: var(--c-surface-alt);
+    border-radius: var(--r-lg);
+    font-size: 12px;
+  }
+
+  .contact-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--c-secondary);
+  }
+
+  .contact-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--c-text);
+    font-weight: 500;
+  }
+
+  .offre-pill {
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--c-brand);
+    background: rgba(49, 73, 153, 0.1);
+    padding: 2px 8px;
+    border-radius: var(--r-full);
+  }
+
+  .id-pill {
+    font-size: 10px;
+    font-family: var(--font-mono);
+    color: var(--c-subtle);
+  }
+
+  &__metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .metric-box {
+    padding: 10px 12px;
+    background: var(--c-white);
+    border: 1px solid var(--c-border-light);
+    border-radius: var(--r-md);
+  }
+
+  .metric-lbl {
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--c-subtle);
+    display: block;
+    margin-bottom: 3px;
+  }
+
+  .metric-val {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--c-text);
+    font-family: var(--font-tight);
+  }
+
+  &__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 12px;
+    border-top: 1px solid var(--c-border-light);
+    font-size: 11px;
+    color: var(--c-subtle);
   }
 }

@@ -1,7 +1,8 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { HtmlSecurisePipe } from '../../../partage/tuyaux/html-securise.pipe';
+import { AuthentificationService } from '../../services/authentification/authentification.service';
 
 export interface ElementNavigation {
   label: string;
@@ -23,6 +24,8 @@ export interface GroupeNavigation {
   styleUrls: ['./barre-laterale.component.scss']
 })
 export class BarreLateraleComponent {
+  readonly authService = inject(AuthentificationService);
+
   @Input() repliee: boolean = false;
   @Output() basculerRepli = new EventEmitter<void>();
 
