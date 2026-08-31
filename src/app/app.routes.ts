@@ -84,6 +84,14 @@ export const routes: Routes = [
         title: 'Statistiques Pédagogiques — Alternia'
       },
       {
+        path: 'culture',
+        loadComponent: () =>
+          import('./fonctionnalites/culture/pages/culture-page.component').then(
+            m => m.CulturePageComponent
+          ),
+        title: 'Contenus Culturels — Alternia'
+      },
+      {
         path: 'parametres',
         loadComponent: () =>
           import('./fonctionnalites/parametres/pages/parametres-page.component').then(

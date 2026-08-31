@@ -1,0 +1,696 @@
+.tiroir-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 1040;
+  display: flex;
+  justify-content: flex-end;
+  animation: fadeIn var(--t-fast) ease;
+}
+
+.tiroir-panneau {
+  width: 100%;
+  max-width: 620px;
+  height: 100vh;
+  background: var(--c-white);
+  border-left: 1px solid var(--c-border);
+  box-shadow: -10px 0 30px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  animation: fadeInLeft var(--t-base) ease;
+  overflow: hidden;
+}
+
+.tiroir-header {
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--c-border);
+  background: var(--c-surface);
+
+  &__left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  &__id {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--c-secondary);
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+}
+
+.btn-icon {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-md);
+  background: var(--c-white);
+  border: 1px solid var(--c-border);
+  color: var(--c-secondary);
+  cursor: pointer;
+  transition: all var(--t-fast);
+
+  &:hover {
+    background: var(--c-surface-alt);
+    color: var(--c-brand);
+    border-color: var(--c-brand-border);
+  }
+
+  &--danger:hover {
+    background: var(--c-danger-bg);
+    color: var(--c-danger);
+    border-color: var(--c-danger-border);
+  }
+}
+
+.btn-close {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-md);
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--c-secondary);
+  cursor: pointer;
+  transition: all var(--t-fast);
+
+  &:hover {
+    background: var(--c-surface-alt);
+    color: var(--c-text);
+  }
+}
+
+// ── BANNIÈRE HERO ─────────────────────────────────────────────
+.tiroir-banner {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  background: #0F172A;
+  overflow: hidden;
+
+  &__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.2) 0%, rgba(15, 23, 42, 0.9) 100%);
+  }
+
+  &__content {
+    position: absolute;
+    bottom: 1rem;
+    left: 1.5rem;
+    right: 1.5rem;
+    color: #FFFFFF;
+  }
+
+  &__region {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--c-cyan);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 4px;
+  }
+
+  &__title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    line-height: 1.2;
+  }
+
+  &__subtitle {
+    font-size: 12px;
+    color: #CBD5E1;
+    margin-top: 2px;
+  }
+}
+
+.tiroir-banner-simple {
+  padding: 1.5rem;
+  background: var(--c-surface);
+  border-bottom: 1px solid var(--c-border);
+
+  .tiroir-banner__region-simple {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--c-brand);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 4px;
+  }
+
+  .tiroir-banner__title-simple {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--c-text);
+  }
+
+  .tiroir-banner__subtitle-simple {
+    font-size: 12.5px;
+    color: var(--c-secondary);
+    margin-top: 2px;
+  }
+}
+
+// ── ONGLETS ───────────────────────────────────────────────────
+.tiroir-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--c-border);
+  padding: 0 1.5rem;
+  background: var(--c-surface);
+}
+
+.tiroir-tab {
+  padding: 10px 14px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--c-secondary);
+  cursor: pointer;
+  transition: all var(--t-fast);
+
+  &:hover {
+    color: var(--c-text);
+  }
+
+  &.active {
+    color: var(--c-brand);
+    border-bottom-color: var(--c-brand);
+  }
+}
+
+// ── CORPS & SECTIONS ──────────────────────────────────────────
+.tiroir-body {
+  padding: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.tiroir-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.metric-chips-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.metric-chip {
+  padding: 8px 12px;
+  border-radius: var(--r-md);
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 110px;
+
+  &__label {
+    font-size: 10.5px;
+    color: var(--c-secondary);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  &__value {
+    font-size: 12.5px;
+    color: var(--c-text);
+  }
+}
+
+.quote-callout {
+  padding: 12px 14px;
+  background: var(--c-accent-bg);
+  border-left: 3px solid var(--c-accent);
+  border-radius: var(--r-md);
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+
+  .quote-svg {
+    color: var(--c-accent);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .quote-text {
+    font-size: 12.5px;
+    font-style: italic;
+    color: var(--c-text);
+    line-height: 1.5;
+  }
+}
+
+.riddle-callout {
+  padding: 12px 14px;
+  background: var(--c-cyan-bg);
+  border-left: 3px solid var(--c-cyan);
+  border-radius: var(--r-md);
+
+  .riddle-formula {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--c-cyan);
+    display: block;
+    margin-bottom: 4px;
+  }
+  .riddle-prompt {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--c-text);
+  }
+}
+
+.moral-callout {
+  padding: 12px 14px;
+  background: var(--c-brand-bg);
+  border-left: 3px solid var(--c-brand);
+  border-radius: var(--r-md);
+
+  .moral-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--c-brand);
+    display: block;
+    margin-bottom: 4px;
+  }
+  .moral-text {
+    font-size: 12.5px;
+    font-style: italic;
+    color: var(--c-text);
+  }
+}
+
+.info-card {
+  padding: 1rem;
+  background: var(--c-white);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-lg);
+
+  &__heading {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--c-text);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+
+  &__text {
+    font-size: 13px;
+    color: var(--c-secondary);
+    line-height: 1.6;
+  }
+}
+
+// ── DÉTAILS PÉDAGOGIQUES ──────────────────────────────────────
+.sub-block {
+  &__title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--c-text);
+    margin-bottom: 8px;
+  }
+}
+
+.facts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.fact-item {
+  display: flex;
+  gap: 10px;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  padding: 10px 12px;
+  border-radius: var(--r-md);
+  font-size: 12.5px;
+
+  .fact-bullet {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--c-brand);
+    margin-top: 6px;
+    flex-shrink: 0;
+  }
+  .fact-title {
+    color: var(--c-text);
+    display: block;
+  }
+  .fact-desc {
+    color: var(--c-secondary);
+    margin-top: 2px;
+  }
+}
+
+.chapter-card {
+  padding: 12px 14px;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-md);
+
+  .chapter-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--c-text);
+    margin-bottom: 6px;
+  }
+  .chapter-content {
+    font-size: 12.5px;
+    color: var(--c-secondary);
+    line-height: 1.5;
+  }
+  .chapter-quote {
+    margin-top: 8px;
+    padding: 6px 10px;
+    border-left: 2px solid var(--c-brand);
+    background: var(--c-white);
+    font-style: italic;
+    font-size: 12px;
+    color: var(--c-text);
+
+    .author {
+      display: block;
+      font-size: 11px;
+      color: var(--c-secondary);
+      font-style: normal;
+      margin-top: 2px;
+    }
+  }
+}
+
+.scenes-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.scene-preview-card {
+  padding: 12px;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-md);
+
+  .scene-preview-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .scene-index {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: var(--r-xs);
+    background: var(--c-brand-bg);
+    color: var(--c-brand);
+  }
+  .scene-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--c-text);
+    margin: 0;
+  }
+  .scene-atmosphere {
+    font-size: 11px;
+    color: var(--c-accent);
+    margin-left: auto;
+  }
+  .scene-text {
+    font-size: 12px;
+    color: var(--c-secondary);
+    line-height: 1.5;
+  }
+  .scene-insight-box {
+    margin-top: 6px;
+    padding: 6px 8px;
+    border-radius: var(--r-sm);
+    background: var(--c-success-bg);
+    color: var(--c-success);
+    font-size: 11px;
+  }
+  .scene-choices-row {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--c-border-light);
+
+    .choices-caption {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--c-text);
+    }
+    .choices-list {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-top: 4px;
+    }
+    .choice-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+      color: var(--c-secondary);
+    }
+    .choice-dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--c-brand);
+    }
+  }
+}
+
+.hints-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.hint-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-md);
+  font-size: 12px;
+
+  .hint-num {
+    font-weight: 700;
+    color: var(--c-cyan);
+  }
+  .hint-text {
+    color: var(--c-text);
+  }
+}
+
+.options-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.option-card {
+  padding: 8px 10px;
+  border-radius: var(--r-md);
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+
+  &--correct {
+    background: var(--c-success-bg);
+    border-color: var(--c-success-border);
+    color: var(--c-success);
+    font-weight: 600;
+  }
+}
+
+.quiz-question-prompt {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--c-text);
+}
+
+.quiz-options-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.quiz-option-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: var(--r-md);
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  font-size: 12.5px;
+
+  .letter-badge {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--c-white);
+    border: 1px solid var(--c-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10.5px;
+    font-weight: 700;
+  }
+
+  &--correct {
+    background: var(--c-success-bg);
+    border-color: var(--c-success-border);
+    font-weight: 600;
+    color: var(--c-success);
+  }
+
+  .correct-pill {
+    margin-left: auto;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--c-success);
+  }
+}
+
+.explanation-box {
+  padding: 10px 12px;
+  border-radius: var(--r-md);
+  background: var(--c-surface);
+  border-left: 3px solid var(--c-brand);
+  font-size: 12px;
+  color: var(--c-secondary);
+  line-height: 1.5;
+
+  strong {
+    color: var(--c-text);
+    display: block;
+    margin-bottom: 2px;
+  }
+}
+
+.teller-info-card {
+  padding: 12px;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-md);
+
+  .teller-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--c-text);
+  }
+  .teller-role {
+    font-size: 12px;
+    color: var(--c-secondary);
+  }
+  .teller-loc {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--c-brand);
+    margin-top: 4px;
+    display: block;
+  }
+}
+
+.oral-transcript-box {
+  padding: 12px;
+  background: var(--c-accent-bg);
+  border: 1px solid var(--c-accent-border);
+  border-radius: var(--r-md);
+
+  .transcript-heading {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--c-accent);
+    margin-bottom: 4px;
+  }
+  .transcript-text {
+    font-size: 12.5px;
+    font-style: italic;
+    color: var(--c-text);
+    line-height: 1.6;
+  }
+}
+
+// ── TABLEAU MÉTADONNÉES ───────────────────────────────────────
+.meta-table {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+
+.meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--c-border-light);
+  font-size: 12.5px;
+
+  &:last-child { border-bottom: none; }
+
+  .meta-key {
+    color: var(--c-secondary);
+    font-weight: 500;
+  }
+  .meta-val {
+    color: var(--c-text);
+    font-weight: 600;
+  }
+}
+
+// ── PIED DU TIROIR ────────────────────────────────────────────
+.tiroir-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--c-border);
+  background: var(--c-surface);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}

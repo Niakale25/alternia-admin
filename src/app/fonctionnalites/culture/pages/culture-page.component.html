@@ -1,0 +1,226 @@
+<div class="page-content culture-page">
+
+  <!-- ── EN-TÊTE DE PAGE ULTRA-PUR ────────────────────────────── -->
+  <div class="culture-page__header">
+    <div class="culture-page__header-titles">
+      <div class="header-eyebrow">
+        <span class="dot-indicator"></span>
+        GOUVERNANCE EDTECH — PATRIMOINE & CULTURE MALIENNE
+      </div>
+      <h1 class="header-title">Contenus Culturels</h1>
+      <p class="header-subtitle">
+        Supervisez et diffusez les figures historiques, récits interactifs, énigmes et mémoires vivantes.
+      </p>
+    </div>
+
+    <div class="culture-page__header-right">
+      <!-- Résumé compact des statistiques en pilule unique -->
+      <div class="stats-compact-pill">
+        <div class="stat-pill-item">
+          <span class="stat-pill-num">{{ service.statistiques().totalContenus }}</span>
+          <span class="stat-pill-lbl">Fiches</span>
+        </div>
+        <span class="stat-pill-sep"></span>
+        <div class="stat-pill-item">
+          <span class="stat-pill-num text-brand">{{ service.statistiques().regionsCouvertes }}</span>
+          <span class="stat-pill-lbl">Régions</span>
+        </div>
+        <span class="stat-pill-sep"></span>
+        <div class="stat-pill-item">
+          <span class="stat-pill-num text-success">{{ service.statistiques().tauxPublication }}%</span>
+          <span class="stat-pill-lbl">Publiés</span>
+        </div>
+      </div>
+
+      <button 
+        type="button" 
+        class="btn btn--primary btn--nouveau"
+        (click)="ouvrirModalCreation('figure')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="12" y1="5" x2="12" y2="19"/>
+          <line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        Nouveau Contenu
+      </button>
+    </div>
+  </div>
+
+  <!-- ── BARRE DE CONTRÔLE UNIFIÉE (ONGLETS + FILTRES) ────────── -->
+  <div class="unified-control-panel card mb-5">
+    
+    <!-- Ligne 1 : Onglets de Catégories (Style Segmented Control Épuré) -->
+    <div class="categories-segmented-bar">
+      @for (onglet of ongletsTypes; track onglet.type) {
+        <button 
+          type="button" 
+          class="segmented-tab"
+          [class.active]="service.filtreType() === onglet.type"
+          (click)="filtrerParType(onglet.type)">
+          <span class="tab-text">{{ onglet.label }}</span>
+          <span class="tab-count-badge">
+            {{ service.compteursParType()[onglet.type] }}
+          </span>
+        </button>
+      }
+    </div>
+
+    <!-- Ligne 2 : Barre d'Outils et Filtres Intégrés -->
+    <div class="integrated-toolbar">
+      <div class="toolbar-filters-group">
+        
+        <!-- Recherche textuelle instantanée -->
+        <div class="search-input-wrap">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="search-icon">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="m21 21-4.3-4.3"/>
+          </svg>
+          <input 
+            type="text" 
+            class="clean-search-input"
+            [ngModel]="service.filtreRecherche()" 
+            (ngModelChange)="service.filtreRecherche.set($event)"
+            placeholder="Rechercher par titre, héros, mot-clé..." />
+          @if (service.filtreRecherche()) {
+            <button type="button" class="btn-clear-search" (click)="service.filtreRecherche.set('')">✕</button>
+          }
+        </div>
+
+        <!-- Filtre Territoire / Région -->
+        <div class="filter-dropdown-wrap">
+          <select 
+            class="clean-select" 
+            [ngModel]="service.filtreRegion()" 
+            (ngModelChange)="service.filtreRegion.set($event)">
+            <option value="all">Tous les territoires du Mali</option>
+            @for (reg of service.regions(); track reg.id) {
+              <option [value]="reg.id">{{ reg.nom }} ({{ reg.surnom }})</option>
+            }
+          </select>
+        </div>
+
+        <!-- Filtre Statut de diffusion -->
+        <div class="filter-dropdown-wrap">
+          <select 
+            class="clean-select" 
+            [ngModel]="service.filtreStatut()" 
+            (ngModelChange)="service.filtreStatut.set($event)">
+            <option value="tous">Tous les statuts</option>
+            <option value="publie">Publié uniquement</option>
+            <option value="brouillon">Brouillon uniquement</option>
+          </select>
+        </div>
+
+        @if (service.filtreRecherche() || service.filtreType() !== 'tous' || service.filtreRegion() !== 'all' || service.filtreStatut() !== 'tous') {
+          <button type="button" class="btn-reset-filters" (click)="service.reinitialiserFiltres()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+              <path d="M3 3v5h5"/>
+            </svg>
+            Réinitialiser
+          </button>
+        }
+      </div>
+
+      <!-- Compteur et Commutateur Grille / Tableau -->
+      <div class="toolbar-view-group">
+        <span class="results-counter">
+          <strong>{{ service.contenusFiltres().length }}</strong> fiche(s)
+        </span>
+
+        <div class="view-mode-toggle">
+          <button 
+            type="button" 
+            class="view-toggle-btn" 
+            [class.active]="modeAffichage() === 'cartes'"
+            (click)="changerMode('cartes')"
+            title="Vue Cartes Vitrines">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect width="7" height="7" x="3" y="3" rx="1"/>
+              <rect width="7" height="7" x="14" y="3" rx="1"/>
+              <rect width="7" height="7" x="14" y="14" rx="1"/>
+              <rect width="7" height="7" x="3" y="14" rx="1"/>
+            </svg>
+          </button>
+
+          <button 
+            type="button" 
+            class="view-toggle-btn" 
+            [class.active]="modeAffichage() === 'tableau'"
+            (click)="changerMode('tableau')"
+            title="Vue Tableau SaaS">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <line x1="3" y1="12" x2="21" y2="12"/>
+              <line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── CONTENU PRINCIPAL : GRILLE OU TABLEAU ─────────────────── -->
+  @if (service.contenusFiltres().length > 0) {
+    @if (modeAffichage() === 'cartes') {
+      <div class="culture-cards-grid">
+        @for (item of service.contenusFiltres(); track item.id) {
+          <app-carte-culture
+            [item]="item"
+            [regionCouleur]="getRegionColor(item.regionId)"
+            (voirDetail)="ouvrirDetail($event)"
+            (editer)="ouvrirModalEdition($event)"
+            (supprimer)="demanderSuppression($event)"
+            (basculerPublication)="service.basculerPublication($event)">
+          </app-carte-culture>
+        }
+      </div>
+    } @else {
+      <app-tableau-culture
+        [contenus]="service.contenusFiltres()"
+        (voirDetail)="ouvrirDetail($event)"
+        (editer)="ouvrirModalEdition($event)"
+        (supprimer)="demanderSuppression($event)"
+        (basculerPublication)="service.basculerPublication($event)">
+      </app-tableau-culture>
+    }
+  } @else {
+    <app-etat-vide
+      titre="Aucun contenu culturel correspondant"
+      description="Modifiez votre recherche ou réinitialisez les critères de filtrage pour afficher les résultats.">
+    </app-etat-vide>
+  }
+
+  <!-- ── TIROIR DÉTAIL & STUDIO DE CRÉATION ─────────────────────── -->
+
+  <!-- Tiroir de Détail Latéral -->
+  @if (service.tiroirDetailOuvert() && service.elementEnDetail()) {
+    <app-tiroir-detail-culture
+      [item]="service.elementEnDetail()!"
+      (fermer)="fermerDetail()"
+      (editer)="ouvrirModalEdition($event)"
+      (supprimer)="demanderSuppression($event)"
+      (basculerPublication)="service.basculerPublication($event)">
+    </app-tiroir-detail-culture>
+  }
+
+  <!-- Studio de Création / Édition -->
+  @if (modalFormulaireOuvert()) {
+    <app-modal-formulaire-culture
+      [elementAEditer]="elementEnEdition()"
+      [typeParDefaut]="typeNouveauContenu()"
+      (fermer)="fermerModalFormulaire()"
+      (sauvegarder)="sauvegarderContenu($event)">
+    </app-modal-formulaire-culture>
+  }
+
+  <!-- Modale de Suppression -->
+  @if (elementASupprimer()) {
+    <app-modal-suppression-culture
+      [item]="elementASupprimer()!"
+      (annuler)="annulerSuppression()"
+      (confirmer)="confirmerSuppression($event)">
+    </app-modal-suppression-culture>
+  }
+
+</div>

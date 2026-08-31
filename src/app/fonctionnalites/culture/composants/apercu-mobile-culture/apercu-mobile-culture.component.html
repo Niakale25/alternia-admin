@@ -1,0 +1,355 @@
+<div class="simulateur-overlay" (click)="fermer.emit()">
+  <div class="simulateur-conteneur" (click)="$event.stopPropagation()">
+    <!-- Barre de fermeture supérieure -->
+    <div class="simulateur-header">
+      <div class="simulateur-header__infos">
+        <span class="badge badge--brand">📱 Aperçu Rendu Alta Mobile (Flutter)</span>
+        <span class="simulateur-header__id">ID : {{ item.id }}</span>
+      </div>
+      <button type="button" class="btn-fermer" (click)="fermer.emit()" title="Fermer l'aperçu">
+        ✕
+      </button>
+    </div>
+
+    <!-- Coque de Smartphone Mobile -->
+    <div class="smartphone-frame">
+      <!-- Haut-parleur / Encoche -->
+      <div class="smartphone-notch">
+        <div class="speaker"></div>
+        <div class="camera"></div>
+      </div>
+
+      <!-- Écran Application Alta -->
+      <div class="smartphone-screen">
+        <!-- Barre de statut mobile -->
+        <div class="mobile-status-bar">
+          <span class="time">09:41</span>
+          <div class="icons">
+            <span>📶</span>
+            <span>📡</span>
+            <span>🔋</span>
+          </div>
+        </div>
+
+        <!-- Top Bar Alta Culture -->
+        <div class="alta-topbar">
+          <div class="alta-topbar__back">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="m15 18-6-6 6-6"/>
+            </svg>
+          </div>
+          <span class="alta-topbar__title">Patrimoine Malien</span>
+          <div class="alta-topbar__passport-stamp">
+            <span>🇲🇱</span>
+          </div>
+        </div>
+
+        <!-- Corps du rendu selon le type de contenu -->
+        <div class="mobile-scrollable-content">
+
+          <!-- ── 1. FIGURE HISTORIQUE ───────────────────────────────── -->
+          @if (item.type === 'figure') {
+            <div class="vue-figure">
+              <div class="hero-photo-wrap">
+                <img [src]="item.photoUrl" [alt]="item.nom" class="hero-photo" />
+                <div class="hero-gradient"></div>
+                <div class="hero-content">
+                  <span class="region-pill">📍 {{ item.regionNom }}</span>
+                  <h1 class="hero-title">{{ item.nom }}</h1>
+                  <p class="hero-honorific">{{ item.titreHonorifique }}</p>
+                  <span class="hero-period">⏳ {{ item.periode }}</span>
+                </div>
+              </div>
+
+              <div class="mobile-body-padding">
+                @if (item.citationHistorique) {
+                  <div class="quote-card">
+                    <span class="quote-mark">“</span>
+                    <p class="quote-text">{{ item.citationHistorique }}</p>
+                  </div>
+                }
+
+                <div class="section-block">
+                  <h3 class="section-heading">Résumé Historique</h3>
+                  <p class="paragraph-text">{{ item.resume }}</p>
+                </div>
+
+                @if (item.faitsCles.length) {
+                  <div class="section-block">
+                    <h3 class="section-heading">Faits Marquants</h3>
+                    <div class="keyfacts-list">
+                      @for (fait of item.faitsCles; track fait.titre) {
+                        <div class="keyfact-card">
+                          <span class="keyfact-dot"></span>
+                          <div>
+                            <strong class="keyfact-title">{{ fait.titre }}</strong>
+                            <p class="keyfact-desc">{{ fait.description }}</p>
+                          </div>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+          <!-- ── 2. MONUMENT OU VILLE ───────────────────────────────── -->
+          @else if (item.type === 'monument' || item.type === 'ville') {
+            <div class="vue-lieu">
+              <div class="hero-photo-wrap">
+                <img [src]="item.photoUrl" [alt]="'nom' in item ? item.nom : ''" class="hero-photo" />
+                <div class="hero-gradient"></div>
+                <div class="hero-content">
+                  <span class="region-pill">📍 {{ item.regionNom }}</span>
+                  <h1 class="hero-title">{{ 'nom' in item ? item.nom : '' }}</h1>
+                  <p class="hero-honorific">{{ 'sousTitre' in item ? item.sousTitre : '' }}</p>
+                </div>
+              </div>
+
+              <div class="mobile-body-padding">
+                <div class="info-chips-row">
+                  @if (item.type === 'monument') {
+                    <span class="chip-item">🏛️ {{ item.ere }}</span>
+                    <span class="chip-item">📍 {{ item.localisationDetails }}</span>
+                  } @else {
+                    <span class="chip-item">🏰 {{ item.fondation }}</span>
+                  }
+                </div>
+
+                <div class="section-block">
+                  <h3 class="section-heading">Présentation</h3>
+                  <p class="paragraph-text">{{ 'presentation' in item ? item.presentation : 'resume' in item ? item.resume : '' }}</p>
+                </div>
+
+                @if (item.type === 'monument' && item.architectureEtMateriaux) {
+                  <div class="section-block highlight-block">
+                    <h3 class="section-heading">🧱 Architecture & Banco</h3>
+                    <p class="paragraph-text">{{ item.architectureEtMateriaux }}</p>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+          <!-- ── 3. CONTE INTERACTIF ────────────────────────────────── -->
+          @else if (item.type === 'conte') {
+            <div class="vue-conte">
+              <div class="conte-header-card">
+                <span class="conte-badge">📖 Conte Initiatique</span>
+                <h2 class="conte-title">{{ item.titre }}</h2>
+                <p class="conte-narrator">🎙️ Récité par {{ item.narrateur }}</p>
+                <div class="conte-meta-chips">
+                  <span>⏱️ {{ item.dureeLecture }}</span>
+                  <span>🎧 {{ item.dureeAudio }}</span>
+                  <span>📍 {{ item.regionNom }}</span>
+                </div>
+              </div>
+
+              @if (sceneCourante) {
+                <div class="scene-interactive-card">
+                  <div class="scene-number-bar">
+                    <span>Scène {{ sceneCourante.numeroScene }} / {{ item.scenes.length }}</span>
+                    @if (sceneCourante.atmosphere) {
+                      <span class="atmosphere-tag">✨ {{ sceneCourante.atmosphere }}</span>
+                    }
+                  </div>
+
+                  <h3 class="scene-title">{{ sceneCourante.titre }}</h3>
+                  <p class="scene-narrative">{{ sceneCourante.texteNarratif }}</p>
+
+                  @if (sceneCourante.insightCulturel) {
+                    <div class="scene-insight">
+                      <strong>💡 Sagesse des Anciens :</strong> {{ sceneCourante.insightCulturel }}
+                    </div>
+                  }
+
+                  <!-- Choix interactifs pour passer à la suite -->
+                  @if (sceneCourante.choix.length) {
+                    <div class="choices-container">
+                      <span class="choices-label">Que décides-tu de faire ?</span>
+                      @for (choix of sceneCourante.choix; track choix.id) {
+                        <button type="button" class="choice-button" (click)="choisirScene(choix.sceneSuivanteId)">
+                          <span class="choice-text">{{ choix.libelle }}</span>
+                          <span class="choice-desc">{{ choix.description }}</span>
+                        </button>
+                      }
+                    </div>
+                  } @else {
+                    <div class="epilogue-box">
+                      <span class="epilogue-icon">🌟</span>
+                      <p class="epilogue-moral"><strong>Morale :</strong> {{ item.morale }}</p>
+                      <button type="button" class="btn-restart" (click)="recommencerConte()">
+                        🔄 Recommencer le conte
+                      </button>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          }
+
+          <!-- ── 4. DEVINETTE « N'DA ! » ─────────────────────────────── -->
+          @else if (item.type === 'devinette') {
+            <div class="vue-devinette">
+              <div class="riddle-card">
+                <div class="riddle-top">
+                  <span class="riddle-tag">✨ Devinette des Aînés</span>
+                  <span class="xp-badge">+{{ item.recompenseXp }} XP</span>
+                </div>
+
+                <div class="riddle-formula">{{ item.formuleIntro }}</div>
+                <h3 class="riddle-text">« {{ item.enigmeTexte }} »</h3>
+
+                <!-- Indices progressifs -->
+                <div class="hints-box">
+                  <div class="hints-header">
+                    <span>💡 Indices ({{ indicesRevele() }}/{{ item.indices.length }})</span>
+                    @if (indicesRevele() < item.indices.length) {
+                      <button type="button" class="btn-reveal-hint" (click)="revelerProchainIndice()">
+                        Révéler un indice
+                      </button>
+                    }
+                  </div>
+                  @for (idx of item.indices; track $index) {
+                    @if ($index < indicesRevele()) {
+                      <div class="hint-item animate-fade-in">
+                        <span>🔍 {{$index + 1}}. {{ idx }}</span>
+                      </div>
+                    }
+                  }
+                </div>
+
+                <!-- 4 Options de réponse -->
+                <div class="riddle-options">
+                  @for (opt of item.options; track opt) {
+                    <button 
+                      type="button" 
+                      class="riddle-opt-btn"
+                      [class.correct]="reponseSelectionnee() === opt && opt === item.bonneReponse"
+                      [class.wrong]="reponseSelectionnee() === opt && opt !== item.bonneReponse"
+                      (click)="testerReponseDevinette(opt)">
+                      {{ opt }}
+                    </button>
+                  }
+                </div>
+
+                @if (reponseSelectionnee()) {
+                  <div class="riddle-result animate-fade-in" [class.result-success]="reponseSelectionnee() === item.bonneReponse">
+                    @if (reponseSelectionnee() === item.bonneReponse) {
+                      <span class="result-title">🎉 Bravo ! C'est la bonne réponse !</span>
+                    } @else {
+                      <span class="result-title">❌ Pas tout à fait ! Réponse : {{ item.bonneReponse }}</span>
+                    }
+                    <p class="result-explanation">{{ item.explicationCulturelle }}</p>
+                    @if (item.proverbe) {
+                      <span class="result-proverb">{{ item.proverbe }}</span>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+          <!-- ── 5. QUIZ CULTUREL ───────────────────────────────────── -->
+          @else if (item.type === 'quiz') {
+            <div class="vue-quiz">
+              <div class="quiz-mobile-card">
+                <div class="quiz-header-row">
+                  <span class="badge badge--success">🎯 Quiz Culturel</span>
+                  <span class="xp-badge">+{{ item.recompenseXp }} XP</span>
+                </div>
+
+                <h3 class="quiz-question-title">{{ item.question }}</h3>
+
+                <div class="quiz-options-list">
+                  @for (option of item.options; track $index) {
+                    <button 
+                      type="button" 
+                      class="quiz-option-btn"
+                      [class.selected-correct]="optionQuizChoisie() !== null && $index === item.indexCorrect"
+                      [class.selected-wrong]="optionQuizChoisie() === $index && $index !== item.indexCorrect"
+                      (click)="choisirOptionQuiz($index)">
+                      <span class="letter">{{ ['A', 'B', 'C', 'D'][$index] }}</span>
+                      <span class="text">{{ option }}</span>
+                    </button>
+                  }
+                </div>
+
+                @if (optionQuizChoisie() !== null) {
+                  <div class="quiz-explanation-box animate-fade-in">
+                    <strong>💡 Explication pédagogique :</strong>
+                    <p>{{ item.explication }}</p>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+          <!-- ── 6. TÉMOIGNAGE ORAL ─────────────────────────────────── -->
+          @else if (item.type === 'temoignage') {
+            <div class="vue-temoignage">
+              <div class="temoignage-audio-card">
+                <div class="avatar-row">
+                  @if (item.avatarUrl) {
+                    <img [src]="item.avatarUrl" [alt]="item.conteur" class="conteur-avatar" />
+                  } @else {
+                    <div class="avatar-placeholder">🎙️</div>
+                  }
+                  <div>
+                    <h3 class="conteur-name">{{ item.conteur }}</h3>
+                    <p class="conteur-title">{{ item.qualiteConteur }}</p>
+                    <span class="conteur-loc">📍 {{ item.lieu }}</span>
+                  </div>
+                </div>
+
+                <div class="audio-player-mockup">
+                  <div class="play-btn-circle">▶</div>
+                  <div class="waveform">
+                    <span class="bar" style="height: 40%"></span>
+                    <span class="bar" style="height: 70%"></span>
+                    <span class="bar" style="height: 100%"></span>
+                    <span class="bar" style="height: 60%"></span>
+                    <span class="bar" style="height: 85%"></span>
+                    <span class="bar" style="height: 50%"></span>
+                    <span class="bar" style="height: 90%"></span>
+                    <span class="bar" style="height: 40%"></span>
+                  </div>
+                  <span class="audio-dur">{{ item.duree }}</span>
+                </div>
+
+                <div class="extrait-box">
+                  <p class="extrait-text">{{ item.extrait }}</p>
+                </div>
+              </div>
+            </div>
+          }
+
+        </div>
+
+        <!-- Barre de navigation basse Alta Mobile -->
+        <div class="alta-bottom-nav">
+          <div class="nav-item active">
+            <span>🏛️</span>
+            <label>Découvrir</label>
+          </div>
+          <div class="nav-item">
+            <span>📖</span>
+            <label>Contes</label>
+          </div>
+          <div class="nav-item">
+            <span>🏆</span>
+            <label>Défis</label>
+          </div>
+          <div class="nav-item">
+            <span>🛂</span>
+            <label>Passeport</label>
+          </div>
+        </div>
+
+        <!-- Barre d'accueil iPhone / Android -->
+        <div class="home-indicator"></div>
+      </div>
+    </div>
+  </div>
+</div>

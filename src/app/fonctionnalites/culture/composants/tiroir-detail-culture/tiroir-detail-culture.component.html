@@ -1,0 +1,429 @@
+<div class="tiroir-backdrop" (click)="fermer.emit()">
+  <div class="tiroir-panneau" (click)="$event.stopPropagation()">
+
+    <!-- En-tête du panneau -->
+    <div class="tiroir-header">
+      <div class="tiroir-header__left">
+        <span class="badge" [ngClass]="typeBadgeClass">{{ typeLabel }}</span>
+        <span class="tiroir-header__id">{{ item.id }}</span>
+      </div>
+
+      <div class="tiroir-header__actions">
+        <button 
+          type="button" 
+          class="btn btn--secondary btn--sm" 
+          (click)="editer.emit(item)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+            <path d="m15 5 4 4"/>
+          </svg>
+          Modifier
+        </button>
+
+
+        <button 
+          type="button" 
+          class="btn-icon btn-icon--danger" 
+          (click)="supprimer.emit(item)"
+          title="Supprimer">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 6h18"/>
+            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+          </svg>
+        </button>
+
+        <button type="button" class="btn-close" (click)="fermer.emit()" title="Fermer">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Bannière / Image de couverture -->
+    @if (imageUrl) {
+      <div class="tiroir-banner">
+        <img [src]="imageUrl" [alt]="titre" class="tiroir-banner__img" />
+        <div class="tiroir-banner__overlay"></div>
+        <div class="tiroir-banner__content">
+          <div class="tiroir-banner__region">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+            {{ item.regionNom }}
+          </div>
+          <h2 class="tiroir-banner__title">{{ titre }}</h2>
+          @if (sousTitre) {
+            <p class="tiroir-banner__subtitle">{{ sousTitre }}</p>
+          }
+        </div>
+      </div>
+    } @else {
+      <div class="tiroir-banner-simple">
+        <div class="tiroir-banner__region-simple">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
+            <circle cx="12" cy="10" r="3"/>
+          </svg>
+          {{ item.regionNom }}
+        </div>
+        <h2 class="tiroir-banner__title-simple">{{ titre }}</h2>
+        @if (sousTitre) {
+          <p class="tiroir-banner__subtitle-simple">{{ sousTitre }}</p>
+        }
+      </div>
+    }
+
+    <!-- Onglets de navigation dans le tiroir -->
+    <div class="tiroir-tabs">
+      <button 
+        type="button" 
+        class="tiroir-tab" 
+        [class.active]="ongletActif() === 'vue'"
+        (click)="ongletActif.set('vue')">
+        Vue d'ensemble
+      </button>
+      <button 
+        type="button" 
+        class="tiroir-tab" 
+        [class.active]="ongletActif() === 'contenu'"
+        (click)="ongletActif.set('contenu')">
+        Détails Pédagogiques
+      </button>
+      <button 
+        type="button" 
+        class="tiroir-tab" 
+        [class.active]="ongletActif() === 'metas'"
+        (click)="ongletActif.set('metas')">
+        Métadonnées & Diffusion
+      </button>
+    </div>
+
+    <!-- Corps du tiroir -->
+    <div class="tiroir-body">
+
+      <!-- ── ONGLET 1 : VUE D'ENSEMBLE ───────────────────────────── -->
+      @if (ongletActif() === 'vue') {
+        <div class="tiroir-section">
+          
+          <!-- Statut et Métriques -->
+          <div class="metric-chips-row">
+            <div class="metric-chip">
+              <span class="metric-chip__label">Statut</span>
+              <span class="badge" [class.badge--success]="item.publie" [class.badge--neutral]="!item.publie">
+                <span class="status-dot" [class.status-dot--online]="item.publie" [class.status-dot--offline]="!item.publie"></span>
+                {{ item.publie ? 'Publié' : 'Brouillon' }}
+              </span>
+            </div>
+
+            <div class="metric-chip">
+              <span class="metric-chip__label">Territoire</span>
+              <span class="metric-chip__value">{{ item.regionNom }}</span>
+            </div>
+
+            @if (item.type === 'figure') {
+              <div class="metric-chip">
+                <span class="metric-chip__label">Période</span>
+                <span class="metric-chip__value font-medium">{{ item.periode }}</span>
+              </div>
+            } @else if (item.type === 'monument') {
+              <div class="metric-chip">
+                <span class="metric-chip__label">Époque</span>
+                <span class="metric-chip__value font-medium">{{ item.ere }}</span>
+              </div>
+            } @else if (item.type === 'conte') {
+              <div class="metric-chip">
+                <span class="metric-chip__label">Scènes</span>
+                <span class="metric-chip__value font-medium">{{ item.scenes.length }} scènes</span>
+              </div>
+              <div class="metric-chip">
+                <span class="metric-chip__label">Audio</span>
+                <span class="metric-chip__value font-medium">{{ item.dureeAudio }}</span>
+              </div>
+            } @else if (item.type === 'devinette') {
+              <div class="metric-chip">
+                <span class="metric-chip__label">Récompense</span>
+                <span class="metric-chip__value text-cyan font-bold">+{{ item.recompenseXp }} XP</span>
+              </div>
+              <div class="metric-chip">
+                <span class="metric-chip__label">Difficulté</span>
+                <span class="metric-chip__value font-medium">{{ item.difficulte }}</span>
+              </div>
+            } @else if (item.type === 'quiz') {
+              <div class="metric-chip">
+                <span class="metric-chip__label">Récompense</span>
+                <span class="metric-chip__value text-success font-bold">+{{ item.recompenseXp }} XP</span>
+              </div>
+            } @else if (item.type === 'temoignage') {
+              <div class="metric-chip">
+                <span class="metric-chip__label">Durée</span>
+                <span class="metric-chip__value font-medium">{{ item.duree }}</span>
+              </div>
+            }
+          </div>
+
+          <!-- Citation Historique ou Formule -->
+          @if (item.type === 'figure' && item.citationHistorique) {
+            <div class="quote-callout">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="quote-svg">
+                <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.75-2-2-2H4c-1.25 0-2 .75-2 2v6c0 7 1 8 3 8Zm14 0c3 0 7-1 7-8V5c0-1.25-.75-2-2-2h-4c-1.25 0-2 .75-2 2v6c0 7 1 8 3 8Z"/>
+              </svg>
+              <p class="quote-text">« {{ item.citationHistorique }} »</p>
+            </div>
+          } @else if (item.type === 'devinette') {
+            <div class="riddle-callout">
+              <span class="riddle-formula">{{ item.formuleIntro }}</span>
+              <p class="riddle-prompt">« {{ item.enigmeTexte }} »</p>
+            </div>
+          } @else if (item.type === 'conte' && item.morale) {
+            <div class="moral-callout">
+              <span class="moral-label">Morale & Enseignement Traditionnel</span>
+              <p class="moral-text">« {{ item.morale }} »</p>
+            </div>
+          }
+
+          <!-- Résumé / Présentation -->
+          <div class="info-card">
+            <h4 class="info-card__heading">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="16" x2="12" y2="12"/>
+                <line x1="12" y1="8" x2="12.01" y2="8"/>
+              </svg>
+              Présentation Pédagogique
+            </h4>
+            <p class="info-card__text">
+              {{ 'resume' in item ? item.resume : 'explicationCulturelle' in item ? item.explicationCulturelle : 'extrait' in item ? item.extrait : 'presentation' in item ? item.presentation : '' }}
+            </p>
+          </div>
+
+        </div>
+      }
+
+      <!-- ── ONGLET 2 : DÉTAILS PÉDAGOGIQUES ───────────────────────── -->
+      @if (ongletActif() === 'contenu') {
+        <div class="tiroir-section">
+
+          <!-- Cas Figures / Monuments / Villes : Faits Marquants -->
+          @if ((item.type === 'figure' || item.type === 'monument' || item.type === 'ville') && item.faitsCles && item.faitsCles.length > 0) {
+            <div class="sub-block">
+              <h4 class="sub-block__title">Faits Marquants & Chronologie</h4>
+              <div class="facts-list">
+                @for (fait of item.faitsCles; track fait.titre) {
+                  <div class="fact-item">
+                    <span class="fact-bullet"></span>
+                    <div>
+                      <strong class="fact-title">{{ fait.titre }}</strong>
+                      <p class="fact-desc">{{ fait.description }}</p>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+          <!-- Cas Figures / Monuments / Villes : Chapitres Éditoriaux -->
+          @if ((item.type === 'figure' || item.type === 'monument' || item.type === 'ville') && item.chapitres && item.chapitres.length > 0) {
+            <div class="sub-block mt-4">
+              <h4 class="sub-block__title">Récits Détaillés & Chapitres</h4>
+              @for (chap of item.chapitres; track chap.titre) {
+                <div class="chapter-card mb-3">
+                  <h5 class="chapter-title">{{ chap.titre }}</h5>
+                  <p class="chapter-content">{{ chap.contenu }}</p>
+                  @if (chap.citation) {
+                    <div class="chapter-quote">
+                      <p>« {{ chap.citation }} »</p>
+                      @if (chap.auteurCitation) {
+                        <span class="author">— {{ chap.auteurCitation }}</span>
+                      }
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          }
+
+          <!-- Cas Conte : Scènes interactives -->
+          @if (item.type === 'conte') {
+            <div class="sub-block">
+              <h4 class="sub-block__title">Scènes Interactives ({{ item.scenes.length }})</h4>
+              <div class="scenes-stack">
+                @for (scene of item.scenes; track scene.id) {
+                  <div class="scene-preview-card">
+                    <div class="scene-preview-header">
+                      <span class="scene-index">Scène {{ scene.numeroScene }}</span>
+                      <h5 class="scene-title">{{ scene.titre }}</h5>
+                      @if (scene.atmosphere) {
+                        <span class="scene-atmosphere">{{ scene.atmosphere }}</span>
+                      }
+                    </div>
+                    <p class="scene-text">{{ scene.texteNarratif }}</p>
+
+                    @if (scene.insightCulturel) {
+                      <div class="scene-insight-box">
+                        <strong>Transmission :</strong> {{ scene.insightCulturel }}
+                      </div>
+                    }
+
+                    @if (scene.choix && scene.choix.length > 0) {
+                      <div class="scene-choices-row">
+                        <span class="choices-caption">Choix proposés à l'élève :</span>
+                        <div class="choices-list">
+                          @for (c of scene.choix; track c.id) {
+                            <div class="choice-item">
+                              <span class="choice-dot"></span>
+                              <span><strong>{{ c.libelle }}</strong> — {{ c.description }}</span>
+                            </div>
+                          }
+                        </div>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+          <!-- Cas Devinette : Indices et options -->
+          @if (item.type === 'devinette') {
+            <div class="sub-block">
+              <h4 class="sub-block__title">Indices Progressifs</h4>
+              <div class="hints-list mb-4">
+                @for (idx of item.indices; track $index) {
+                  <div class="hint-card">
+                    <span class="hint-num">#{{ $index + 1 }}</span>
+                    <span class="hint-text">{{ idx }}</span>
+                  </div>
+                }
+              </div>
+
+              <h4 class="sub-block__title">Options & Solution</h4>
+              <div class="options-grid mb-4">
+                @for (opt of item.options; track opt) {
+                  <div class="option-card" [class.option-card--correct]="opt === item.bonneReponse">
+                    <span class="option-status">
+                      @if (opt === item.bonneReponse) {
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                          <polyline points="20 6 9 17 4 12"/>
+                        </svg>
+                      }
+                    </span>
+                    <span class="option-title">{{ opt }}</span>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+          <!-- Cas Quiz : Question & Réponses -->
+          @if (item.type === 'quiz') {
+            <div class="sub-block">
+              <h4 class="sub-block__title">Question Pédagogique</h4>
+              <p class="quiz-question-prompt mb-3">« {{ item.question }} »</p>
+
+              <div class="quiz-options-stack mb-4">
+                @for (opt of item.options; track $index) {
+                  <div class="quiz-option-row" [class.quiz-option-row--correct]="$index === item.indexCorrect">
+                    <span class="letter-badge">{{ ['A', 'B', 'C', 'D'][$index] }}</span>
+                    <span class="option-label">{{ opt }}</span>
+                    @if ($index === item.indexCorrect) {
+                      <span class="correct-pill">Bonne réponse</span>
+                    }
+                  </div>
+                }
+              </div>
+
+              <div class="explanation-box">
+                <strong>Explication fournie à l'élève :</strong>
+                <p>{{ item.explication }}</p>
+              </div>
+            </div>
+          }
+
+          <!-- Cas Témoignage : Récit Oral -->
+          @if (item.type === 'temoignage') {
+            <div class="sub-block">
+              <div class="teller-info-card mb-4">
+                <h4 class="teller-name">{{ item.conteur }}</h4>
+                <p class="teller-role">{{ item.qualiteConteur }}</p>
+                <span class="teller-loc">{{ item.lieu }}</span>
+              </div>
+
+              <div class="oral-transcript-box">
+                <h5 class="transcript-heading">Transcription du Récit</h5>
+                <p class="transcript-text">« {{ item.extrait }} »</p>
+              </div>
+            </div>
+          }
+
+        </div>
+      }
+
+      <!-- ── ONGLET 3 : MÉTADONNÉES & DIFFUSION ────────────────────── -->
+      @if (ongletActif() === 'metas') {
+        <div class="tiroir-section">
+          <div class="meta-table">
+            <div class="meta-row">
+              <span class="meta-key">Identifiant Unique</span>
+              <span class="meta-val font-mono">{{ item.id }}</span>
+            </div>
+            <div class="meta-row">
+              <span class="meta-key">Type de Contenu</span>
+              <span class="meta-val">{{ typeLabel }}</span>
+            </div>
+            <div class="meta-row">
+              <span class="meta-key">Région Administrative</span>
+              <span class="meta-val">{{ item.regionNom }}</span>
+            </div>
+            <div class="meta-row">
+              <span class="meta-key">Diffusion Alta Mobile</span>
+              <span class="meta-val">
+                <button 
+                  type="button" 
+                  class="btn btn--sm" 
+                  [class.btn--primary]="!item.publie"
+                  [class.btn--secondary]="item.publie"
+                  (click)="basculerPublication.emit(item.id)">
+                  {{ item.publie ? 'Passer en Brouillon' : 'Publier sur Alta Mobile' }}
+                </button>
+              </span>
+            </div>
+            <div class="meta-row">
+              <span class="meta-key">Date de Création</span>
+              <span class="meta-val">{{ item.dateCreation | date:'dd/MM/yyyy à HH:mm' }}</span>
+            </div>
+            <div class="meta-row">
+              <span class="meta-key">Dernière Modification</span>
+              <span class="meta-val">{{ item.dateModification | date:'dd/MM/yyyy à HH:mm' }}</span>
+            </div>
+            @if ('photoCredits' in item && item.photoCredits) {
+              <div class="meta-row">
+                <span class="meta-key">Sources & Crédits</span>
+                <span class="meta-val">{{ item.photoCredits }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+    </div>
+
+    <!-- Pied du tiroir -->
+    <div class="tiroir-footer">
+      <button type="button" class="btn btn--secondary btn--sm" (click)="fermer.emit()">
+        Fermer
+      </button>
+      <button type="button" class="btn btn--primary btn--sm" (click)="editer.emit(item)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+          <path d="m15 5 4 4"/>
+        </svg>
+        Éditer cette fiche
+      </button>
+    </div>
+
+  </div>
+</div>

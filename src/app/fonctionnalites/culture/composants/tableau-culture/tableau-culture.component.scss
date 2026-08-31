@@ -1,0 +1,136 @@
+.table-wrap {
+  background: var(--c-white);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  box-shadow: var(--s-xs);
+}
+
+.vignette-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-md);
+  overflow: hidden;
+  background: var(--c-surface-alt);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--c-border);
+  transition: transform var(--t-fast);
+
+  &:hover {
+    transform: scale(1.08);
+  }
+}
+
+.vignette {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.vignette-placeholder {
+  font-size: 1.2rem;
+}
+
+.cell-titre-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cell-titre {
+  font-weight: 600;
+  color: var(--c-text);
+  font-size: 13.5px;
+}
+
+.cell-sous-titre {
+  font-size: 11.5px;
+  color: var(--c-secondary);
+}
+
+.cell-region {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--c-text);
+
+  .dot-region {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--c-brand);
+  }
+}
+
+.cell-spec {
+  font-size: 12px;
+}
+
+.cell-date {
+  font-size: 12px;
+  color: var(--c-secondary);
+}
+
+.btn-statut-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: var(--r-full);
+  background: var(--c-surface-alt);
+  border: 1px solid var(--c-border);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--c-secondary);
+  cursor: pointer;
+  transition: all var(--t-fast);
+
+  &--publie {
+    background: var(--c-success-bg);
+    color: var(--c-success);
+    border-color: var(--c-success-border);
+  }
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+}
+
+.cell-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+.btn-action-icon {
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-md);
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  color: var(--c-secondary);
+  cursor: pointer;
+  transition: all var(--t-fast);
+
+  &:hover {
+    background: var(--c-brand-bg);
+    color: var(--c-brand);
+    border-color: var(--c-brand-border);
+    transform: translateY(-1px);
+  }
+
+  &--danger:hover {
+    background: var(--c-danger-bg);
+    color: var(--c-danger);
+    border-color: var(--c-danger-border);
+  }
+}

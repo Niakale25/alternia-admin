@@ -1,0 +1,110 @@
+<div class="carte-culture card" [class.carte-culture--brouillon]="!item.publie">
+  <!-- En-tête / Visuel -->
+  <div class="carte-culture__visuel-wrap" (click)="voirDetail.emit(item)">
+    @if (imageUrl) {
+      <img [src]="imageUrl" [alt]="titre" class="carte-culture__image" loading="lazy" />
+      <div class="carte-culture__overlay"></div>
+    } @else {
+      <div class="carte-culture__visuel-fallback">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="carte-culture__svg-fallback">
+          <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>
+          <path d="M6 6h10"/>
+          <path d="M6 10h10"/>
+        </svg>
+      </div>
+    }
+
+    <!-- Badges au-dessus de l'image -->
+    <div class="carte-culture__badges-top">
+      <span class="badge" [ngClass]="typeBadgeClass">
+        {{ typeLabel }}
+      </span>
+
+      <span class="badge badge--statut" [class.badge--success]="item.publie" [class.badge--neutral]="!item.publie">
+        <span class="status-dot" [class.status-dot--online]="item.publie" [class.status-dot--offline]="!item.publie"></span>
+        {{ item.publie ? 'Publié' : 'Brouillon' }}
+      </span>
+    </div>
+
+    <!-- Badge Région en bas de l'image -->
+    <div class="carte-culture__region-tag">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
+        <circle cx="12" cy="10" r="3"/>
+      </svg>
+      {{ item.regionNom }}
+    </div>
+  </div>
+
+  <!-- Corps de la carte -->
+  <div class="carte-culture__corps" (click)="voirDetail.emit(item)">
+    <div class="carte-culture__meta-row">
+      <span class="carte-culture__tag">{{ tag }}</span>
+      @if (infoSupplementaire) {
+        <span class="carte-culture__info-pill">{{ infoSupplementaire }}</span>
+      }
+    </div>
+
+    <h3 class="carte-culture__titre" [title]="titre">{{ titre }}</h3>
+    
+    @if (sousTitre) {
+      <p class="carte-culture__sous-titre">{{ sousTitre }}</p>
+    }
+
+    @if (item.type === 'conte' && item.morale) {
+      <div class="carte-culture__morale-box">
+        <p class="morale-text">« {{ item.morale }} »</p>
+      </div>
+    } @else if (item.type === 'devinette') {
+      <div class="carte-culture__enigme-box">
+        <span class="formula">{{ item.formuleIntro }}</span>
+        <p class="enigme-text">« {{ item.enigmeTexte }} »</p>
+      </div>
+    } @else if (item.type === 'quiz') {
+      <div class="carte-culture__quiz-box">
+        <p class="quiz-question">{{ item.question }}</p>
+        <span class="quiz-count">4 choix • Option #{{ item.indexCorrect + 1 }} correcte</span>
+      </div>
+    }
+  </div>
+
+  <!-- Pied de carte avec actions -->
+  <div class="carte-culture__pied">
+    <button 
+      type="button" 
+      class="btn btn--secondary btn--sm btn--fiche" 
+      (click)="voirDetail.emit(item)"
+      title="Consulter la fiche complète">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+        <circle cx="12" cy="12" r="3"/>
+      </svg>
+      Fiche Détail
+    </button>
+
+    <div class="carte-culture__actions-grp">
+      <button 
+        type="button" 
+        class="btn-icon" 
+        (click)="editer.emit(item)"
+        title="Modifier ce contenu">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+          <path d="m15 5 4 4"/>
+        </svg>
+      </button>
+
+      <button 
+        type="button" 
+        class="btn-icon btn-icon--danger" 
+        (click)="supprimer.emit(item)"
+        title="Supprimer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 6h18"/>
+          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>

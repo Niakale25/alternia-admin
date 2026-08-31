@@ -1,0 +1,695 @@
+<div class="studio-backdrop" (click)="fermer.emit()">
+  <div class="studio-dialog" (click)="$event.stopPropagation()">
+
+    <!-- ── EN-TÊTE DU STUDIO ─────────────────────────────────────── -->
+    <div class="studio-header">
+      <div class="studio-header__info">
+        <span class="badge" [ngClass]="typeSelectionne().badgeClass">
+          {{ typeSelectionne().label }}
+        </span>
+        <div class="studio-header__titles">
+          <h2 class="studio-title">
+            {{ elementAEditer ? 'Éditeur de Contenu Culturel' : 'Studio de Création Culturelle' }}
+          </h2>
+          <span class="studio-subtitle">
+            Étape {{ etapeCourante() }} sur {{ totalEtapes }} • {{ elementAEditer ? nomOuTitre : 'Nouveau brouillon' }}
+          </span>
+        </div>
+      </div>
+
+      <div class="studio-header__actions">
+        <div class="publication-toggle-wrap">
+          <input type="checkbox" id="studioPublieToggle" [(ngModel)]="publie" />
+          <label for="studioPublieToggle" class="publie-label">
+            <span class="status-dot" [class.status-dot--online]="publie" [class.status-dot--offline]="!publie"></span>
+            {{ publie ? 'Prêt pour publication' : 'Brouillon privé' }}
+          </label>
+        </div>
+
+        <button type="button" class="btn-close" (click)="fermer.emit()" title="Fermer le studio">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ── CORPS DU STUDIO (3 COLONNES) ─────────────────────────── -->
+    <div class="studio-body">
+
+      <!-- COLONNE GAUCHE : STEPPER LATÉRAL -->
+      <aside class="studio-stepper-sidebar">
+        <div class="stepper-title">Étapes de création</div>
+        
+        <nav class="stepper-nav">
+          <button 
+            type="button" 
+            class="step-item"
+            [class.active]="etapeCourante() === 1"
+            [class.completed]="etapeCourante() > 1"
+            (click)="naviguerVers(1)">
+            <span class="step-circle">1</span>
+            <div class="step-info">
+              <span class="step-label">Type & Territoire</span>
+              <span class="step-desc">{{ typeSelectionne().label }} • {{ regionSelectionnee().nom }}</span>
+            </div>
+          </button>
+
+          <button 
+            type="button" 
+            class="step-item"
+            [class.active]="etapeCourante() === 2"
+            [class.completed]="etapeCourante() > 2"
+            (click)="naviguerVers(2)">
+            <span class="step-circle">2</span>
+            <div class="step-info">
+              <span class="step-label">Fiche Principale</span>
+              <span class="step-desc">{{ nomOuTitre ? nomOuTitre : 'Titre & Visuel' }}</span>
+            </div>
+          </button>
+
+          <button 
+            type="button" 
+            class="step-item"
+            [class.active]="etapeCourante() === 3"
+            [class.completed]="etapeCourante() > 3"
+            (click)="naviguerVers(3)">
+            <span class="step-circle">3</span>
+            <div class="step-info">
+              <span class="step-label">Données Spécifiques</span>
+              <span class="step-desc">Contenus pédagogiques</span>
+            </div>
+          </button>
+
+          @if (totalEtapes === 4) {
+            <button 
+              type="button" 
+              class="step-item"
+              [class.active]="etapeCourante() === 4"
+              (click)="naviguerVers(4)">
+              <span class="step-circle">4</span>
+              <div class="step-info">
+                <span class="step-label">{{ typeChoisi === 'conte' ? 'Scènes Interactives' : 'Faits & Chapitres' }}</span>
+                <span class="step-desc">{{ typeChoisi === 'conte' ? scenes.length + ' scènes' : chapitres.length + ' chapitres' }}</span>
+              </div>
+            </button>
+          }
+        </nav>
+
+        <!-- Checklist de validation -->
+        <div class="checklist-box">
+          <span class="checklist-title">Contrôle de validation</span>
+          <div class="check-item" [class.valid]="nomOuTitre.trim().length > 0">
+            <span class="check-icon">{{ nomOuTitre.trim().length > 0 ? '✓' : '•' }}</span>
+            <span>Titre principal renseigné</span>
+          </div>
+          <div class="check-item" [class.valid]="regionId !== 'all'">
+            <span class="check-icon">✓</span>
+            <span>Territoire rattaché</span>
+          </div>
+          <div class="check-item" [class.valid]="resume.trim().length > 0">
+            <span class="check-icon">{{ resume.trim().length > 0 ? '✓' : '•' }}</span>
+            <span>Présentation rédigée</span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- COLONNE CENTRALE : FORMULAIRE PRINCIPAL -->
+      <main class="studio-form-canvas">
+
+        <!-- ── ÉTAPE 1 : TYPE & TERRITOIRE ────────────────────────── -->
+        @if (etapeCourante() === 1) {
+          <div class="step-panel animate-fade-in">
+            <div class="panel-section-header">
+              <h3 class="panel-title">1. Sélection du format de contenu culturel</h3>
+              <p class="panel-subtitle">Choisissez la catégorie de ressource pédagogique à créer ou alimenter.</p>
+            </div>
+
+            <!-- Grille de cartes de types interactives -->
+            <div class="types-selection-grid mb-6">
+              @for (t of typesDisponibles; track t.type) {
+                <div 
+                  class="type-choice-card"
+                  [class.selected]="typeChoisi === t.type"
+                  (click)="selectionnerType(t.type)">
+                  <div class="type-choice-card__header">
+                    <span class="type-name">{{ t.label }}</span>
+                    <span class="radio-indicator" [class.checked]="typeChoisi === t.type"></span>
+                  </div>
+                  <p class="type-desc">{{ t.description }}</p>
+                </div>
+              }
+            </div>
+
+            <div class="panel-section-header">
+              <h3 class="panel-title">2. Rattachement Géographique & Culturel</h3>
+              <p class="panel-subtitle">Sélectionnez la région administrative ou le haut lieu culturel concerné au Mali.</p>
+            </div>
+
+            <div class="regions-grid-select">
+              @for (reg of regions; track reg.id) {
+                <button 
+                  type="button" 
+                  class="region-card-btn"
+                  [class.active]="regionId === reg.id"
+                  [style.--r-accent]="reg.couleur"
+                  (click)="regionId = reg.id">
+                  <span class="region-btn-dot" [style.background-color]="reg.couleur"></span>
+                  <div class="region-btn-content">
+                    <strong class="region-btn-name">{{ reg.nom }}</strong>
+                    <span class="region-btn-sub">{{ reg.surnom }}</span>
+                  </div>
+                </button>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- ── ÉTAPE 2 : FICHE PRINCIPALE ─────────────────────────── -->
+        @if (etapeCourante() === 2) {
+          <div class="step-panel animate-fade-in">
+            <div class="panel-section-header">
+              <h3 class="panel-title">Identité & Présentation Principale</h3>
+              <p class="panel-subtitle">Renseignez les informations de premier plan visibles par les apprenants et enseignants.</p>
+            </div>
+
+            <div class="form-grid">
+              
+              <div class="form-group full-width">
+                <label class="form-label">
+                  {{ typeChoisi === 'figure' ? 'Nom de la Figure Historique' : typeChoisi === 'quiz' ? 'Intitulé de la Question' : typeChoisi === 'temoignage' ? 'Titre du Récit Oral' : 'Titre Principal' }} *
+                </label>
+                <input type="text" class="input" [(ngModel)]="nomOuTitre" placeholder="Ex: Soundiata Keïta, Mosquée de Djenné, Tombouctou..." required />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Sous-titre / Titre honorifique</label>
+                <input type="text" class="input" [(ngModel)]="sousTitre" placeholder="Ex: Fondateur de l'Empire du Manden..." />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Tag / Catégorisation</label>
+                <input type="text" class="input" [(ngModel)]="tag" placeholder="Ex: Mansa du Mali, Patrimoine UNESCO..." />
+              </div>
+
+              <div class="form-group full-width">
+                <label class="form-label">URL de l'image de couverture</label>
+                <div class="image-input-wrap">
+                  <input type="text" class="input" [(ngModel)]="photoUrl" placeholder="https://images.unsplash.com/..." />
+                </div>
+              </div>
+
+              <div class="form-group full-width">
+                <label class="form-label">Sources Documentaires & Crédits</label>
+                <input type="text" class="input" [(ngModel)]="photoCredits" placeholder="Ex: Archives Nationales du Mali / Mission Culturelle..." />
+              </div>
+
+              <div class="form-group full-width">
+                <label class="form-label">Présentation & Résumé Pédagogique *</label>
+                <textarea rows="4" class="input textarea" [(ngModel)]="resume" placeholder="Rédigez le texte de présentation ou l'introduction pédagogique..."></textarea>
+              </div>
+
+            </div>
+          </div>
+        }
+
+        <!-- ── ÉTAPE 3 : DONNÉES SPÉCIFIQUES ──────────────────────── -->
+        @if (etapeCourante() === 3) {
+          <div class="step-panel animate-fade-in">
+            <div class="panel-section-header">
+              <h3 class="panel-title">Spécificités : {{ typeSelectionne().label }}</h3>
+              <p class="panel-subtitle">Champs adaptés au format pédagogique sélectionné.</p>
+            </div>
+
+            <!-- Figure -->
+            @if (typeChoisi === 'figure') {
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label">Période / Siècle *</label>
+                  <input type="text" class="input" [(ngModel)]="periode" placeholder="Ex: 1190 – 1255" />
+                </div>
+
+                <div class="form-group full-width">
+                  <label class="form-label">Citation Historique Clé</label>
+                  <textarea rows="3" class="input textarea" [(ngModel)]="citationHistorique" placeholder="La parole des aînés éclaire le chemin des jeunes..."></textarea>
+                </div>
+              </div>
+            }
+
+            <!-- Monument -->
+            @else if (typeChoisi === 'monument') {
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label">Époque / Année d'édification</label>
+                  <input type="text" class="input" [(ngModel)]="ere" placeholder="Ex: Érigé au XIIIe siècle" />
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Emplacement précis</label>
+                  <input type="text" class="input" [(ngModel)]="localisationDetails" placeholder="Ex: Delta Intérieur du Niger, Djenné" />
+                </div>
+
+                <div class="form-group full-width">
+                  <label class="form-label">Architecture & Matériaux (Banco / Pisé)</label>
+                  <textarea rows="3" class="input textarea" [(ngModel)]="architectureEtMateriaux" placeholder="Détails sur le banco, les torons de palmier..."></textarea>
+                </div>
+
+                <div class="form-group full-width">
+                  <label class="form-label">Portée Historique & Importance</label>
+                  <textarea rows="3" class="input textarea" [(ngModel)]="pourquoiCestImportant" placeholder="Symbole de solidarité communautaire, crépi annuel..."></textarea>
+                </div>
+              </div>
+            }
+
+            <!-- Ville -->
+            @else if (typeChoisi === 'ville') {
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label">Fondation Historique</label>
+                  <input type="text" class="input" [(ngModel)]="fondation" placeholder="Ex: Fondée vers 1100 par des nomades..." />
+                </div>
+
+                <div class="form-group full-width">
+                  <label class="form-label">Identité Culturelle</label>
+                  <textarea rows="3" class="input textarea" [(ngModel)]="identiteCulturelle" placeholder="Carrefour touareg, songhaï, peul, bambara..."></textarea>
+                </div>
+
+                <div class="form-group full-width">
+                  <label class="form-label">Traditions & Patrimoine Vivant</label>
+                  <textarea rows="3" class="input textarea" [(ngModel)]="traditionsEtPatrimoine" placeholder="Conservation des manuscrits anciens, artisanat..."></textarea>
+                </div>
+              </div>
+            }
+
+            <!-- Conte -->
+            @else if (typeChoisi === 'conte') {
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label">Origine / Tradition Orale</label>
+                  <input type="text" class="input" [(ngModel)]="origineConte" placeholder="Ex: Tradition Mandingue, Royaume Bambara..." />
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Griot / Narrateur Référent</label>
+                  <input type="text" class="input" [(ngModel)]="narrateur" placeholder="Ex: Griot Mamadou Kouyaté" />
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Durée Audio Estimée</label>
+                  <input type="text" class="input" [(ngModel)]="dureeAudio" placeholder="Ex: 5 min 30" />
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Durée de Lecture</label>
+                  <input type="text" class="input" [(ngModel)]="dureeLecture" placeholder="Ex: 4 min" />
+                </div>
+
+                <div class="form-group full-width">
+                  <label class="form-label">Morale & Enseignement Traditionnel *</label>
+                  <textarea rows="3" class="input textarea" [(ngModel)]="morale" placeholder="Celui qui honore la racine n'a jamais soif des fruits..."></textarea>
+                </div>
+              </div>
+            }
+
+            <!-- Devinette -->
+            @else if (typeChoisi === 'devinette') {
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label">Formule Traditionnelle</label>
+                  <input type="text" class="input" [(ngModel)]="formuleIntro" placeholder="N'Da ! — N'Da n'sira !" />
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Niveau & Récompense</label>
+                  <div style="display: flex; gap: 8px;">
+                    <select class="select" [(ngModel)]="difficulteDevinette">
+                      <option value="Initié">Initié</option>
+                      <option value="Apprenti">Apprenti</option>
+                      <option value="Maître Dozo">Maître Dozo</option>
+                    </select>
+                    <input type="number" class="input" [(ngModel)]="xpDevinette" style="width: 110px;" placeholder="XP" />
+                  </div>
+                </div>
+
+                <div class="form-group full-width">
+                  <label class="form-label">Texte de l'Énigme *</label>
+                  <textarea rows="2" class="input textarea" [(ngModel)]="enigmeTexte" placeholder="Je glisse sur le ventre sans jamais marcher sur terre..."></textarea>
+                </div>
+
+                <div class="form-group full-width">
+                  <label class="form-label">3 Indices Progressifs</label>
+                  <input type="text" class="input mb-2" [(ngModel)]="indices[0]" placeholder="Indice 1 (Subtil)" />
+                  <input type="text" class="input mb-2" [(ngModel)]="indices[1]" placeholder="Indice 2 (Intermédiaire)" />
+                  <input type="text" class="input" [(ngModel)]="indices[2]" placeholder="Indice 3 (Direct)" />
+                </div>
+
+                <div class="form-group full-width">
+                  <label class="form-label">4 Options de Réponse (Cocher la solution)</label>
+                  <div class="options-choice-grid">
+                    @for (opt of optionsDevinette; track $index) {
+                      <div class="option-row-input">
+                        <input 
+                          type="radio" 
+                          name="devinetteCorrectOption" 
+                          [value]="optionsDevinette[$index]" 
+                          [(ngModel)]="bonneReponseDevinette" />
+                        <input type="text" class="input" [(ngModel)]="optionsDevinette[$index]" [placeholder]="'Option ' + ($index + 1)" />
+                      </div>
+                    }
+                  </div>
+                </div>
+
+                <div class="form-group full-width">
+                  <label class="form-label">Proverbe ou Maxime Associée</label>
+                  <input type="text" class="input" [(ngModel)]="proverbe" placeholder="La pirogue ne refuse jamais l'eau..." />
+                </div>
+
+                <div class="form-group full-width">
+                  <label class="form-label">Transmission & Explication des Aînés</label>
+                  <textarea rows="3" class="input textarea" [(ngModel)]="explicationCulturelle" placeholder="Raison d'être de l'objet ou de la sagesse transmise..."></textarea>
+                </div>
+              </div>
+            }
+
+            <!-- Quiz -->
+            @else if (typeChoisi === 'quiz') {
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label">Catégorie Thématique</label>
+                  <select class="select" [(ngModel)]="categorieQuiz">
+                    <option value="Histoire">Histoire & Mansa</option>
+                    <option value="Traditions">Traditions & Coutumes</option>
+                    <option value="Arts & Musique">Arts, Musique & Kora</option>
+                    <option value="Géographie">Géographie & Fleuve</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Récompense XP</label>
+                  <input type="number" class="input" [(ngModel)]="xpQuiz" placeholder="XP" />
+                </div>
+
+                <div class="form-group full-width">
+                  <label class="form-label">Question Posée *</label>
+                  <textarea rows="2" class="input textarea" [(ngModel)]="questionQuiz" placeholder="Ex: En quelle année a été proclamée la Charte de Kouroukan Fouga ?"></textarea>
+                </div>
+
+                <div class="form-group full-width">
+                  <label class="form-label">4 Options (Sélectionner la bonne réponse)</label>
+                  @for (opt of optionsQuiz; track $index) {
+                    <div class="quiz-option-input-row mb-2">
+                      <input type="radio" [name]="'correctOption'" [value]="$index" [(ngModel)]="indexCorrectQuiz" />
+                      <span class="letter-badge">{{ ['A', 'B', 'C', 'D'][$index] }}</span>
+                      <input type="text" class="input" [(ngModel)]="optionsQuiz[$index]" [placeholder]="'Option ' + ($index + 1)" />
+                    </div>
+                  }
+                </div>
+
+                <div class="form-group full-width">
+                  <label class="form-label">Explication Pédagogique *</label>
+                  <textarea rows="3" class="input textarea" [(ngModel)]="explicationQuiz" placeholder="Explication fournie à l'apprenant après sa réponse..."></textarea>
+                </div>
+              </div>
+            }
+
+            <!-- Témoignage -->
+            @else if (typeChoisi === 'temoignage') {
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label">Nom du Conteur / Dépositaire *</label>
+                  <input type="text" class="input" [(ngModel)]="conteur" placeholder="Ex: Doyen Bakary Kanté" />
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Qualité & Rôle Traditionnel</label>
+                  <input type="text" class="input" [(ngModel)]="qualiteConteur" placeholder="Ex: Maître Forgeron, Griot de Ségou..." />
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Lieu & Commune</label>
+                  <input type="text" class="input" [(ngModel)]="lieuConteur" placeholder="Ex: Kangaba, Kalabougou..." />
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Durée de l'Écoute</label>
+                  <input type="text" class="input" [(ngModel)]="dureeTemoignage" placeholder="Ex: 4 min 15" />
+                </div>
+
+                <div class="form-group full-width">
+                  <label class="form-label">Époque ou Transmission</label>
+                  <input type="text" class="input" [(ngModel)]="epoqueOuAnnee" placeholder="Ex: Transmission depuis le XIIIe siècle" />
+                </div>
+
+                <div class="form-group full-width">
+                  <label class="form-label">Extrait / Transcription du Récit *</label>
+                  <textarea rows="4" class="input textarea" [(ngModel)]="extraitTemoignage" placeholder="Chez nous, le forgeron ne frappe pas seulement le fer..."></textarea>
+                </div>
+              </div>
+            }
+
+          </div>
+        }
+
+        <!-- ── ÉTAPE 4 : APPROFONDISSEMENT (SCÈNES OU CHAPITRES) ─── -->
+        @if (etapeCourante() === 4) {
+          <div class="step-panel animate-fade-in">
+            
+            <!-- Constructeur de scènes de contes -->
+            @if (typeChoisi === 'conte') {
+              <div class="panel-section-header flex justify-between items-center">
+                <div>
+                  <h3 class="panel-title">Scènes Interactives ({{ scenes.length }})</h3>
+                  <p class="panel-subtitle">Séquencez les étapes du récit et créez les choix pour les apprenants.</p>
+                </div>
+                <button type="button" class="btn btn--secondary btn--sm" (click)="ajouterScene()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="5" x2="12" y2="19"/>
+                    <line x1="5" y1="12" x2="19" y2="12"/>
+                  </svg>
+                  Ajouter une Scène
+                </button>
+              </div>
+
+              <div class="scenes-list-stack">
+                @for (scene of scenes; track scene.id; let sIdx = $index) {
+                  <div class="scene-card-builder">
+                    <div class="scene-card-header">
+                      <span class="scene-tag">Scène #{{ sIdx + 1 }}</span>
+                      <input type="text" class="input" [(ngModel)]="scene.titre" placeholder="Titre de l'étape" />
+                      <button type="button" class="btn-icon-danger" (click)="supprimerScene(sIdx)" title="Supprimer la scène">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M3 6h18"/>
+                          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                        </svg>
+                      </button>
+                    </div>
+
+                    <div class="form-group mt-2">
+                      <label class="form-label">Texte narratif</label>
+                      <textarea rows="3" class="input textarea" [(ngModel)]="scene.texteNarratif" placeholder="Texte de cette scène..."></textarea>
+                    </div>
+
+                    <div class="form-grid mt-2">
+                      <div class="form-group">
+                        <label class="form-label">Atmosphère sonore / visuelle</label>
+                        <input type="text" class="input" [(ngModel)]="scene.atmosphere" placeholder="Ex: Veillée étoilée au son de la Kora" />
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label">Transmission / Sagesse</label>
+                        <input type="text" class="input" [(ngModel)]="scene.insightCulturel" placeholder="Proverbe ou sagesse" />
+                      </div>
+                    </div>
+
+                    <div class="choices-builder-box mt-3">
+                      <div class="choices-header">
+                        <span class="choices-title">Choix interactifs ({{ scene.choix.length }})</span>
+                        <button type="button" class="btn btn--ghost btn--sm" (click)="ajouterChoixScene(scene)">
+                          + Ajouter un choix
+                        </button>
+                      </div>
+
+                      @for (c of scene.choix; track c.id; let cIdx = $index) {
+                        <div class="choice-input-grid">
+                          <input type="text" class="input" [(ngModel)]="c.libelle" placeholder="Libellé du choix" />
+                          <input type="text" class="input" [(ngModel)]="c.description" placeholder="Description de l'action" />
+                          <select class="select" [(ngModel)]="c.sceneSuivanteId">
+                            <option value="">-- Mène à --</option>
+                            @for (sc of scenes; track sc.id) {
+                              <option [value]="sc.id">Scène {{ sc.numeroScene }} : {{ sc.titre }}</option>
+                            }
+                          </select>
+                          <button type="button" class="btn-remove" (click)="supprimerChoixScene(scene, cIdx)">✕</button>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+
+            <!-- Faits et chapitres pour figures, monuments et villes -->
+            @else {
+              <div class="panel-section-header flex justify-between items-center">
+                <div>
+                  <h3 class="panel-title">Faits Marquants & Dates Clés</h3>
+                  <p class="panel-subtitle">Points de repère historiques essentiels.</p>
+                </div>
+                <button type="button" class="btn btn--secondary btn--sm" (click)="ajouterFaitCle()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="5" x2="12" y2="19"/>
+                    <line x1="5" y1="12" x2="19" y2="12"/>
+                  </svg>
+                  Ajouter un fait
+                </button>
+              </div>
+
+              <div class="facts-builder-stack mb-6">
+                @for (fait of faitsCles; track $index) {
+                  <div class="fact-builder-row">
+                    <input type="text" class="input fact-title-input" [(ngModel)]="fait.titre" placeholder="Titre / Date (ex: Kouroukan Fouga 1236)" />
+                    <input type="text" class="input fact-desc-input" [(ngModel)]="fait.description" placeholder="Description courte du fait marquant" />
+                    <button type="button" class="btn-remove" (click)="supprimerFaitCle($index)">✕</button>
+                  </div>
+                }
+              </div>
+
+              <div class="panel-section-header flex justify-between items-center">
+                <div>
+                  <h3 class="panel-title">Chapitres Éditoriaux</h3>
+                  <p class="panel-subtitle">Articles détaillés pour approfondir le sujet.</p>
+                </div>
+                <button type="button" class="btn btn--secondary btn--sm" (click)="ajouterChapitre()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="5" x2="12" y2="19"/>
+                    <line x1="5" y1="12" x2="19" y2="12"/>
+                  </svg>
+                  Ajouter un chapitre
+                </button>
+              </div>
+
+              <div class="chapters-builder-stack">
+                @for (chap of chapitres; track $index) {
+                  <div class="chapter-builder-card">
+                    <div class="chapter-card-top">
+                      <input type="text" class="input" [(ngModel)]="chap.titre" placeholder="Titre du chapitre" />
+                      <button type="button" class="btn-remove" (click)="supprimerChapitre($index)">✕</button>
+                    </div>
+                    <textarea rows="3" class="input textarea mt-2" [(ngModel)]="chap.contenu" placeholder="Récit approfondi du chapitre..."></textarea>
+                  </div>
+                }
+              </div>
+            }
+
+          </div>
+        }
+
+      </main>
+
+      <!-- COLONNE DROITE : APERÇU CARTE EN DIRECT (LIVE PREVIEW) -->
+      <aside class="studio-live-preview-sidebar">
+        <div class="preview-sidebar-header">
+          <span class="preview-title">Aperçu Visuel en Direct</span>
+          <span class="preview-badge">Temps réel</span>
+        </div>
+
+        <div class="live-card-preview card">
+          <div class="live-card-hero">
+            @if (photoUrl) {
+              <img [src]="photoUrl" [alt]="nomOuTitre" class="live-hero-img" />
+              <div class="live-hero-overlay"></div>
+            } @else {
+              <div class="live-hero-placeholder">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>
+                </svg>
+              </div>
+            }
+
+            <div class="live-badges-top">
+              <span class="badge" [ngClass]="typeSelectionne().badgeClass">
+                {{ typeSelectionne().label }}
+              </span>
+              <span class="badge badge--statut" [class.badge--success]="publie" [class.badge--neutral]="!publie">
+                <span class="status-dot" [class.status-dot--online]="publie" [class.status-dot--offline]="!publie"></span>
+                {{ publie ? 'Publié' : 'Brouillon' }}
+              </span>
+            </div>
+
+            <div class="live-region-tag">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+              {{ regionSelectionnee().nom }}
+            </div>
+          </div>
+
+          <div class="live-card-body">
+            <span class="live-tag">{{ tag || typeSelectionne().label }}</span>
+            <h4 class="live-title">{{ nomOuTitre || 'Titre de la fiche' }}</h4>
+            @if (sousTitre) {
+              <p class="live-subtitle">{{ sousTitre }}</p>
+            }
+            <p class="live-resume">{{ resume || 'Description de la fiche culturelle...' }}</p>
+          </div>
+        </div>
+
+        <div class="preview-helper-card">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="16" x2="12" y2="12"/>
+            <line x1="12" y1="8" x2="12.01" y2="8"/>
+          </svg>
+          <p>Cet aperçu reproduit fidèlement la carte telle qu'elle apparaîtra dans les listes et dashboards.</p>
+        </div>
+      </aside>
+
+    </div>
+
+    <!-- ── PIED DU STUDIO (NAVIGATION ET ACTIONS) ────────────────── -->
+    <div class="studio-footer">
+      <div class="footer-left">
+        <span class="autosave-text">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+            <polyline points="17 21 17 13 7 13 7 21"/>
+          </svg>
+          Brouillon conservé localement
+        </span>
+      </div>
+
+      <div class="footer-right">
+        <button type="button" class="btn btn--secondary" (click)="fermer.emit()">
+          Annuler
+        </button>
+
+        @if (etapeCourante() > 1) {
+          <button type="button" class="btn btn--secondary" (click)="etapePrecedente()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="15 18 9 12 15 6"/>
+            </svg>
+            Précédent
+          </button>
+        }
+
+        @if (etapeCourante() < totalEtapes) {
+          <button type="button" class="btn btn--primary" (click)="etapeSuivante()">
+            Suivant
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
+          </button>
+        } @else {
+          <button type="button" class="btn btn--primary" (click)="soumettre()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+            </svg>
+            {{ elementAEditer ? 'Enregistrer les modifications' : 'Créer et Enregistrer la Fiche' }}
+          </button>
+        }
+      </div>
+    </div>
+
+  </div>
+</div>
