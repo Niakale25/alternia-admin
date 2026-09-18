@@ -1,6 +1,6 @@
 @if (modeAffichage === 'tableau') {
   <!-- VUE TABLEAU MODERNE -->
-  <div class="card table-container animate-fade-in">
+  <div class="table-container animate-fade-in">
     <table class="table">
       <thead>
         <tr>
@@ -8,7 +8,7 @@
           <th>Localisation</th>
           <th>Offre & Formule</th>
           <th>Boîtiers Alternia</th>
-          <th>Licences Actives</th>
+          <th>Accès Élèves</th>
           <th>Statut</th>
           <th>Date d'Adhésion</th>
           <th class="text-right">Actions</th>
@@ -69,12 +69,12 @@
             </td>
 
             <td>
-              <div class="licences-stat">
-                <span class="licences-num">{{ e.licencesCount | number }}</span>
-                <div class="licences-bar-bg">
+              <div class="effectif-stat">
+                <span class="effectif-num">{{ e.effectifScolaire | number }}</span>
+                <div class="effectif-bar-bg">
                   <div
-                    class="licences-bar-fill"
-                    [style.width.%]="(e.licencesCount / 2000) * 100 > 100 ? 100 : (e.licencesCount / 2000) * 100"
+                    class="effectif-bar-fill"
+                    [style.width.%]="(e.effectifScolaire / 2000) * 100 > 100 ? 100 : (e.effectifScolaire / 2000) * 100"
                   ></div>
                 </div>
               </div>
@@ -110,7 +110,7 @@
                   type="button"
                   class="action-btn action-btn--danger"
                   data-tooltip="Supprimer du répertoire"
-                  (click)="supprimer.emit(e.id)"
+                  (click)="supprimer.emit(e)"
                 >
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
@@ -185,8 +185,8 @@
           </div>
 
           <div class="metric-box">
-            <span class="metric-lbl">Licences Actives</span>
-            <span class="metric-val text-brand">{{ e.licencesCount | number }}</span>
+            <span class="metric-lbl">Effectif Scolaire</span>
+            <span class="metric-val text-brand">{{ e.effectifScolaire | number }}</span>
           </div>
         </div>
 
@@ -211,7 +211,7 @@
               type="button"
               class="action-btn action-btn--danger"
               data-tooltip="Supprimer"
-              (click)="supprimer.emit(e.id)"
+              (click)="supprimer.emit(e)"
             >
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>

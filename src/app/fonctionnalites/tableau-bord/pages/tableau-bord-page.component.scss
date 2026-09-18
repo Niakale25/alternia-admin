@@ -39,12 +39,8 @@
 
   &__middle-grid {
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 1fr;
     gap: 16px;
-
-    @media (max-width: 1024px) {
-      grid-template-columns: 1fr;
-    }
   }
 
   &__bottom-grid {

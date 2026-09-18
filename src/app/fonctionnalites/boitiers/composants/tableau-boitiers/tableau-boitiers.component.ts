@@ -12,6 +12,8 @@ import { BoitierDTO } from '../../modeles/boitier.model';
 })
 export class TableauBoitiersComponent {
   @Input({ required: true }) boitiers!: BoitierDTO[];
-  @Output() changerStatut = new EventEmitter<{ id: string; statut: 'Actif' | 'Hors ligne' | 'Maintenance' }>();
-  @Output() supprimer = new EventEmitter<string>();
+  @Output() changerStatut = new EventEmitter<{ id: string; statut: BoitierDTO['statut'] }>();
+  @Output() inspecter = new EventEmitter<BoitierDTO>();
+  @Output() forcerSynchro = new EventEmitter<BoitierDTO>();
+  @Output() supprimer = new EventEmitter<BoitierDTO>();
 }

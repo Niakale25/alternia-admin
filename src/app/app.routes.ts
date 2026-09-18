@@ -59,14 +59,7 @@ export const routes: Routes = [
           ),
         title: 'Boîtiers Alternia — Alternia'
       },
-      {
-        path: 'licences',
-        loadComponent: () =>
-          import('./fonctionnalites/licences/pages/licences-page.component').then(
-            m => m.LicencesPageComponent
-          ),
-        title: 'Licences & Clés — Alternia'
-      },
+
       {
         path: 'abonnements',
         loadComponent: () =>
@@ -92,12 +85,33 @@ export const routes: Routes = [
         title: 'Contenus Culturels — Alternia'
       },
       {
+        path: 'pedagogie-ia',
+        loadComponent: () =>
+          import('./fonctionnalites/pedagogie-ia/pages/pedagogie-ia-page.component').then(
+            m => m.PedagogieIaPageComponent
+          ),
+        title: 'Studio Avatars & Voix IA — Alternia'
+      },
+      {
+        path: 'studio-ia',
+        redirectTo: 'pedagogie-ia',
+        pathMatch: 'full'
+      },
+      {
         path: 'parametres',
         loadComponent: () =>
           import('./fonctionnalites/parametres/pages/parametres-page.component').then(
             m => m.ParametresPageComponent
           ),
         title: 'Paramètres Système — Alternia'
+      },
+      {
+        path: 'notifications',
+        loadComponent: () =>
+          import('./fonctionnalites/notifications/pages/notifications-page.component').then(
+            m => m.NotificationsPageComponent
+          ),
+        title: 'Centre de Notifications — AlternIA'
       }
     ]
   },

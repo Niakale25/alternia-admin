@@ -9,7 +9,7 @@ export interface EtablissementDTO {
   region: string;
   boitiersCount: number;
   profilsCount: number;
-  licencesCount: number;
+  effectifScolaire: number;
   dateInscription: string;
   statut: 'Actif' | 'En attente' | 'Suspendu';
   directeurEmail: string;
@@ -28,7 +28,7 @@ export class EtablissementRepository {
     {
       id: 'ETAB-101', nom: 'Lycée Excellence Saint-Louis',
       ville: 'Bamako', region: 'District de Bamako',
-      boitiersCount: 24, profilsCount: 18, licencesCount: 1200,
+      boitiersCount: 24, profilsCount: 18, effectifScolaire: 1200,
       dateInscription: '14/01/2024', statut: 'Actif',
       directeurEmail: 'direction@stlouis-bamako.ml',
       offre: 'Enterprise', contactPhone: '+223 20 22 44 11'
@@ -36,7 +36,7 @@ export class EtablissementRepository {
     {
       id: 'ETAB-102', nom: 'Collège International Marie Curie',
       ville: 'Sikasso', region: 'Sikasso',
-      boitiersCount: 18, profilsCount: 12, licencesCount: 850,
+      boitiersCount: 18, profilsCount: 12, effectifScolaire: 850,
       dateInscription: '02/03/2024', statut: 'Actif',
       directeurEmail: 'admin@curie-sikasso.ml',
       offre: 'Institutionnel', contactPhone: '+223 21 62 10 09'
@@ -44,7 +44,7 @@ export class EtablissementRepository {
     {
       id: 'ETAB-103', nom: 'Complexe Scolaire La Renaissance',
       ville: 'Ségou', region: 'Ségou',
-      boitiersCount: 30, profilsCount: 22, licencesCount: 1500,
+      boitiersCount: 30, profilsCount: 22, effectifScolaire: 1500,
       dateInscription: '19/11/2023', statut: 'Actif',
       directeurEmail: 'contact@renaissance-segou.ml',
       offre: 'Enterprise', contactPhone: '+223 21 32 11 55'
@@ -52,7 +52,7 @@ export class EtablissementRepository {
     {
       id: 'ETAB-104', nom: 'Lycée Technique Alternia Bamako',
       ville: 'Bamako', region: 'District de Bamako',
-      boitiersCount: 12, profilsCount: 8, licencesCount: 450,
+      boitiersCount: 12, profilsCount: 8, effectifScolaire: 450,
       dateInscription: '05/05/2024', statut: 'Actif',
       directeurEmail: 'proviseur@lta-bamako.ml',
       offre: 'Standard', contactPhone: '+223 20 21 00 44'
@@ -60,7 +60,7 @@ export class EtablissementRepository {
     {
       id: 'ETAB-105', nom: 'École Pilote InnovEd Koulikoro',
       ville: 'Koulikoro', region: 'Koulikoro',
-      boitiersCount: 8, profilsCount: 6, licencesCount: 300,
+      boitiersCount: 8, profilsCount: 6, effectifScolaire: 300,
       dateInscription: '12/06/2026', statut: 'En attente',
       directeurEmail: 'direction@innoved-koulikoro.ml',
       offre: 'Standard', contactPhone: '+223 21 26 11 22'
@@ -68,7 +68,7 @@ export class EtablissementRepository {
     {
       id: 'ETAB-106', nom: 'Académie Régionale de Kayes',
       ville: 'Kayes', region: 'Kayes',
-      boitiersCount: 42, profilsCount: 34, licencesCount: 2100,
+      boitiersCount: 42, profilsCount: 34, effectifScolaire: 2100,
       dateInscription: '10/09/2023', statut: 'Actif',
       directeurEmail: 'secretariat@academie-kayes.ml',
       offre: 'Enterprise', contactPhone: '+223 21 52 77 88'
@@ -76,7 +76,7 @@ export class EtablissementRepository {
     {
       id: 'ETAB-107', nom: 'Institut Pédagogique Mopti Venise',
       ville: 'Mopti', region: 'Mopti',
-      boitiersCount: 15, profilsCount: 10, licencesCount: 780,
+      boitiersCount: 15, profilsCount: 10, effectifScolaire: 780,
       dateInscription: '22/02/2024', statut: 'Suspendu',
       directeurEmail: 'admin@ip-mopti.ml',
       offre: 'Institutionnel', contactPhone: '+223 21 43 00 11'

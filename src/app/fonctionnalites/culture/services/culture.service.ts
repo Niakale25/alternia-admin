@@ -4,9 +4,96 @@ import {
   RegionCode,
   RegionMalienne,
   StatistiquesCultureDTO,
+  TamponPasseportDTO,
+  NiveauExplorateurDTO,
   TypeContenuCulturel
 } from '../modeles/culture.modele';
 import { CONTENUS_CULTURELS_INITIAUX, REGIONS_MALI } from './culture-donnees.mock';
+
+const TAMPONS_INITIAUX: TamponPasseportDTO[] = [
+  {
+    id: 'TAMP-SEGOU',
+    nom: 'Sceau des Balanzans',
+    regionId: 'segou',
+    regionNom: 'Ségou',
+    monumentOuFigure: 'Royaume Bambara de Ségou & Biton Coulibaly',
+    symboleSvg: '👑',
+    conditionDeblocage: 'Compléter l\'épopée de Biton Coulibaly et réussir le quiz de Ségou avec 100%.',
+    xpRecompense: 250,
+    rarete: 'Rare',
+    totalDebloquesParEleves: 18450,
+    tauxDeblocage: 74,
+    actif: true,
+    couleurAccent: '#f1851f'
+  },
+  {
+    id: 'TAMP-DJENNE',
+    nom: 'Sceau d\'Argile de Djenné',
+    regionId: 'mopti',
+    regionNom: 'Mopti',
+    monumentOuFigure: 'Grande Mosquée de Djenné (UNESCO)',
+    symboleSvg: '🕌',
+    conditionDeblocage: 'Explorer la fiche architecturale de Djenné et écouter le témoignage des maçons traditionnels.',
+    xpRecompense: 300,
+    rarete: 'Épique',
+    totalDebloquesParEleves: 14200,
+    tauxDeblocage: 58,
+    actif: true,
+    couleurAccent: '#10b981'
+  },
+  {
+    id: 'TAMP-DOGON',
+    nom: 'Insigne du Kanaga',
+    regionId: 'mopti',
+    regionNom: 'Mopti',
+    monumentOuFigure: 'Falaises de Bandiagara & Masque Kanaga',
+    symboleSvg: '🎭',
+    conditionDeblocage: 'Résoudre les 3 devinettes traditionnelles des falaises de Bandiagara.',
+    xpRecompense: 350,
+    rarete: 'Épique',
+    totalDebloquesParEleves: 9840,
+    tauxDeblocage: 41,
+    actif: true,
+    couleurAccent: '#314999'
+  },
+  {
+    id: 'TAMP-MANDEN',
+    nom: 'Sceau Impérial du Manden',
+    regionId: 'koulikoro',
+    regionNom: 'Koulikoro',
+    monumentOuFigure: 'Soundiata Keïta & Charte de Kouroukan Fouga',
+    symboleSvg: '📜',
+    conditionDeblocage: 'Parcourir l\'épopée de Soundiata Keïta et débloquer les 4 principes de la Charte.',
+    xpRecompense: 500,
+    rarete: 'Légendaire',
+    totalDebloquesParEleves: 22100,
+    tauxDeblocage: 89,
+    actif: true,
+    couleurAccent: '#f59e0b'
+  },
+  {
+    id: 'TAMP-TOMBOUTOU',
+    nom: 'Manuscrits de Tombouctou',
+    regionId: 'tombouctou',
+    regionNom: 'Tombouctou',
+    monumentOuFigure: 'Université Sankoré & Manuscrits Anciens',
+    symboleSvg: '📚',
+    conditionDeblocage: 'Étudier l\'histoire de l\'Université Sankoré et les fiches des astronomes maliens.',
+    xpRecompense: 400,
+    rarete: 'Épique',
+    totalDebloquesParEleves: 11200,
+    tauxDeblocage: 46,
+    actif: true,
+    couleurAccent: '#0284c7'
+  }
+];
+
+const NIVEAUX_INITIAUX: NiveauExplorateurDTO[] = [
+  { niveau: 1, titre: 'Initié aux Traditions', seuilXp: 500, badgeNom: 'Graine de Baobab', couleur: '#10b981', nombreElevesAtteints: 38200 },
+  { niveau: 2, titre: 'Explorateur du Sahel', seuilXp: 1500, badgeNom: 'Kora d\'Or', couleur: '#0284c7', nombreElevesAtteints: 24500 },
+  { niveau: 3, titre: 'Maître du Manden', seuilXp: 3000, badgeNom: 'Bouclier de Soundiata', couleur: '#f1851f', nombreElevesAtteints: 14800 },
+  { niveau: 4, titre: 'Grand Gardien du Patrimoine', seuilXp: 5000, badgeNom: 'Sceptre des Mansa', couleur: '#f59e0b', nombreElevesAtteints: 6200 }
+];
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +104,10 @@ export class CultureService {
   readonly contenus = this._contenus.asReadonly();
 
   readonly regions = signal<RegionMalienne[]>(REGIONS_MALI);
+
+  readonly tamponsPasseport = signal<TamponPasseportDTO[]>(TAMPONS_INITIAUX);
+  readonly niveauxExplorateur = signal<NiveauExplorateurDTO[]>(NIVEAUX_INITIAUX);
+  readonly sousOngletActif = signal<'cms' | 'passeport'>('cms');
 
   // ── Filtres réactifs ─────────────────────────────────────────────
   readonly filtreType = signal<TypeContenuCulturel | 'tous'>('tous');
@@ -87,6 +178,8 @@ export class CultureService {
     const publies = list.filter(i => i.publie).length;
     const tauxPublication = total > 0 ? Math.round((publies / total) * 100) : 0;
 
+    const totalTampons = this.tamponsPasseport().reduce((acc, t) => acc + t.totalDebloquesParEleves, 0);
+
     return {
       totalContenus: total,
       totalFigures: figures,
@@ -97,9 +190,17 @@ export class CultureService {
       totalQuiz: quiz,
       totalTemoignages: temoignages,
       regionsCouvertes: regionsUniques,
-      tauxPublication
+      tauxPublication,
+      totalTamponsDebloques: totalTampons,
+      xpTotalDistribue: '4.8 M XP'
     };
   });
+
+  basculerActifTampon(id: string): void {
+    this.tamponsPasseport.update(list =>
+      list.map(t => t.id === id ? { ...t, actif: !t.actif } : t)
+    );
+  }
 
   // ── Compteurs par type (Computed) ────────────────────────────────
   readonly compteursParType = computed(() => {

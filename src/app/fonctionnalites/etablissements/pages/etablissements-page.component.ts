@@ -7,6 +7,7 @@ import { TableauEtablissementsComponent } from '../composants/tableau-etablissem
 import { ModalEtablissementComponent } from '../composants/modal-etablissement/modal-etablissement.component';
 import { CarteStatistiqueComponent } from '@partage/composants/carte-statistique/carte-statistique.component';
 import { EtatVideComponent } from '@partage/composants/etat-vide/etat-vide.component';
+import { ModalConfirmationComponent } from '@partage/composants/modal-confirmation/modal-confirmation.component';
 import { NotificationService } from '@partage/services/notification.service';
 import { EtablissementDTO } from '../modeles/etablissement.model';
 
@@ -20,7 +21,8 @@ import { EtablissementDTO } from '../modeles/etablissement.model';
     TableauEtablissementsComponent,
     ModalEtablissementComponent,
     CarteStatistiqueComponent,
-    EtatVideComponent
+    EtatVideComponent,
+    ModalConfirmationComponent
   ],
   templateUrl: './etablissements-page.component.html',
   styleUrls: ['./etablissements-page.component.scss']
@@ -31,6 +33,7 @@ export class EtablissementsPageComponent implements OnInit {
 
   readonly modalOuvert = signal<boolean>(false);
   readonly modeAffichage = signal<'tableau' | 'cartes'>('tableau');
+  readonly etablissementASupprimer = signal<EtablissementDTO | null>(null);
 
   ngOnInit(): void {
     this.service.chargerEtablissements();
@@ -43,6 +46,19 @@ export class EtablissementsPageComponent implements OnInit {
   onCreerEtablissement(donnees: Omit<EtablissementDTO, 'id' | 'dateInscription'>): void {
     this.service.creerEtablissement(donnees);
     this.modalOuvert.set(false);
+  }
+
+  demanderSuppression(etablissement: EtablissementDTO): void {
+    this.etablissementASupprimer.set(etablissement);
+  }
+
+  confirmerSuppression(): void {
+    const e = this.etablissementASupprimer();
+    if (e) {
+      this.service.supprimer(e.id);
+      this.notificationService.succes(`L'établissement ${e.nom} a été supprimé du répertoire.`);
+      this.etablissementASupprimer.set(null);
+    }
   }
 
   reinitialiserFiltres(): void {

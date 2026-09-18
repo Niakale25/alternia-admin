@@ -1,7 +1,7 @@
 <app-fenetre-modale
   [ouvert]="ouvert"
-  titre="Associer un Boîtier Alternia"
-  sousTitre="Enregistrement matériel et affectation à un centre scolaire"
+  titre="Associer un Boîtier AlternIA"
+  sousTitre="Enregistrement matériel, configuration Edge et affectation scolaire"
   (fermer)="fermer.emit()"
 >
   <div class="form-grid" corps>
@@ -10,10 +10,27 @@
       <input
         type="text"
         class="input font-mono"
-        placeholder="Ex: ALT-ED-5520-ML"
+        placeholder="Ex: ALT-BOX-V2-5520-ML"
         [(ngModel)]="serialNumber"
         required
       />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Modèle Hardware</label>
+      <select class="select" [(ngModel)]="modele">
+        <option value="AlternIA Box v2.0 Pro">AlternIA Box v2.0 Pro (Raspberry Pi 5 + 64Go)</option>
+        <option value="AlternIA Box v2.0 Edge">AlternIA Box v2.0 Edge (Raspberry Pi 4 + 32Go)</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Capacité Stockage SSD</label>
+      <select class="select" [(ngModel)]="stockageGo">
+        <option [ngValue]="32">32 Go SSD</option>
+        <option [ngValue]="64">64 Go SSD (Recommandé)</option>
+        <option [ngValue]="128">128 Go SSD (Full IA)</option>
+      </select>
     </div>
 
     <div class="form-group full-width">
@@ -24,6 +41,27 @@
     <div class="form-group">
       <label class="form-label">Ville de déploiement</label>
       <input type="text" class="input" [(ngModel)]="ville" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Région</label>
+      <select class="select" [(ngModel)]="region">
+        <option value="Bamako">Bamako</option>
+        <option value="Sikasso">Sikasso</option>
+        <option value="Ségou">Ségou</option>
+        <option value="Kayes">Kayes</option>
+        <option value="Mopti">Mopti</option>
+        <option value="Tombouctou">Tombouctou</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Mode Réseau</label>
+      <select class="select" [(ngModel)]="modeFonctionnement">
+        <option value="Point d'Accès Local">Point d'Accès Local (Hotspot WiFi)</option>
+        <option value="100% Offline Edge">100% Offline Edge (Autonome)</option>
+        <option value="Hybride Sync Cloud">Hybride Sync Cloud (Planifiée)</option>
+      </select>
     </div>
 
     <div class="form-group">

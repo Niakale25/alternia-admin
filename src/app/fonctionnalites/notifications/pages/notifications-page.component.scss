@@ -1,0 +1,209 @@
+.notifications-page {
+  animation: fadeIn var(--t-slow) ease;
+}
+
+.notif-controls {
+  padding: 14px 18px;
+  background: var(--c-white);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--s-xs);
+  transition: background var(--t-fast), border-color var(--t-fast);
+
+  [data-theme="dark"] & {
+    background: #131B2E;
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+
+  .select, .input {
+    background: var(--c-surface-alt);
+    border-color: var(--c-border);
+    color: var(--c-text);
+
+    &:focus {
+      border-color: var(--c-brand);
+      background: var(--c-white);
+    }
+
+    [data-theme="dark"] &:focus {
+      background: #18233C;
+    }
+  }
+}
+
+.search-wrap {
+  flex: 1;
+  min-width: 240px;
+  max-width: 380px;
+
+  .input {
+    width: 100%;
+  }
+}
+
+.notifications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.notif-card {
+  position: relative;
+  padding: 16px 20px;
+  background: var(--c-white);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-md);
+  box-shadow: var(--s-xs);
+  border-left: 4px solid var(--c-subtle);
+  transition: transform var(--t-fast), box-shadow var(--t-fast), background var(--t-fast), border-color var(--t-fast);
+
+  [data-theme="dark"] & {
+    background: #131B2E;
+    border-color: #202F4D;
+    border-left-color: #334566;
+  }
+
+  &:hover {
+    box-shadow: var(--s-md);
+    transform: translateY(-1.5px);
+  }
+
+  // État non-lu (Light & Dark)
+  &--unread {
+    background: rgba(49, 73, 153, 0.035);
+    border-color: rgba(49, 73, 153, 0.18);
+
+    [data-theme="dark"] & {
+      background: rgba(78, 111, 224, 0.1);
+      border-color: rgba(78, 111, 224, 0.28);
+    }
+  }
+
+  // Variantes de gravité
+  &--erreur {
+    border-left-color: var(--c-danger);
+
+    .notif-icon-badge {
+      background: rgba(248, 113, 113, 0.12);
+      color: var(--c-danger);
+      border: 1px solid rgba(248, 113, 113, 0.2);
+    }
+  }
+
+  &--avertissement {
+    border-left-color: var(--c-accent);
+
+    .notif-icon-badge {
+      background: rgba(251, 146, 60, 0.12);
+      color: var(--c-accent);
+      border: 1px solid rgba(251, 146, 60, 0.2);
+    }
+  }
+
+  &--succes {
+    border-left-color: var(--c-success);
+
+    .notif-icon-badge {
+      background: rgba(52, 211, 153, 0.12);
+      color: var(--c-success);
+      border: 1px solid rgba(52, 211, 153, 0.2);
+    }
+  }
+
+  &--info {
+    border-left-color: var(--c-brand);
+
+    .notif-icon-badge {
+      background: var(--c-brand-bg);
+      color: var(--c-brand);
+      border: 1px solid rgba(78, 111, 224, 0.2);
+    }
+  }
+}
+
+.notif-icon-badge {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform var(--t-fast);
+}
+
+.unread-dot {
+  width: 7.5px;
+  height: 7.5px;
+  border-radius: 50%;
+  background: var(--c-brand);
+  box-shadow: 0 0 0 3px var(--c-brand-bg);
+  display: inline-block;
+  flex-shrink: 0;
+  animation: unreadPulse 2s infinite;
+}
+
+.notif-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--c-text);
+  margin: 0;
+  line-height: 1.35;
+}
+
+.notif-message {
+  font-size: 12.5px;
+  color: var(--c-secondary);
+  margin: 4px 0 0;
+  line-height: 1.48;
+}
+
+.notif-footer {
+  border-top-color: var(--c-border-light) !important;
+}
+
+.btn-notif-action {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--c-brand);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: color var(--t-fast), transform var(--t-fast);
+
+  &:hover {
+    color: var(--c-accent);
+    transform: translateX(2px);
+  }
+}
+
+.notif-actions {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+@keyframes unreadPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 2px var(--c-brand-bg);
+  }
+  50% {
+    box-shadow: 0 0 0 4.5px rgba(78, 111, 224, 0.35);
+  }
+}
+
+@media (max-width: 640px) {
+  .notif-card {
+    padding: 14px 14px;
+  }
+
+  .notif-controls {
+    padding: 12px 14px;
+
+    .search-wrap {
+      max-width: 100%;
+    }
+  }
+}

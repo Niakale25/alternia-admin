@@ -1,0 +1,258 @@
+<div class="page-content notifications-page">
+
+  <!-- En-tête de la Page -->
+  <div class="page-header flex justify-between items-start">
+    <div>
+      <div class="page-header__eyebrow">Supervision & Journal d'Audit</div>
+      <h1 class="page-header__title">Centre de Notifications & Alertes</h1>
+      <p class="page-header__subtitle">
+        Historique centralisé des événements système, alertes matérielles Edge, souscriptions et diagnostics IA
+      </p>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <button
+        class="btn btn--secondary btn--sm"
+        [disabled]="service.totalNonLues() === 0"
+        (click)="onToutMarquerLu()"
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        Tout marquer comme lu
+      </button>
+
+      <button
+        class="btn btn--ghost btn--sm text-danger"
+        [disabled]="totalNotifications === 0"
+        (click)="demanderVider()"
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+        </svg>
+        Vider l'historique
+      </button>
+    </div>
+  </div>
+
+  <!-- KPIs Statistiques -->
+  <div class="kpi-grid mb-6">
+    <app-carte-statistique
+      titre="Notifications Enregistrées"
+      [valeur]="totalNotifications"
+      sousTexte="Journal des 30 derniers jours"
+      couleurAccent="var(--c-brand)"
+    ></app-carte-statistique>
+
+    <app-carte-statistique
+      titre="Non Lues (Action requise)"
+      [valeur]="service.totalNonLues()"
+      sousTexte="Nécessitant votre attention"
+      couleurAccent="var(--c-accent)"
+    ></app-carte-statistique>
+
+    <app-carte-statistique
+      titre="Alertes Critiques"
+      [valeur]="totalCritiques"
+      sousTexte="Erreurs système et seuils bas"
+      couleurAccent="var(--c-danger)"
+    ></app-carte-statistique>
+
+    <app-carte-statistique
+      titre="Événements Flotte Edge"
+      [valeur]="totalHardware"
+      sousTexte="Boîtiers AlternIA Box"
+      couleurAccent="var(--c-cyan)"
+    ></app-carte-statistique>
+  </div>
+
+  <!-- Barre de Contrôle & Filtres -->
+  <div class="card notif-controls mb-4">
+    <div class="flex items-center justify-between gap-3 flex-wrap">
+      <!-- Recherche -->
+      <div class="search-wrap">
+        <input
+          type="text"
+          class="input input--sm"
+          placeholder="Rechercher par titre, boîtier, message..."
+          [ngModel]="service.recherche()"
+          (ngModelChange)="service.recherche.set($event)"
+        />
+      </div>
+
+      <!-- Filtres Déroulants -->
+      <div class="flex items-center gap-2 flex-wrap">
+        <select
+          class="select select--sm"
+          [ngModel]="service.filtreCategorie()"
+          (ngModelChange)="service.filtreCategorie.set($event)"
+        >
+          <option value="toutes">Toutes les catégories</option>
+          <option value="hardware">Hardware Edge & Boîtiers</option>
+          <option value="gouvernance">Gouvernance & Établissements</option>
+          <option value="business">Abonnements & Paiements</option>
+          <option value="ia">Intelligence Artificielle & Voix</option>
+          <option value="systeme">Système & Sécurité</option>
+        </select>
+
+        <select
+          class="select select--sm"
+          [ngModel]="service.filtreStatut()"
+          (ngModelChange)="service.filtreStatut.set($event)"
+        >
+          <option value="toutes">Tous les statuts</option>
+          <option value="non-lues">Non lues uniquement</option>
+          <option value="lues">Lues uniquement</option>
+        </select>
+
+        <select
+          class="select select--sm"
+          [ngModel]="service.filtreType()"
+          (ngModelChange)="service.filtreType.set($event)"
+        >
+          <option value="tous">Toutes les gravités</option>
+          <option value="erreur">Critique / Erreur</option>
+          <option value="avertissement">Avertissement</option>
+          <option value="info">Information</option>
+          <option value="succes">Succès</option>
+        </select>
+
+        @if (service.recherche() || service.filtreCategorie() !== 'toutes' || service.filtreStatut() !== 'toutes' || service.filtreType() !== 'tous') {
+          <button class="btn btn--ghost btn--sm" (click)="reinitialiserFiltres()">
+            Réinitialiser
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Liste des Notifications -->
+  @if (service.notificationsFiltrees().length > 0) {
+    <div class="notifications-list flex flex-col gap-3">
+      @for (notif of service.notificationsFiltrees(); track notif.id) {
+        <div
+          class="card notif-card"
+          [class.notif-card--unread]="!notif.lu"
+          [class.notif-card--erreur]="notif.type === 'erreur'"
+          [class.notif-card--avertissement]="notif.type === 'avertissement'"
+          [class.notif-card--succes]="notif.type === 'succes'"
+          [class.notif-card--info]="notif.type === 'info'"
+        >
+          <div class="flex items-start justify-between gap-4">
+            <!-- Icône & Contenu -->
+            <div class="flex items-start gap-3 flex-1">
+              <div class="notif-icon-badge">
+                @if (notif.type === 'erreur') {
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                  </svg>
+                } @else if (notif.type === 'avertissement') {
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+                  </svg>
+                } @else if (notif.type === 'succes') {
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+                  </svg>
+                } @else {
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+                  </svg>
+                }
+              </div>
+
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-1">
+                  @if (!notif.lu) {
+                    <span class="unread-dot" title="Non lu"></span>
+                  }
+                  <h4 class="notif-title">{{ notif.titre }}</h4>
+                  <span class="badge badge--neutre font-mono text-xs">{{ notif.source }}</span>
+                </div>
+
+                <p class="notif-message">{{ notif.message }}</p>
+
+                <!-- Footer de la notification -->
+                <div class="notif-footer flex items-center justify-between mt-3 pt-2 border-t text-xs text-subtle">
+                  <div class="flex items-center gap-3">
+                    <span>{{ notif.date }} à {{ notif.heure }}</span>
+                    <span>•</span>
+                    <span class="font-semibold capitalize text-secondary">{{ notif.categorie }}</span>
+                  </div>
+
+                  @if (notif.lienRoute) {
+                    <a [routerLink]="notif.lienRoute" class="btn-notif-action">
+                      {{ notif.lienLabel || 'Accéder' }} →
+                    </a>
+                  }
+                </div>
+              </div>
+            </div>
+
+            <!-- Actions Rapides -->
+            <div class="flex items-center gap-1.5 notif-actions">
+              @if (!notif.lu) {
+                <button
+                  class="btn btn--ghost btn--icon btn--sm"
+                  title="Marquer comme lu"
+                  (click)="onMarquerLu(notif)"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                </button>
+              }
+
+              <button
+                class="btn btn--ghost btn--icon btn--sm text-danger"
+                title="Supprimer la notification"
+                (click)="demanderSuppression(notif)"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  } @else {
+    <div class="card">
+      <app-etat-vide
+        titre="Aucune notification"
+        message="Vous êtes totalement à jour ! Aucune alerte ne correspond à vos filtres actuels."
+        texteAction="Réinitialiser les filtres"
+        (action)="reinitialiserFiltres()"
+      ></app-etat-vide>
+    </div>
+  }
+
+  <!-- Modale de Confirmation : Vider Tout l'Historique -->
+  <app-modal-confirmation
+    [ouvert]="modalViderOuverte()"
+    titre="Vider l'historique des notifications"
+    message="Êtes-vous sûr de vouloir supprimer l'intégralité des alertes et journaux d'audit ?"
+    avertissement="Cette action effacera toutes les entrées enregistrées de façon définitive."
+    texteConfirmer="Vider tout l'historique"
+    variante="danger"
+    (confirmer)="confirmerVider()"
+    (annuler)="modalViderOuverte.set(false)"
+  ></app-modal-confirmation>
+
+  <!-- Modale de Confirmation : Suppression Unitaire -->
+  @if (notifASupprimer(); as notif) {
+    <app-modal-confirmation
+      [ouvert]="true"
+      titre="Supprimer la notification"
+      message="Confirmez-vous la suppression de cet événement d'audit ?"
+      [nomElement]="notif.titre"
+      avertissement="La notification sera définitivement retirée du journal."
+      texteConfirmer="Supprimer"
+      variante="danger"
+      (confirmer)="confirmerSupprimer()"
+      (annuler)="notifASupprimer.set(null)"
+    ></app-modal-confirmation>
+  }
+
+</div>

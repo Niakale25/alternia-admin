@@ -14,25 +14,39 @@ import { BoitierDTO } from '../../modeles/boitier.model';
 export class ModalBoitierComponent {
   @Input() ouvert: boolean = false;
   @Output() fermer = new EventEmitter<void>();
-  @Output() soumettre = new EventEmitter<Omit<BoitierDTO, 'id' | 'derniereConnexion'>>();
+  @Output() soumettre = new EventEmitter<Omit<BoitierDTO, 'id' | 'derniereConnexion' | 'batterie' | 'stockageUtiliseGo' | 'elevesConnectes' | 'temperatureCpu'>>();
 
   serialNumber: string = '';
+  modele: string = 'AlternIA Box v2.0 Pro';
   etablissementNom: string = 'Lycée Excellence Saint-Louis';
   etablissementId: string = 'ETAB-101';
   ville: string = 'Bamako';
-  versionFirmware: string = 'v3.4.2-LTS';
-  statut: 'Actif' | 'Hors ligne' | 'Maintenance' = 'Actif';
+  region: string = 'Bamako';
+  versionFirmware: string = 'v2.4.1-LTS';
+  statut: BoitierDTO['statut'] = 'Actif';
+  stockageGo: number = 64;
+  ipLocale: string = '192.168.4.1';
+  wifiSsid: string = 'AlternIA-Box-WiFi';
+  modeFonctionnement: BoitierDTO['modeFonctionnement'] = 'Point d\'Accès Local';
+  packDonneesInstalle: string = 'Curriculum 10e-12e Mali + Pack Culture Complet';
 
   valider(): void {
     if (!this.serialNumber.trim()) return;
 
     this.soumettre.emit({
       serialNumber: this.serialNumber,
+      modele: this.modele,
       etablissementNom: this.etablissementNom,
       etablissementId: this.etablissementId,
       ville: this.ville,
+      region: this.region,
       versionFirmware: this.versionFirmware,
-      statut: this.statut
+      statut: this.statut,
+      stockageGo: this.stockageGo,
+      ipLocale: this.ipLocale,
+      wifiSsid: this.wifiSsid || `AlternIA-${this.serialNumber}`,
+      modeFonctionnement: this.modeFonctionnement,
+      packDonneesInstalle: this.packDonneesInstalle
     });
 
     this.reinitialiser();
@@ -40,6 +54,6 @@ export class ModalBoitierComponent {
 
   reinitialiser(): void {
     this.serialNumber = '';
-    this.versionFirmware = 'v3.4.2-LTS';
+    this.versionFirmware = 'v2.4.1-LTS';
   }
 }

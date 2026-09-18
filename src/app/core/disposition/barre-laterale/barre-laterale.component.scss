@@ -105,6 +105,22 @@
     display: block;
   }
 
+  &__logo-collapsed {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: var(--r-md);
+    text-decoration: none;
+    transition: background var(--t-fast), transform var(--t-fast);
+
+    &:hover {
+      background: var(--c-surface-alt);
+      transform: scale(1.05);
+    }
+  }
+
   &__toggle-btn {
     background: transparent;
     border: 1px solid transparent;
@@ -119,13 +135,8 @@
 
     &:hover {
       background: var(--c-surface-alt);
-      color: red;
+      color: var(--c-text);
       border-color: var(--c-border);
-    }
-
-    &--collapsed {
-      width: 36px;
-      height: 36px;
     }
   }
 
@@ -223,16 +234,6 @@
     flex: 1;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-
-  &__item-badge {
-    background: var(--c-accent);
-    color: white;
-    font-size: 10px;
-    font-weight: 700;
-    padding: 1px 6px;
-    border-radius: var(--r-full);
-    flex-shrink: 0;
   }
 
   &__footer {

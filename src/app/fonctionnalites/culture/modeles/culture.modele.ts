@@ -235,6 +235,32 @@ export type ContenuCulturelDTO =
   | QuizCulturelDTO
   | TemoignageOralDTO;
 
+// ── 8. Tampon du Passeport Culturel (Gamification) ─────────────────
+export interface TamponPasseportDTO {
+  id: string;
+  nom: string;
+  regionId: RegionCode;
+  regionNom: string;
+  monumentOuFigure: string;
+  symboleSvg: string;
+  conditionDeblocage: string;
+  xpRecompense: number;
+  rarete: 'Commun' | 'Rare' | 'Épique' | 'Légendaire';
+  totalDebloquesParEleves: number;
+  tauxDeblocage: number; // en %
+  actif: boolean;
+  couleurAccent: string;
+}
+
+export interface NiveauExplorateurDTO {
+  niveau: number;
+  titre: string;
+  seuilXp: number;
+  badgeNom: string;
+  couleur: string;
+  nombreElevesAtteints: number;
+}
+
 // ── Statistiques du Module Culture ────────────────────────────────
 export interface StatistiquesCultureDTO {
   totalContenus: number;
@@ -247,4 +273,6 @@ export interface StatistiquesCultureDTO {
   totalTemoignages: number;
   regionsCouvertes: number;
   tauxPublication: number;
+  totalTamponsDebloques: number;
+  xpTotalDistribue: string;
 }

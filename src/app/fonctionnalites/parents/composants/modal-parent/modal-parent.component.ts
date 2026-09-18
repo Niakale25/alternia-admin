@@ -21,8 +21,8 @@ export class ModalParentComponent {
   email: string = '';
   telephone: string = '';
   etablissement: string = 'Lycée Excellence Saint-Louis';
-  abonnementsType: 'Premium Annuel' | 'Standard Mensuel' | 'Découverte' = 'Premium Annuel';
-  licencesAssocies: number = 1;
+  abonnementsType: 'Premium Famille' | 'Premium Établissement' | 'Accès Général (Inclus Boîtier)' = 'Premium Famille';
+  enfantsRattaches: number = 1;
 
   valider(): void {
     if (!this.nomFamille.trim() || !this.email.trim()) return;
@@ -34,7 +34,7 @@ export class ModalParentComponent {
       telephone: this.telephone || '+223 -- -- -- --',
       etablissement: this.etablissement,
       abonnementsType: this.abonnementsType,
-      licencesAssocies: this.licencesAssocies,
+      enfantsRattaches: this.enfantsRattaches,
       statut: 'Actif'
     });
 
@@ -46,6 +46,6 @@ export class ModalParentComponent {
     this.tuteur = '';
     this.email = '';
     this.telephone = '';
-    this.licencesAssocies = 1;
+    this.enfantsRattaches = 1;
   }
 }

@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { BarreLateraleComponent } from '../barre-laterale/barre-laterale.component';
 import { BarreSuperieureComponent } from '../barre-superieure/barre-superieure.component';
-import { NotificationToastComponent } from '../../../partage/composants/notification-toast/notification-toast.component';
 
 @Component({
   selector: 'app-structure-globale',
@@ -12,8 +11,7 @@ import { NotificationToastComponent } from '../../../partage/composants/notifica
     CommonModule,
     RouterOutlet,
     BarreLateraleComponent,
-    BarreSuperieureComponent,
-    NotificationToastComponent
+    BarreSuperieureComponent
   ],
   templateUrl: './structure-globale.component.html',
   styleUrls: ['./structure-globale.component.scss']

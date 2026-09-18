@@ -14,7 +14,7 @@ export class TableauParentsComponent {
   @Input({ required: true }) parents: ParentDTO[] = [];
   @Input() modeAffichage: 'tableau' | 'cartes' = 'tableau';
   @Output() basculerStatut = new EventEmitter<string>();
-  @Output() supprimer = new EventEmitter<string>();
+  @Output() supprimer = new EventEmitter<ParentDTO>();
 
   // Palette d'avatars pour les familles
   private readonly paletteAvatars = [

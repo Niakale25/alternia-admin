@@ -6,6 +6,8 @@ import { TableauParentsComponent } from '../composants/tableau-parents/tableau-p
 import { ModalParentComponent } from '../composants/modal-parent/modal-parent.component';
 import { CarteStatistiqueComponent } from '@partage/composants/carte-statistique/carte-statistique.component';
 import { EtatVideComponent } from '@partage/composants/etat-vide/etat-vide.component';
+import { ModalConfirmationComponent } from '@partage/composants/modal-confirmation/modal-confirmation.component';
+import { NotificationService } from '@partage/services/notification.service';
 import { ParentDTO } from '../modeles/parent.model';
 
 @Component({
@@ -17,21 +19,25 @@ import { ParentDTO } from '../modeles/parent.model';
     TableauParentsComponent,
     ModalParentComponent,
     CarteStatistiqueComponent,
-    EtatVideComponent
+    EtatVideComponent,
+    ModalConfirmationComponent
   ],
   templateUrl: './parents-page.component.html',
   styleUrls: ['./parents-page.component.scss']
 })
 export class ParentsPageComponent implements OnInit {
   readonly service = inject(ParentService);
+  private readonly notificationService = inject(NotificationService);
+
   readonly modalOuvert = signal<boolean>(false);
   readonly modeAffichage = signal<'tableau' | 'cartes'>('tableau');
+  readonly parentASupprimer = signal<ParentDTO | null>(null);
 
   readonly formulesStats = signal([
     { nom: 'Tous', count: 48391 },
-    { nom: 'Premium Annuel', count: 34110, couleur: 'var(--c-accent)' },
-    { nom: 'Standard Mensuel', count: 11462, couleur: 'var(--c-brand)' },
-    { nom: 'Découverte', count: 2819, couleur: 'var(--c-cyan)' }
+    { nom: 'Premium Famille', count: 34110, couleur: 'var(--c-brand)' },
+    { nom: 'Premium Établissement', count: 11462, couleur: 'var(--c-accent)' },
+    { nom: 'Accès Général (Inclus Boîtier)', count: 2819, couleur: 'var(--c-cyan)' }
   ]);
 
   ngOnInit(): void {
@@ -55,5 +61,18 @@ export class ParentsPageComponent implements OnInit {
   onCreerParent(donnees: Omit<ParentDTO, 'id' | 'derniereActivite'>): void {
     this.service.creerParent(donnees);
     this.modalOuvert.set(false);
+  }
+
+  demanderSuppression(parent: ParentDTO): void {
+    this.parentASupprimer.set(parent);
+  }
+
+  confirmerSuppression(): void {
+    const p = this.parentASupprimer();
+    if (p) {
+      this.service.supprimer(p.id);
+      this.notificationService.succes(`Le compte de ${p.tuteur} a été supprimé avec succès.`);
+      this.parentASupprimer.set(null);
+    }
   }
 }

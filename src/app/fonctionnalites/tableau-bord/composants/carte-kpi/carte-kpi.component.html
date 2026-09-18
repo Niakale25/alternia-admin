@@ -1,9 +1,57 @@
 <div class="card tdb-kpi-card" [style.--kpi-color]="kpi.couleur">
+  <!-- En-tête de la carte KPI -->
   <div class="tdb-kpi-card__top">
-    <div class="tdb-kpi-card__icon" [innerHTML]="kpi.icon | htmlSecurise"></div>
-    <div class="tdb-kpi-card__label">{{ kpi.label }}</div>
+    <div class="flex items-center gap-2">
+      <div class="tdb-kpi-card__icon" [innerHTML]="kpi.icon | htmlSecurise"></div>
+      <div class="tdb-kpi-card__label">{{ kpi.label }}</div>
+    </div>
   </div>
-  <div class="tdb-kpi-card__valeur">{{ kpi.valeur }}</div>
-  <div class="tdb-kpi-card__sous">{{ kpi.sousTexte }}</div>
+
+  <!-- Corps avec valeur et sparkline SVG intégrée -->
+  <div class="tdb-kpi-card__body flex items-baseline justify-between gap-3">
+    <div>
+      <div class="tdb-kpi-card__valeur">{{ kpi.valeur }}</div>
+      <div class="tdb-kpi-card__sous">{{ kpi.sousTexte }}</div>
+    </div>
+
+    <!-- Mini Sparkline SVG -->
+    @if (sparklineData(); as spark) {
+      @if (spark.path) {
+        <div class="tdb-kpi-card__sparkline" title="Tendance récente">
+          <svg width="84" height="28" viewBox="0 0 84 28" fill="none" class="overflow-visible">
+            <!-- Définition du gradient sous la courbe -->
+            <defs>
+              <linearGradient [id]="'sparkGrad-' + kpi.label" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" [attr.stop-color]="kpi.couleur" stop-opacity="0.25" />
+                <stop offset="100%" [attr.stop-color]="kpi.couleur" stop-opacity="0.0" />
+              </linearGradient>
+            </defs>
+
+            <!-- Aire sous la courbe -->
+            <path [attr.d]="spark.area" [attr.fill]="'url(#sparkGrad-' + kpi.label + ')'" />
+
+            <!-- Ligne de tendance -->
+            <path
+              [attr.d]="spark.path"
+              [attr.stroke]="kpi.couleur"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+
+            <!-- Point final lumineux -->
+            @if (spark.lastPoint) {
+              <circle
+                [attr.cx]="spark.lastPoint.x"
+                [attr.cy]="spark.lastPoint.y"
+                r="3"
+                [attr.fill]="kpi.couleur"
+              />
+            }
+          </svg>
+        </div>
+      }
+    }
+  </div>
 </div>
 

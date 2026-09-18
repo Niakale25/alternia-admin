@@ -1,6 +1,6 @@
 @if (modeAffichage === 'tableau') {
   <!-- VUE TABLEAU MODERNE -->
-  <div class="card table-container animate-fade-in">
+  <div class="table-container animate-fade-in">
     <table class="table">
       <thead>
         <tr>
@@ -8,7 +8,7 @@
           <th>Coordonnées Directes</th>
           <th>Établissement Rattaché</th>
           <th>Formule d'Accompagnement</th>
-          <th>Enfants / Licences</th>
+          <th>Enfants Accompagnés</th>
           <th>Statut</th>
           <th>Dernière Activité</th>
           <th class="text-right">Actions</th>
@@ -65,21 +65,18 @@
             <td>
               <span
                 class="badge-formule"
-                [class.badge-formule--premium]="p.abonnementsType === 'Premium Annuel'"
-                [class.badge-formule--standard]="p.abonnementsType === 'Standard Mensuel'"
-                [class.badge-formule--decouverte]="p.abonnementsType === 'Découverte'"
+                [class.badge-formule--premium-famille]="p.abonnementsType === 'Premium Famille'"
+                [class.badge-formule--premium-etablissement]="p.abonnementsType === 'Premium Établissement'"
+                [class.badge-formule--acces-general]="p.abonnementsType === 'Accès Général (Inclus Boîtier)'"
               >
-                @if (p.abonnementsType === 'Premium Annuel') {
-                  <span class="star-icon">★</span>
-                }
                 {{ p.abonnementsType }}
               </span>
             </td>
 
             <td>
-              <div class="licences-pill">
-                <span class="licences-count">{{ p.licencesAssocies }}</span>
-                <span class="licences-text">{{ p.licencesAssocies > 1 ? 'enfants' : 'enfant' }}</span>
+              <div class="enfants-pill">
+                <span class="enfants-count">{{ p.enfantsRattaches }}</span>
+                <span class="enfants-text">{{ p.enfantsRattaches > 1 ? 'enfants' : 'enfant' }}</span>
               </div>
             </td>
 
@@ -125,7 +122,7 @@
                   type="button"
                   class="action-btn action-btn--danger"
                   data-tooltip="Supprimer le compte"
-                  (click)="supprimer.emit(p.id)"
+                  (click)="supprimer.emit(p)"
                 >
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
@@ -196,23 +193,23 @@
           </div>
         </div>
 
-        <!-- Encadrés Formule & Licences -->
+        <!-- Encadrés Formule & Enfants -->
         <div class="parent-card__metrics">
           <div class="metric-box">
             <span class="metric-lbl">Formule</span>
             <span
               class="badge-formule"
-              [class.badge-formule--premium]="p.abonnementsType === 'Premium Annuel'"
-              [class.badge-formule--standard]="p.abonnementsType === 'Standard Mensuel'"
-              [class.badge-formule--decouverte]="p.abonnementsType === 'Découverte'"
+              [class.badge-formule--premium-famille]="p.abonnementsType === 'Premium Famille'"
+              [class.badge-formule--premium-etablissement]="p.abonnementsType === 'Premium Établissement'"
+              [class.badge-formule--acces-general]="p.abonnementsType === 'Accès Général (Inclus Boîtier)'"
             >
               {{ p.abonnementsType }}
             </span>
           </div>
 
           <div class="metric-box">
-            <span class="metric-lbl">Enfants / Licences</span>
-            <span class="metric-val text-brand">{{ p.licencesAssocies }} {{ p.licencesAssocies > 1 ? 'clés' : 'clé' }}</span>
+            <span class="metric-lbl">Enfants rattachés</span>
+            <span class="metric-val text-brand">{{ p.enfantsRattaches }} {{ p.enfantsRattaches > 1 ? 'enfants' : 'enfant' }}</span>
           </div>
         </div>
 
@@ -249,7 +246,7 @@
               type="button"
               class="action-btn action-btn--danger"
               data-tooltip="Supprimer"
-              (click)="supprimer.emit(p.id)"
+              (click)="supprimer.emit(p)"
             >
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>

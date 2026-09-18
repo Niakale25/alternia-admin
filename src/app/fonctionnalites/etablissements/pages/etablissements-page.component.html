@@ -9,7 +9,7 @@
         <span class="badge badge--brand">{{ service.etablissements().length }} Partenaires</span>
       </div>
       <p class="page-header__subtitle">
-        Supervision, attribution des boîtiers et administration des licences pour tous les centres d'enseignement partenaires.
+        Supervision, attribution des boîtiers et administration des accès pour tous les centres d'enseignement partenaires.
       </p>
     </div>
 
@@ -52,7 +52,6 @@
       titre="Établissements Actifs"
       [valeur]="service.totalActifs()"
       sousTexte="Centres déployés et opérationnels"
-      evolution="+8,4%"
       couleurAccent="var(--c-brand)"
     ></app-carte-statistique>
 
@@ -60,7 +59,6 @@
       titre="En Attente de Validation"
       [valeur]="service.totalEnAttente()"
       sousTexte="Dossiers scolaires en cours d'audit"
-      evolution="Audit requis"
       couleurAccent="var(--c-accent)"
     ></app-carte-statistique>
 
@@ -68,15 +66,13 @@
       titre="Boîtiers en Classe"
       [valeur]="service.totalBoitiers()"
       sousTexte="Matériel Alternia installé"
-      evolution="96,4% en ligne"
       couleurAccent="var(--c-cyan)"
     ></app-carte-statistique>
 
     <app-carte-statistique
-      titre="Licences Déployées"
-      [valeur]="(service.totalLicences() | number) || '0'"
-      sousTexte="Clés d'accès élèves et enseignants"
-      evolution="+12%"
+      titre="Élèves Couverts"
+      [valeur]="(service.totalEffectifs() | number) || '0'"
+      sousTexte="Élèves et enseignants rattachés"
       couleurAccent="var(--c-success)"
     ></app-carte-statistique>
   </div>
@@ -209,7 +205,7 @@
       [etablissements]="service.etablissementsFiltres()"
       [modeAffichage]="modeAffichage()"
       (basculerStatut)="service.basculerStatut($event)"
-      (supprimer)="service.supprimer($event)"
+      (supprimer)="demanderSuppression($event)"
     ></app-tableau-etablissements>
   } @else {
     <div class="card empty-container">
@@ -220,6 +216,21 @@
         (action)="reinitialiserFiltres()"
       ></app-etat-vide>
     </div>
+  }
+
+  <!-- Modale de Confirmation de Suppression -->
+  @if (etablissementASupprimer(); as e) {
+    <app-modal-confirmation
+      [ouvert]="true"
+      titre="Supprimer l'établissement"
+      message="Êtes-vous sûr de vouloir supprimer définitivement cet établissement du répertoire ?"
+      [nomElement]="e.nom + ' (' + e.region + ')'"
+      avertissement="Cette action désactivera la liaison télémétrique avec les boîtiers et comptes parents associés."
+      texteConfirmer="Supprimer définitivement"
+      variante="danger"
+      (confirmer)="confirmerSuppression()"
+      (annuler)="etablissementASupprimer.set(null)"
+    ></app-modal-confirmation>
   }
 
   <!-- Modale de Création d'Établissement -->

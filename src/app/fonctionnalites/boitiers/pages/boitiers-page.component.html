@@ -3,10 +3,10 @@
   <!-- En-tête de la Page -->
   <div class="page-header flex justify-between items-start">
     <div>
-      <div class="page-header__eyebrow">Parc Matériel & Dispositifs</div>
-      <h1 class="page-header__title">Gestion des Boîtiers Alternia</h1>
+      <div class="page-header__eyebrow">Infrastructure Edge & IoT</div>
+      <h1 class="page-header__title">Supervision des Boîtiers AlternIA</h1>
       <p class="page-header__subtitle">
-        Supervision et statut en direct des 1 247 boîtiers intelligents déployés en établissement
+        Télémétrie en direct, santé du parc matériel et gestion des déploiements OTA sur le réseau scolaire
       </p>
     </div>
 
@@ -27,86 +27,163 @@
     </div>
   </div>
 
-  <!-- Métriques KPIs -->
+  <!-- Métriques KPIs de Gouvernance Matérielle -->
   <div class="kpi-grid mb-6">
     <app-carte-statistique
-      titre="Total Déployés"
+      titre="Flotte Déployée"
       [valeur]="service.totalDeployes()"
-      sousTexte="Installés dans les établissements"
-      evolution="Actifs"
+      sousTexte="1 247 unités sur le terrain"
       couleurAccent="var(--c-brand)"
     ></app-carte-statistique>
 
     <app-carte-statistique
-      titre="En Ligne (En Classe)"
+      titre="En Ligne (Edge Connecté)"
       [valeur]="service.totalActifs()"
-      sousTexte="Taux de disponibilité : 96,4%"
-      evolution="96,4%"
+      sousTexte="Disponibilité : 96,4%"
       couleurAccent="var(--c-success)"
     ></app-carte-statistique>
 
     <app-carte-statistique
-      titre="Hors Ligne"
-      [valeur]="service.totalHorsLigne()"
-      sousTexte="En attente de reconnexion"
-      evolution="31 unités"
-      couleurAccent="var(--c-danger)"
+      titre="Autonomie Batterie Moyenne"
+      [valeur]="service.batterieMoyenne()"
+      sousTexte="Santé des cellules lithium : Excellente"
+      couleurAccent="#0284c7"
     ></app-carte-statistique>
 
     <app-carte-statistique
-      titre="En Maintenance"
-      [valeur]="service.totalMaintenance()"
-      sousTexte="Mise à jour firmware en cours"
-      evolution="14 unités"
+      titre="Apprenants en Direct (Local)"
+      [valeur]="service.totalApprenantsSimultanes()"
+      sousTexte="Élèves connectés sans internet"
       couleurAccent="var(--c-accent)"
     ></app-carte-statistique>
   </div>
 
-  <!-- Barre de Recherche & Filtres -->
-  <div class="table-controls mb-4">
-    <div class="table-controls__search">
-      <input
-        type="text"
-        class="input input--sm"
-        placeholder="Rechercher par numéro de série, établissement, ville..."
-        [ngModel]="service.recherche()"
-        (ngModelChange)="service.recherche.set($event)"
-      />
-    </div>
-
-    <div class="flex gap-2">
-      <select
-        class="select select--sm"
-        [ngModel]="service.filtreStatut()"
-        (ngModelChange)="service.filtreStatut.set($event)"
+  <!-- Sous-onglets de navigation métier -->
+  <div class="boitiers-subtabs mb-4 flex items-center justify-between">
+    <div class="pill-group">
+      <button
+        type="button"
+        class="pill-btn"
+        [class.pill-btn--active]="service.ongletActif() === 'parc'"
+        (click)="service.ongletActif.set('parc')"
       >
-        <option value="Tous">Tous les statuts</option>
-        <option value="Actif">Actif</option>
-        <option value="Hors ligne">Hors ligne</option>
-        <option value="Maintenance">Maintenance</option>
-      </select>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect width="20" height="14" x="2" y="5" rx="2"/><path d="M2 10h20"/>
+        </svg>
+        Parc & Télémétrie en Direct
+      </button>
+
+      <button
+        type="button"
+        class="pill-btn"
+        [class.pill-btn--active]="service.ongletActif() === 'ota'"
+        (click)="service.ongletActif.set('ota')"
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+        </svg>
+        Campagnes OTA & Mises à Jour
+        <span class="badge badge--cyan badge--subtle font-mono text-xs">
+          {{ service.campagnesOta().length }}
+        </span>
+      </button>
     </div>
   </div>
 
-  <!-- Tableau ou État Vide -->
-  @if (service.boitiersFiltres().length > 0) {
-    <app-tableau-boitiers
-      [boitiers]="service.boitiersFiltres()"
-      (changerStatut)="service.changerStatut($event.id, $event.statut)"
-      (supprimer)="service.supprimer($event)"
-    ></app-tableau-boitiers>
-  } @else {
-    <div class="card">
-      <app-etat-vide
-        titre="Aucun boîtier trouvé"
-        message="Aucun boîtier ne correspond à vos critères de recherche."
-        texteAction="Réinitialiser les filtres"
-        (action)="service.recherche.set(''); service.filtreStatut.set('Tous')"
-      ></app-etat-vide>
+  @if (service.ongletActif() === 'parc') {
+    <!-- Barre de Recherche & Filtres Régionaux -->
+    <div class="table-controls mb-4">
+      <div class="table-controls__search">
+        <input
+          type="text"
+          class="input input--sm"
+          placeholder="Rechercher par numéro de série, établissement, IP, ville..."
+          [ngModel]="service.recherche()"
+          (ngModelChange)="service.recherche.set($event)"
+        />
+      </div>
+
+      <div class="flex gap-2">
+        <select
+          class="select select--sm"
+          [ngModel]="service.filtreRegion()"
+          (ngModelChange)="service.filtreRegion.set($event)"
+        >
+          <option value="Toutes">Toutes les régions</option>
+          <option value="Bamako">Bamako</option>
+          <option value="Sikasso">Sikasso</option>
+          <option value="Ségou">Ségou</option>
+          <option value="Kayes">Kayes</option>
+          <option value="Mopti">Mopti</option>
+        </select>
+
+        <select
+          class="select select--sm"
+          [ngModel]="service.filtreStatut()"
+          (ngModelChange)="service.filtreStatut.set($event)"
+        >
+          <option value="Tous">Tous les statuts</option>
+          <option value="Actif">Actif (En ligne)</option>
+          <option value="Hors ligne">Hors ligne</option>
+          <option value="Maintenance">Maintenance</option>
+        </select>
+      </div>
     </div>
+
+    <!-- Tableau ou État Vide -->
+    @if (service.boitiersFiltres().length > 0) {
+      <app-tableau-boitiers
+        [boitiers]="service.boitiersFiltres()"
+        (changerStatut)="service.changerStatut($event.id, $event.statut)"
+        (inspecter)="service.inspecterBoitier($event)"
+        (forcerSynchro)="service.forcerSynchro($event)"
+        (supprimer)="demanderSuppression($event)"
+      ></app-tableau-boitiers>
+    } @else {
+      <div class="card">
+        <app-etat-vide
+          titre="Aucun boîtier trouvé"
+          message="Aucun boîtier ne correspond à vos critères de recherche."
+          texteAction="Réinitialiser les filtres"
+          (action)="service.recherche.set(''); service.filtreStatut.set('Tous'); service.filtreRegion.set('Toutes')"
+        ></app-etat-vide>
+      </div>
+    }
+  } @else {
+    <!-- Vue Campagnes OTA -->
+    <app-campagnes-ota
+      [campagnes]="service.campagnesOta()"
+      (lancerCampagne)="service.lancerCampagneOta($event)"
+    ></app-campagnes-ota>
   }
 
-  <!-- Modale de Création -->
+  <!-- Tiroir / Inspecteur Hardware en Direct -->
+  @if (service.boitierInspecte(); as inspecte) {
+    <app-inspecteur-hardware
+      [boitier]="inspecte"
+      (fermer)="service.fermerInspecteur()"
+      (forcerSynchro)="service.forcerSynchro($event)"
+      (redemarrerServeur)="service.redemarrerServeurEdge($event)"
+      (changerStatut)="service.changerStatut($event.id, $event.statut)"
+    ></app-inspecteur-hardware>
+  }
+
+  <!-- Modale de Confirmation de Suppression de Boîtier -->
+  @if (boitierASupprimer(); as b) {
+    <app-modal-confirmation
+      [ouvert]="true"
+      titre="Retirer le boîtier du parc"
+      message="Êtes-vous sûr de vouloir dissocier et supprimer définitivement ce boîtier Edge ?"
+      [nomElement]="b.serialNumber + ' — ' + b.etablissementNom"
+      avertissement="La synchronisation des cours et les télémétries en temps réel ne seront plus acheminées."
+      texteConfirmer="Retirer du parc"
+      variante="danger"
+      (confirmer)="confirmerSuppression()"
+      (annuler)="boitierASupprimer.set(null)"
+    ></app-modal-confirmation>
+  }
+
+  <!-- Modale d'Association d'un Boîtier -->
   <app-modal-boitier
     [ouvert]="modalOuvert()"
     (fermer)="modalOuvert.set(false)"

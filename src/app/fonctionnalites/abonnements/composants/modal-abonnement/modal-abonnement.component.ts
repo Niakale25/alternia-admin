@@ -18,16 +18,16 @@ export class ModalAbonnementComponent {
 
   parentNom: string = '';
   parentEmail: string = '';
-  type: 'Premium Annuel' | 'Standard Mensuel' | 'Découverte' = 'Premium Annuel';
+  type: 'Premium Famille' | 'Premium Établissement' | 'Accès Général (Inclus Boîtier)' = 'Premium Famille';
   montant: number = 45000;
   dateRenouvellement: string = '15/01/2026';
   statut: 'Actif' | 'Résilié' | 'En attente de paiement' | 'Suspendu' = 'Actif';
   autoRenouvellement: boolean = true;
 
-  onTypeChange(type: 'Premium Annuel' | 'Standard Mensuel' | 'Découverte'): void {
+  onTypeChange(type: 'Premium Famille' | 'Premium Établissement' | 'Accès Général (Inclus Boîtier)'): void {
     this.type = type;
-    if (type === 'Premium Annuel') this.montant = 45000;
-    else if (type === 'Standard Mensuel') this.montant = 5000;
+    if (type === 'Premium Famille') this.montant = 45000;
+    else if (type === 'Premium Établissement') this.montant = 250000;
     else this.montant = 0;
   }
 

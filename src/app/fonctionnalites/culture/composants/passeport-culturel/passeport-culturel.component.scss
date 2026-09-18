@@ -1,0 +1,161 @@
+.passeport-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--c-text);
+  margin: 0 0 2px;
+}
+
+.passeport-subtitle {
+  font-size: 12px;
+  color: var(--c-secondary);
+  margin: 0;
+}
+
+.section-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--c-text);
+  margin: 0 0 2px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-sub {
+  font-size: 12px;
+  color: var(--c-secondary);
+  margin: 0;
+}
+
+.levels-card {
+  padding: 18px;
+  background: var(--c-white);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--s-xs);
+}
+
+.levels-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+
+  @media (max-width: 960px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 580px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.level-box {
+  background: var(--c-surface-alt);
+  border: 1px solid var(--c-border-light);
+  border-radius: var(--r-md);
+  padding: 14px;
+  border-top: 3.5px solid var(--lvl-color, var(--c-brand));
+
+  &__title {
+    font-size: 13px;
+    color: var(--c-text);
+  }
+}
+
+.level-badge {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--lvl-color, var(--c-brand));
+  background: var(--c-white);
+  padding: 2px 8px;
+  border-radius: var(--r-full);
+  border: 1px solid var(--c-border-light);
+}
+
+.tampons-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.tampon-card {
+  background: var(--c-white);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-lg);
+  padding: 18px;
+  box-shadow: var(--s-xs);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 3.5px;
+    background: var(--stamp-color, var(--c-brand));
+  }
+}
+
+.stamp-emblem {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--c-surface-alt);
+  border: 2px dashed var(--stamp-color, var(--c-brand));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  &--inactive {
+    opacity: 0.4;
+    border-style: solid;
+  }
+}
+
+.stamp-icon {
+  font-size: 20px;
+}
+
+.tampon-name {
+  font-size: 14.5px;
+  font-weight: 800;
+  color: var(--c-text);
+  margin: 0;
+}
+
+.tampon-condition {
+  background: var(--c-surface-alt);
+  border: 1px solid var(--c-border-light);
+  border-radius: var(--r-md);
+  padding: 10px 12px;
+}
+
+.condition-desc {
+  font-size: 12px;
+  color: var(--c-secondary);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.stamp-bar {
+  height: 6px;
+  background: var(--c-border);
+  border-radius: var(--r-full);
+  overflow: hidden;
+
+  &__fill {
+    height: 100%;
+    background: var(--stamp-color, var(--c-brand));
+    border-radius: var(--r-full);
+  }
+}

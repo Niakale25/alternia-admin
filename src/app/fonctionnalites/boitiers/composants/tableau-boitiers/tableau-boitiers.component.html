@@ -1,44 +1,128 @@
-<div class="card table-container">
+<div class="table-container">
   <table class="table">
     <thead>
       <tr>
-        <th>Numéro de Série</th>
-        <th>Établissement Associé</th>
-        <th>Ville</th>
-        <th>Version Firmware</th>
+        <th>Boîtier / Série</th>
+        <th>Établissement & Région</th>
+        <th>Mode & Réseau</th>
+        <th>Télémétrie Hardware</th>
+        <th>Firmware & OTA</th>
         <th>Statut</th>
-        <th>Dernière Synchronisation</th>
         <th class="text-right">Actions</th>
       </tr>
     </thead>
     <tbody>
       @for (b of boitiers; track b.id) {
         <tr>
+          <!-- 1. Numéro de série & Modèle -->
           <td>
-            <div class="font-mono font-bold text-brand">{{ b.serialNumber }}</div>
-            <div class="text-xs text-subtle">{{ b.id }}</div>
+            <div class="flex items-center gap-2">
+              <div class="boitier-icon-badge">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect width="20" height="14" x="2" y="5" rx="2"/><path d="M2 10h20"/><circle cx="6" cy="15" r="1"/><circle cx="10" cy="15" r="1"/>
+                </svg>
+              </div>
+              <div>
+                <div class="font-mono font-bold text-brand flex items-center gap-1.5">
+                  {{ b.serialNumber }}
+                </div>
+                <div class="text-xs text-subtle">{{ b.modele }}</div>
+              </div>
+            </div>
           </td>
+
+          <!-- 2. Établissement & Région -->
           <td>
             <div class="font-semibold text-text">{{ b.etablissementNom }}</div>
-            <div class="text-xs text-subtle">ID: {{ b.etablissementId }}</div>
+            <div class="text-xs text-secondary flex items-center gap-1">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>
+              </svg>
+              {{ b.ville }} ({{ b.region }})
+            </div>
           </td>
-          <td class="text-xs text-secondary">{{ b.ville }}</td>
+
+          <!-- 3. Mode de Fonctionnement & Réseau -->
           <td>
-            <span class="badge badge--neutre font-mono text-xs">{{ b.versionFirmware }}</span>
+            <div class="text-xs font-semibold text-text mb-0.5">{{ b.modeFonctionnement }}</div>
+            <div class="text-xs text-subtle font-mono flex items-center gap-1">
+              <span class="dot dot--cyan"></span>
+              {{ b.ipLocale }}
+            </div>
           </td>
+
+          <!-- 4. Télémétrie (Batterie & Stockage SSD) -->
+          <td>
+            <div class="telemetry-block">
+              <!-- Batterie -->
+              <div class="flex items-center gap-2 mb-1.5">
+                <div class="battery-pill" [class.battery-pill--low]="b.batterie < 25" [class.battery-pill--mid]="b.batterie >= 25 && b.batterie < 70">
+                  <span class="battery-level" [style.width.%]="b.batterie"></span>
+                </div>
+                <span class="text-xs font-bold text-text">{{ b.batterie }}%</span>
+                @if (b.temperatureCpu) {
+                  <span class="text-xs text-subtle">({{ b.temperatureCpu }}°C)</span>
+                }
+              </div>
+
+              <!-- Stockage SSD -->
+              <div class="flex items-center gap-2">
+                <div class="storage-mini-bar">
+                  <div class="storage-mini-fill" [style.width.%]="(b.stockageUtiliseGo / b.stockageGo) * 100"></div>
+                </div>
+                <span class="text-xs text-secondary">{{ b.stockageUtiliseGo }} / {{ b.stockageGo }} Go</span>
+              </div>
+            </div>
+          </td>
+
+          <!-- 5. Firmware & Mises à Jour -->
+          <td>
+            <div class="flex items-center gap-1.5 mb-1">
+              <span class="badge badge--neutre font-mono text-xs">{{ b.versionFirmware }}</span>
+            </div>
+            <div class="text-xs text-subtle">
+              {{ b.elevesConnectes > 0 ? b.elevesConnectes + ' élèves actifs' : 'En veille' }}
+            </div>
+          </td>
+
+          <!-- 6. Statut -->
           <td>
             <app-badge
               [variante]="b.statut === 'Actif' ? 'succes' : (b.statut === 'Hors ligne' ? 'danger' : 'avertissement')"
               [avecPoint]="true"
               [texte]="b.statut"
             ></app-badge>
+            <div class="text-xs text-subtle mt-1">{{ b.derniereConnexion }}</div>
           </td>
-          <td class="text-xs text-secondary">{{ b.derniereConnexion }}</td>
+
+          <!-- 7. Actions -->
           <td class="text-right">
-            <div class="flex justify-end gap-1">
+            <div class="flex items-center justify-end gap-1.5">
+              <!-- Bouton Inspecteur Hardware -->
+              <button
+                class="btn btn--secondary btn--sm btn--icon"
+                title="Inspecter le matériel et la télémétrie"
+                (click)="inspecter.emit(b)"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>
+                </svg>
+              </button>
+
+              <!-- Forcer la synchronisation -->
+              <button
+                class="btn btn--ghost btn--sm btn--icon text-brand"
+                title="Forcer la synchronisation Edge"
+                (click)="forcerSynchro.emit(b)"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
+                </svg>
+              </button>
+
+              <!-- Changement rapide de statut -->
               <select
-                class="select select--sm"
-                style="padding: 2px 6px; font-size: 11px; height: 26px;"
+                class="select select--sm select-statut"
                 [value]="b.statut"
                 (change)="changerStatut.emit({ id: b.id, statut: $any($event.target).value })"
               >
@@ -46,10 +130,12 @@
                 <option value="Hors ligne">Hors ligne</option>
                 <option value="Maintenance">Maintenance</option>
               </select>
+
+              <!-- Supprimer -->
               <button
                 class="btn btn--ghost btn--icon btn--sm text-danger"
-                data-tooltip="Retirer"
-                (click)="supprimer.emit(b.id)"
+                title="Retirer du parc"
+                (click)="supprimer.emit(b)"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>

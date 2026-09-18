@@ -153,7 +153,7 @@ body {
   color: var(--c-text);
   background: var(--c-surface);
   min-height: 100vh;
-  overflow-x: hidden;
+  overflow-x: clip;
   transition: background-color var(--t-base), color var(--t-base);
 }
 
@@ -170,6 +170,11 @@ body.connexion-active {
 }
 
 // ── SCROLLBAR ─────────────────────────────────────────────────
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--c-border) transparent;
+}
+
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -665,16 +670,43 @@ table {
 }
 
 .page-content {
-  padding: 1.5rem;
   animation: fadeIn var(--t-slow) ease;
-  max-width: 1600px;
+  width: 100%;
+  min-width: 0;
 }
 
-// ── DIVIDER ───────────────────────────────────────────────────
+// ── DIVIDER & BORDERS ─────────────────────────────────────────
 .divider {
   height: 1px;
   background: var(--c-border);
   margin: 1rem 0;
+}
+
+.border-t { border-top: 1px solid var(--c-border-light); }
+.border-b { border-bottom: 1px solid var(--c-border-light); }
+.border-l { border-left: 1px solid var(--c-border-light); }
+.border-r { border-right: 1px solid var(--c-border-light); }
+
+// ── TEXT ALIGNMENT ────────────────────────────────────────────
+.text-right { text-align: right !important; }
+.text-center { text-align: center !important; }
+.text-left { text-align: left !important; }
+
+// ── TABLE CONTAINER ───────────────────────────────────────────
+.table-container,
+.card.table-container {
+  width: 100%;
+  display: block;
+  padding: 0 !important;
+  margin: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--c-border) transparent;
+  background: var(--c-white);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-xl);
+  box-shadow: var(--s-xs);
 }
 
 // ── TOOLTIP ───────────────────────────────────────────────────

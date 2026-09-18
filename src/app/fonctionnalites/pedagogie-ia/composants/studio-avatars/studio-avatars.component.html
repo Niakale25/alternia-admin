@@ -1,0 +1,279 @@
+<div class="studio-avatars">
+  <!-- Barre d'outils et de filtrage structurée sans chevauchement -->
+  <div class="studio-toolbar mb-6">
+    <!-- Ligne 1 : Recherche principale + Filtre Moteur de rendu -->
+    <div class="studio-toolbar__top">
+      <div class="studio-search">
+        <svg class="studio-search__icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input
+          type="text"
+          class="studio-search__input"
+          placeholder="Rechercher un enseignant, matière, voix TTS, Face ID..."
+          [ngModel]="recherche"
+          (ngModelChange)="changerRecherche.emit($event)"
+        />
+        @if (recherche) {
+          <button class="studio-search__clear" (click)="changerRecherche.emit('')" aria-label="Effacer">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        }
+      </div>
+
+      <!-- Filtre par Moteur de Rendu -->
+      <div class="studio-filter-group">
+        <span class="studio-filter-lbl">Rendu :</span>
+        <div class="pill-group">
+          <button
+            type="button"
+            class="pill-btn"
+            [class.pill-btn--active]="filtreMoteur === 'tous'"
+            (click)="filtreMoteur = 'tous'"
+          >
+            Tous ({{ avatars.length }})
+          </button>
+          <button
+            type="button"
+            class="pill-btn"
+            [class.pill-btn--active]="filtreMoteur === 'simli'"
+            (click)="filtreMoteur = 'simli'"
+          >
+            <span class="status-dot status-dot--online"></span>
+            Simli Streaming
+          </button>
+          <button
+            type="button"
+            class="pill-btn"
+            [class.pill-btn--active]="filtreMoteur === 'statique'"
+            (click)="filtreMoteur = 'statique'"
+          >
+            Statique
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="studio-toolbar__divider"></div>
+
+    <!-- Ligne 2 : Filtres par Discipline & Matière -->
+    <div class="studio-toolbar__bottom">
+      <span class="studio-filter-lbl">Discipline :</span>
+      <div class="pill-group pill-group--wrap">
+        @for (m of matieresOptions; track m) {
+          <button
+            type="button"
+            class="pill-btn"
+            [class.pill-btn--active]="filtreMatiere === m"
+            (click)="changerFiltreMatiere.emit(m)"
+          >
+            {{ m === 'Toutes' ? 'Toutes disciplines' : m }}
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Grille des Avatars -->
+  @if (avatarsFiltresParMoteur.length === 0) {
+    <div class="empty-state card p-8 text-center">
+      <div class="empty-icon-wrap mb-2">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+      </div>
+      <h4 class="font-semibold text-text">Aucun enseignant trouvé</h4>
+      <p class="text-xs text-secondary mt-1">Ajustez les filtres ou ajoutez un nouveau profil d'enseignant.</p>
+    </div>
+  } @else {
+    <div class="avatars-grid">
+      @for (a of avatarsFiltresParMoteur; track a.id) {
+        <div
+          class="avatar-card card"
+          [class.avatar-card--default]="a.parDefaut"
+          [style.--card-accent]="a.accent"
+        >
+          <!-- En-tête de carte avec hiérarchie claire -->
+          <div class="avatar-card__header">
+            <div class="avatar-portrait-wrap" [class.avatar-portrait-wrap--live]="a.moteurRendu === 'simli'">
+              <img [src]="a.photoUrl" [alt]="a.nom" class="avatar-portrait-img" />
+              @if (a.moteurRendu === 'simli') {
+                <span class="live-indicator-tag" title="Flux WebRTC Simli prêt">LIVE</span>
+              }
+            </div>
+
+            <div class="avatar-identity min-w-0">
+              <div class="avatar-title-row">
+                <h3 class="avatar-title" [title]="a.nom">{{ a.nom }}</h3>
+              </div>
+
+              <!-- Badges de statut et moteur -->
+              <div class="avatar-badges-row">
+                <app-badge
+                  [variante]="a.actif ? 'succes' : 'neutre'"
+                  [avecPoint]="true"
+                  [texte]="a.actif ? 'Actif' : 'Inactif'"
+                ></app-badge>
+
+                @if (a.parDefaut) {
+                  <app-badge variante="primaire" texte="Par défaut"></app-badge>
+                }
+
+                @if (a.moteurRendu === 'simli') {
+                  <app-badge variante="cyan" [texte]="'Simli ' + (a.simliModel ? a.simliModel.toUpperCase() : 'HD')"></app-badge>
+                }
+              </div>
+
+              <!-- Métadonnées Pédagogiques -->
+              <div class="avatar-meta">
+                <span class="avatar-matiere">{{ a.matiere }}</span>
+                <span class="avatar-meta-dot">•</span>
+                <span class="avatar-classe">{{ a.niveauClasse }}</span>
+              </div>
+            </div>
+
+            <!-- Actions rapides d'en-tête -->
+            <div class="avatar-card__actions">
+              <button
+                type="button"
+                class="btn btn--ghost btn--icon btn--sm"
+                [class.text-warning]="a.parDefaut"
+                (click)="definirParDefaut.emit(a)"
+                [title]="a.parDefaut ? 'Enseignant par défaut' : 'Définir comme enseignant par défaut'"
+              >
+                <svg width="15" height="15" viewBox="0 0 24 24" [attr.fill]="a.parDefaut ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="2">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                </svg>
+              </button>
+
+              <button
+                type="button"
+                class="btn btn--ghost btn--icon btn--sm"
+                (click)="editer.emit(a)"
+                title="Modifier les paramètres"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>
+                </svg>
+              </button>
+
+              @if (!a.parDefaut) {
+                <button
+                  type="button"
+                  class="btn btn--ghost btn--icon btn--sm text-danger"
+                  (click)="supprimer.emit(a)"
+                  title="Supprimer cet enseignant"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                  </svg>
+                </button>
+              }
+            </div>
+          </div>
+
+          <!-- Ligne technique Simli (Face ID & Métriques Edge) -->
+          @if (a.moteurRendu === 'simli' && a.simliFaceId) {
+            <div class="simli-meta-panel">
+              <div class="simli-id-wrap">
+                <span class="simli-lbl">Face ID</span>
+                <span class="simli-id font-mono" [title]="a.simliFaceId">{{ a.simliFaceId }}</span>
+                <button
+                  type="button"
+                  class="btn-copy-tag"
+                  (click)="copierFaceId(a.simliFaceId, $event)"
+                  title="Copier le Face ID"
+                >
+                  @if (idCopie === a.simliFaceId) {
+                    <span class="text-success font-semibold text-2xs">Copié</span>
+                  } @else {
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                    </svg>
+                  }
+                </button>
+              </div>
+
+              <div class="simli-metrics-wrap">
+                <span class="spec-pill font-mono" title="Latence réseau Edge">
+                  {{ a.latenceEdgeMs || 115 }} ms
+                </span>
+                @if (a.qualiteVisage) {
+                  <span class="spec-pill font-mono" title="Qualité du maillage facial">
+                    {{ a.qualiteVisage }}% fidélité
+                  </span>
+                }
+              </div>
+            </div>
+          }
+
+          <!-- Posture pédagogique -->
+          <div class="avatar-card__body">
+            <p class="avatar-style-desc">{{ a.stylePedagogique }}</p>
+          </div>
+
+          <!-- Lecteur vocal & Phrase d'accueil -->
+          <div class="avatar-audio-strip">
+            <div class="avatar-audio-strip__top">
+              <div class="avatar-voice-info">
+                <span class="status-dot status-dot--online"></span>
+                <span class="voice-name font-mono">{{ a.voixTts.split(' ')[0] }}</span>
+              </div>
+
+              <button
+                type="button"
+                class="btn btn--secondary btn--sm audio-play-btn"
+                [class.btn--primary]="voixEnLecture === a.id"
+                (click)="lireVoix.emit(a)"
+              >
+                @if (voixEnLecture === a.id) {
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
+                    <rect x="6" y="4" width="4" height="16"/>
+                    <rect x="14" y="4" width="4" height="16"/>
+                  </svg>
+                  Arrêter
+                } @else {
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="5 3 19 12 5 21 5 3"/>
+                  </svg>
+                  {{ a.moteurRendu === 'simli' ? 'Tester flux' : 'Écouter' }}
+                }
+              </button>
+            </div>
+
+            <p class="avatar-quote">
+              « {{ a.audioSampleText }} »
+            </p>
+          </div>
+
+          <!-- Actions de bas de carte alignées -->
+          <div class="avatar-card__footer">
+            <button
+              type="button"
+              class="btn btn--ghost btn--sm"
+              [class.text-danger]="a.actif"
+              [class.text-success]="!a.actif"
+              (click)="basculerActif.emit(a)"
+            >
+              {{ a.actif ? 'Désactiver' : 'Activer' }}
+            </button>
+
+            <button
+              type="button"
+              class="btn btn--secondary btn--sm"
+              (click)="editer.emit(a)"
+            >
+              Configurer
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>
+
+

@@ -5,7 +5,6 @@ import { TableauBordService } from '../services/tableau-bord.service';
 import { CarteKpiComponent } from '../composants/carte-kpi/carte-kpi.component';
 import { GraphiqueCroissanceComponent } from '../composants/graphique-croissance/graphique-croissance.component';
 import { ListeAlertesComponent } from '../composants/liste-alertes/liste-alertes.component';
-import { RepartitionLicencesComponent } from '../composants/repartition-licences/repartition-licences.component';
 import { ActionsRapidesComponent } from '../composants/actions-rapides/actions-rapides.component';
 import { ChargeurSqueletteComponent } from '@partage/composants/chargeur-squelette/chargeur-squelette.component';
 import { AlertePrioritaireDTO } from '../modeles/tableau-bord.model';
@@ -18,7 +17,6 @@ import { AlertePrioritaireDTO } from '../modeles/tableau-bord.model';
     CarteKpiComponent,
     GraphiqueCroissanceComponent,
     ListeAlertesComponent,
-    RepartitionLicencesComponent,
     ActionsRapidesComponent,
     ChargeurSqueletteComponent
   ],
@@ -34,12 +32,12 @@ export class TableauBordPageComponent implements OnInit {
   }
 
   onTraiterAlerte(alerte: AlertePrioritaireDTO): void {
-    if (alerte.type === 'renouvellement') {
-      this.router.navigate(['/licences']);
-    } else if (alerte.type === 'boitier') {
+    if (alerte.type === 'boitier') {
       this.router.navigate(['/boitiers']);
     } else if (alerte.type === 'etablissement') {
       this.router.navigate(['/etablissements']);
+    } else if (alerte.type === 'renouvellement') {
+      this.router.navigate(['/abonnements']);
     }
   }
 }

@@ -1,0 +1,171 @@
+<div class="inspector-backdrop" (click)="fermer.emit()"></div>
+
+<div class="inspector-drawer">
+  <!-- En-tête du tiroir -->
+  <div class="inspector-header flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="inspector-avatar">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect width="20" height="14" x="2" y="5" rx="2"/><path d="M2 10h20"/><circle cx="6" cy="15" r="1"/><circle cx="10" cy="15" r="1"/>
+        </svg>
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <h2 class="inspector-title font-mono">{{ boitier.serialNumber }}</h2>
+          <app-badge
+            [variante]="boitier.statut === 'Actif' ? 'succes' : (boitier.statut === 'Hors ligne' ? 'danger' : 'avertissement')"
+            [avecPoint]="true"
+            [texte]="boitier.statut"
+          ></app-badge>
+        </div>
+        <p class="inspector-sub">{{ boitier.modele }} • {{ boitier.etablissementNom }} ({{ boitier.ville }})</p>
+      </div>
+    </div>
+
+    <button class="btn btn--ghost btn--icon btn--sm" (click)="fermer.emit()" title="Fermer">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Corps de l'inspection -->
+  <div class="inspector-body">
+    <!-- Section 1 : Télémétrie Hardware en Direct -->
+    <div class="inspector-section">
+      <h4 class="section-heading">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+        </svg>
+        Télémétrie Système & Capteurs
+      </h4>
+
+      <div class="hardware-grid">
+        <!-- Batterie -->
+        <div class="hardware-card">
+          <div class="hardware-card__label">Batterie Interne</div>
+          <div class="flex items-center justify-between mt-1">
+            <span class="hardware-card__value" [class.text-danger]="boitier.batterie < 25" [class.text-success]="boitier.batterie >= 70">
+              {{ boitier.batterie }}%
+            </span>
+            <div class="battery-big-pill">
+              <span class="battery-big-fill" [style.width.%]="boitier.batterie"></span>
+            </div>
+          </div>
+          <div class="hardware-card__sub">Autonomie estimée : ~14h de cours</div>
+        </div>
+
+        <!-- Stockage SSD -->
+        <div class="hardware-card">
+          <div class="hardware-card__label">Stockage SSD Local</div>
+          <div class="flex items-center justify-between mt-1">
+            <span class="hardware-card__value">{{ boitier.stockageUtiliseGo }} / {{ boitier.stockageGo }} Go</span>
+            <span class="badge badge--neutre font-mono text-xs">
+              {{ ((boitier.stockageUtiliseGo / boitier.stockageGo) * 100).toFixed(0) }}%
+            </span>
+          </div>
+          <div class="storage-bar mt-2">
+            <div class="storage-bar__fill" [style.width.%]="(boitier.stockageUtiliseGo / boitier.stockageGo) * 100"></div>
+          </div>
+        </div>
+
+        <!-- Température CPU -->
+        <div class="hardware-card">
+          <div class="hardware-card__label">Température Processeur</div>
+          <div class="flex items-center justify-between mt-1">
+            <span class="hardware-card__value text-brand">{{ boitier.temperatureCpu || 40 }}°C</span>
+            <span class="badge badge--success badge--subtle">Normal</span>
+          </div>
+          <div class="hardware-card__sub">Refroidissement passif stable</div>
+        </div>
+
+        <!-- Sessions Élèves -->
+        <div class="hardware-card">
+          <div class="hardware-card__label">Élèves Connectés en Local</div>
+          <div class="flex items-center justify-between mt-1">
+            <span class="hardware-card__value text-cyan">{{ boitier.elevesConnectes }}</span>
+            <span class="badge badge--cyan badge--subtle">Simultané</span>
+          </div>
+          <div class="hardware-card__sub">Capacité max : 35 élèves</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2 : Configuration Réseau Edge -->
+    <div class="inspector-section">
+      <h4 class="section-heading">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M5 12.55a11 11 0 0 1 14.08 0M1.42 9a16 16 0 0 1 21.16 0M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01"/>
+        </svg>
+        Configuration Réseau & Hotspot Local
+      </h4>
+
+      <div class="network-info-box">
+        <div class="network-row">
+          <span class="network-label">Mode Réseau</span>
+          <span class="network-value font-semibold">{{ boitier.modeFonctionnement }}</span>
+        </div>
+        <div class="network-row">
+          <span class="network-label">SSID Wi-Fi Diffusé</span>
+          <span class="network-value font-mono text-brand">{{ boitier.wifiSsid }}</span>
+        </div>
+        <div class="network-row">
+          <span class="network-label">Adresse IP Passerelle</span>
+          <span class="network-value font-mono">{{ boitier.ipLocale }}</span>
+        </div>
+        <div class="network-row">
+          <span class="network-label">Dernière Synchronisation Cloud</span>
+          <span class="network-value">{{ boitier.derniereConnexion }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3 : Logiciel & Packs Pédagogiques -->
+    <div class="inspector-section">
+      <h4 class="section-heading">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+          <polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>
+        </svg>
+        Packs de Données & Moteur IA Embarqué
+      </h4>
+
+      <div class="packages-list">
+        <div class="package-item">
+          <div class="package-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>
+            </svg>
+          </div>
+          <div class="package-info">
+            <div class="package-name">{{ boitier.packDonneesInstalle }}</div>
+            <div class="package-desc">Firmware : {{ boitier.versionFirmware }} • Indexé en local avec embeddings Edge</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Actions Opérationnelles à distance -->
+  <div class="inspector-footer flex items-center justify-between">
+    <div class="flex gap-2">
+      <button class="btn btn--secondary btn--sm" (click)="forcerSynchro.emit(boitier)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
+        </svg>
+        Forcer Synchronisation
+      </button>
+
+      <button class="btn btn--secondary btn--sm text-danger" (click)="redemarrerServeur.emit(boitier)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18.36 6.64a9 9 0 1 1-12.73 0M12 2v10"/>
+        </svg>
+        Redémarrer Edge
+      </button>
+    </div>
+
+    <button class="btn btn--primary btn--sm" (click)="fermer.emit()">
+      Fermer l'Inspecteur
+    </button>
+  </div>
+</div>

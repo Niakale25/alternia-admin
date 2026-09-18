@@ -22,7 +22,7 @@ export class ModalEtablissementComponent {
   nouveauDirecteurEmail: string = '';
   nouvelleOffre: 'Enterprise' | 'Institutionnel' | 'Standard' = 'Standard';
   nouveauxBoitiersCount: number = 10;
-  nouvellesLicencesCount: number = 500;
+  nouvelEffectifScolaire: number = 500;
 
   validerFormulaire(): void {
     if (!this.nouveauNom.trim()) return;
@@ -35,7 +35,7 @@ export class ModalEtablissementComponent {
       offre: this.nouvelleOffre,
       boitiersCount: this.nouveauxBoitiersCount,
       profilsCount: Math.round(this.nouveauxBoitiersCount * 0.7),
-      licencesCount: this.nouvellesLicencesCount,
+      effectifScolaire: this.nouvelEffectifScolaire,
       statut: 'Actif'
     });
 
@@ -46,6 +46,6 @@ export class ModalEtablissementComponent {
     this.nouveauNom = '';
     this.nouveauDirecteurEmail = '';
     this.nouveauxBoitiersCount = 10;
-    this.nouvellesLicencesCount = 500;
+    this.nouvelEffectifScolaire = 500;
   }
 }

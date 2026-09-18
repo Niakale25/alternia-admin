@@ -14,5 +14,5 @@ import { AbonnementDTO } from '../../modeles/abonnement.model';
 export class TableauAbonnementsComponent {
   @Input({ required: true }) abonnements!: AbonnementDTO[];
   @Output() changerStatut = new EventEmitter<{ id: string; statut: 'Actif' | 'Résilié' | 'En attente de paiement' | 'Suspendu' }>();
-  @Output() supprimer = new EventEmitter<string>();
+  @Output() supprimer = new EventEmitter<AbonnementDTO>();
 }

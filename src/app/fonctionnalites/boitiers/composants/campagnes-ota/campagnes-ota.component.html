@@ -1,0 +1,62 @@
+<div class="card ota-card">
+  <div class="ota-card__header flex items-center justify-between mb-4">
+    <div>
+      <h3 class="ota-card__title">Campagnes de Déploiement OTA (Over-The-Air)</h3>
+      <p class="ota-card__subtitle">Diffusion des firmwares, contenus pédagogiques et packs culturels hors-ligne</p>
+    </div>
+
+    <span class="badge badge--brand font-mono text-xs">
+      {{ campagnes.length }} Campagnes Actives
+    </span>
+  </div>
+
+  <div class="campagnes-grid">
+    @for (c of campagnes; track c.id) {
+      <div class="campagne-card" [class.campagne-card--active]="c.statut === 'En cours'">
+        <div class="campagne-card__top flex items-start justify-between">
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="badge badge--neutre font-mono text-xs">{{ c.versionCible }}</span>
+              <span class="badge badge--cyan badge--subtle font-mono text-xs">{{ c.typeContenu }}</span>
+            </div>
+            <h4 class="campagne-title">{{ c.nom }}</h4>
+          </div>
+
+          <app-badge
+            [variante]="c.statut === 'En cours' ? 'succes' : (c.statut === 'Terminée' ? 'neutre' : 'avertissement')"
+            [avecPoint]="true"
+            [texte]="c.statut"
+          ></app-badge>
+        </div>
+
+        <!-- Progression de diffusion -->
+        <div class="campagne-progress mt-4 mb-3">
+          <div class="flex justify-between text-xs mb-1.5">
+            <span class="text-secondary font-semibold">Taux d'application sur le parc</span>
+            <span class="font-bold text-text">
+              {{ ((c.totalAppliques / c.totalCibles) * 100).toFixed(1) }}% ({{ c.totalAppliques }} / {{ c.totalCibles }})
+            </span>
+          </div>
+
+          <div class="ota-progress-bar">
+            <div
+              class="ota-progress-fill"
+              [style.width.%]="(c.totalAppliques / c.totalCibles) * 100"
+              [class.ota-progress-fill--done]="c.totalAppliques === c.totalCibles"
+            ></div>
+          </div>
+        </div>
+
+        <!-- Infos complémentaires -->
+        <div class="campagne-footer flex items-center justify-between text-xs text-subtle">
+          <span>Taille : {{ c.tailleMo }} Mo • Lancée le {{ c.dateLancement }}</span>
+          @if (c.totalEnAttente > 0) {
+            <span class="text-warning font-semibold">{{ c.totalEnAttente }} boîtiers en attente de reconnexion</span>
+          } @else {
+            <span class="text-success font-semibold">100% Déployé</span>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</div>

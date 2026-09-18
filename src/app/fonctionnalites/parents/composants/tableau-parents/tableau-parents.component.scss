@@ -1,22 +1,37 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
 // ── VUE TABLEAU MODERNE ──────────────────────────────────────
 .table-container {
+  width: 100%;
+  display: block;
   overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--c-border) transparent;
   background: var(--c-white);
   border: 1px solid var(--c-border);
   border-radius: var(--r-xl);
   box-shadow: var(--s-xs);
-  padding: 0;
+  padding: 0 !important;
+  margin: 0;
 }
 
 .table {
   width: 100%;
-  border-collapse: collapse;
+  min-width: 100%;
+  margin: 0;
+  border-collapse: separate;
+  border-spacing: 0;
   text-align: left;
   font-size: 13px;
 
   thead {
-    background: var(--c-surface-alt);
-    border-bottom: 1px solid var(--c-border);
+    tr {
+      background: var(--c-surface-alt);
+    }
 
     th {
       padding: 14px 18px;
@@ -27,11 +42,23 @@
       color: var(--c-subtle);
       white-space: nowrap;
       user-select: none;
+      background: var(--c-surface-alt);
+      border-bottom: 1px solid var(--c-border);
+
+      &:first-child {
+        border-top-left-radius: var(--r-xl);
+      }
+      &:last-child {
+        border-top-right-radius: var(--r-xl);
+      }
+
+      &.text-right {
+        text-align: right;
+      }
     }
   }
 
   tbody tr {
-    border-bottom: 1px solid var(--c-border-light);
     transition: background var(--t-fast);
 
     &:hover {
@@ -39,12 +66,29 @@
     }
 
     &:last-child {
-      border-bottom: none;
+      td {
+        border-bottom: none;
+      }
+      td:first-child {
+        border-bottom-left-radius: var(--r-xl);
+      }
+      td:last-child {
+        border-bottom-right-radius: var(--r-xl);
+      }
     }
 
     td {
       padding: 14px 18px;
       vertical-align: middle;
+      border-bottom: 1px solid var(--c-border-light);
+
+      &.text-right {
+        text-align: right;
+
+        .table-actions {
+          justify-content: flex-end;
+        }
+      }
     }
   }
 }
@@ -173,33 +217,27 @@
   font-weight: 700;
   letter-spacing: 0.02em;
 
-  &--premium {
-    background: rgba(241, 133, 31, 0.12);
-    color: #EA580C;
-    border: 1px solid rgba(241, 133, 31, 0.25);
-    box-shadow: 0 0 8px rgba(241, 133, 31, 0.15);
-
-    .star-icon {
-      font-size: 10px;
-      color: #F59E0B;
-    }
-  }
-
-  &--standard {
+  &--premium-famille {
     background: var(--c-brand-bg);
     color: var(--c-brand);
     border: 1px solid var(--c-brand-border);
   }
 
-  &--decouverte {
-    background: var(--c-cyan-bg);
-    color: #0891B2;
-    border: 1px solid var(--c-cyan-border);
+  &--premium-etablissement {
+    background: rgba(241, 133, 31, 0.12);
+    color: #EA580C;
+    border: 1px solid rgba(241, 133, 31, 0.25);
+  }
+
+  &--acces-general {
+    background: var(--c-surface-alt);
+    color: var(--c-secondary);
+    border: 1px solid var(--c-border);
   }
 }
 
 // Licences / Enfants Pill
-.licences-pill {
+.enfants-pill {
   display: inline-flex;
   align-items: center;
   gap: 5px;
@@ -207,7 +245,7 @@
   font-weight: 700;
   color: var(--c-text);
 
-  .licences-count {
+  .enfants-count {
     background: var(--c-brand-bg);
     color: var(--c-brand);
     padding: 1px 7px;
@@ -215,7 +253,7 @@
     font-size: 11px;
   }
 
-  .licences-text {
+  .enfants-text {
     font-size: 11px;
     font-weight: 500;
     color: var(--c-subtle);

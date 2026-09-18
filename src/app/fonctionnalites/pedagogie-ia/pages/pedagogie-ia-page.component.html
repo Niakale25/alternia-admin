@@ -1,0 +1,92 @@
+<div class="page-content">
+
+  <!-- En-tête de la Page -->
+  <div class="page-header flex justify-between items-start flex-wrap gap-4">
+    <div>
+      <div class="page-header__eyebrow">Studio Pédagogique IA</div>
+      <h1 class="page-header__title">Studio Avatars & Voix</h1>
+      <p class="page-header__subtitle">
+        Gestion des enseignants virtuels, configuration du streaming vidéo temps réel Simli et synthèse vocale TTS
+      </p>
+    </div>
+
+    <div class="flex gap-2 items-center">
+      <button class="btn btn--primary" (click)="service.ouvrirCreationAvatar()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        Nouvel Enseignant
+      </button>
+    </div>
+  </div>
+
+  <!-- Métriques KPIs du Studio IA -->
+  <div class="kpi-grid mb-6">
+    <app-carte-statistique
+      titre="Requêtes IA Pédagogiques"
+      [valeur]="service.kpis().totalRequetesIa"
+      sousTexte="Interactions élèves ce mois"
+      couleurAccent="var(--c-brand)"
+    ></app-carte-statistique>
+
+    <app-carte-statistique
+      titre="Temps Moyen Réponse (Edge)"
+      [valeur]="service.kpis().tempsMoyenReponseEdge"
+      sousTexte="Inférence locale ultra-rapide"
+      couleurAccent="var(--c-success)"
+    ></app-carte-statistique>
+
+    <app-carte-statistique
+      titre="Enseignants Virtuels Actifs"
+      [valeur]="service.kpis().avatarsActifs"
+      sousTexte="Profils pédagogiques déployés"
+      couleurAccent="#0284c7"
+    ></app-carte-statistique>
+
+    <app-carte-statistique
+      titre="Profils Vocaux TTS"
+      [valeur]="service.kpis().voixTtsDisponibles"
+      sousTexte="Modèles de voix Edge configurés"
+      couleurAccent="var(--c-accent)"
+    ></app-carte-statistique>
+  </div>
+
+  <!-- Grille & Gestion des Avatars -->
+  <app-studio-avatars
+    [avatars]="service.avatarsFiltres()"
+    [voixEnLecture]="service.voixEnLecture()"
+    [recherche]="service.rechercheAvatars()"
+    [filtreMatiere]="service.filtreMatiereAvatars()"
+    (lireVoix)="onLireVoixAvatar($event)"
+    (editer)="onEditerAvatar($event)"
+    (basculerActif)="onBasculerActif($event)"
+    (definirParDefaut)="service.definirAvatarParDefaut($event)"
+    (supprimer)="demanderSuppressionAvatar($event)"
+    (changerRecherche)="service.rechercheAvatars.set($event)"
+    (changerFiltreMatiere)="service.filtreMatiereAvatars.set($event)"
+  ></app-studio-avatars>
+
+  <!-- Modale de confirmation de suppression d'un Avatar IA -->
+  @if (avatarASupprimer(); as a) {
+    <app-modal-confirmation
+      [ouvert]="true"
+      titre="Supprimer l'enseignant IA"
+      message="Êtes-vous sûr de vouloir supprimer définitivement cet enseignant virtuel ?"
+      [nomElement]="a.nom + ' (' + a.matiere + ')'"
+      avertissement="L'avatar ne sera plus accessible pour les élèves sur les boîtiers et l'application mobile."
+      texteConfirmer="Supprimer l'enseignant"
+      variante="danger"
+      (confirmer)="confirmerSuppressionAvatar()"
+      (annuler)="avatarASupprimer.set(null)"
+    ></app-modal-confirmation>
+  }
+
+  <!-- Modale de création / édition d'Avatar -->
+  <app-modal-avatar
+    [ouvert]="service.modalAvatarOuvert()"
+    [avatarEnEdition]="service.avatarEnEdition()"
+    (fermer)="service.fermerModalAvatar()"
+    (soumettre)="onSauvegarderAvatar($event)"
+  ></app-modal-avatar>
+
+</div>

@@ -21,6 +21,7 @@
     color: var(--c-subtle);
     background: var(--c-surface-alt);
     border-bottom: 1px solid var(--c-border);
+    white-space: nowrap;
   }
 
   td {
@@ -40,4 +41,81 @@
       background: var(--c-surface-alt);
     }
   }
+}
+
+.boitier-icon-badge {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--c-brand-bg);
+  color: var(--c-brand);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.telemetry-block {
+  min-width: 130px;
+}
+
+.battery-pill {
+  width: 28px;
+  height: 12px;
+  border: 1.5px solid #10b981;
+  border-radius: 3px;
+  padding: 1px;
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  &::after {
+    content: '';
+    position: absolute;
+    right: -3.5px;
+    top: 2.5px;
+    width: 2px;
+    height: 5px;
+    background: #10b981;
+    border-radius: 0 1px 1px 0;
+  }
+
+  .battery-level {
+    height: 100%;
+    background: #10b981;
+    border-radius: 1.5px;
+    transition: width var(--t-fast);
+  }
+
+  &--mid {
+    border-color: #f59e0b;
+    &::after, .battery-level { background: #f59e0b; }
+  }
+
+  &--low {
+    border-color: #ef4444;
+    &::after, .battery-level { background: #ef4444; }
+  }
+}
+
+.storage-mini-bar {
+  width: 50px;
+  height: 5px;
+  background: var(--c-surface-alt);
+  border: 1px solid var(--c-border-light);
+  border-radius: var(--r-full);
+  overflow: hidden;
+}
+
+.storage-mini-fill {
+  height: 100%;
+  background: var(--c-cyan);
+  border-radius: var(--r-full);
+}
+
+.select-statut {
+  padding: 2px 6px;
+  font-size: 11px;
+  height: 28px;
+  min-width: 100px;
 }

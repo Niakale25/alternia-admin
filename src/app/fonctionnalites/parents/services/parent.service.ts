@@ -44,7 +44,8 @@ export class ParentService {
   });
 
   readonly totalActifs = computed(() => this._parents().filter(p => p.statut === 'Actif').length);
-  readonly totalLicences = computed(() => this._parents().reduce((acc, p) => acc + (p.licencesAssocies || 0), 0));
+  readonly totalEnfants = computed(() => this._parents().reduce((acc, p) => acc + (p.enfantsRattaches || 0), 0));
+
 
   chargerParents(): void {
     this.repository.recupererTous().subscribe({

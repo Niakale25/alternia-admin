@@ -64,7 +64,7 @@ export class EtablissementService {
   readonly totalActifs = computed(() => this._etablissements().filter(e => e.statut === 'Actif').length);
   readonly totalEnAttente = computed(() => this._etablissements().filter(e => e.statut === 'En attente').length);
   readonly totalBoitiers = computed(() => this._etablissements().reduce((acc, e) => acc + (e.boitiersCount || 0), 0));
-  readonly totalLicences = computed(() => this._etablissements().reduce((acc, e) => acc + (e.licencesCount || 0), 0));
+  readonly totalEffectifs = computed(() => this._etablissements().reduce((acc, e) => acc + (e.effectifScolaire || 0), 0));
 
   chargerEtablissements(): void {
     this.repository.recupererTous().subscribe({

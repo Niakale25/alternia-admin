@@ -1,0 +1,81 @@
+.ota-card {
+  padding: 20px;
+  background: var(--c-white);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--s-xs);
+
+  &__title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--c-text);
+    margin: 0 0 2px;
+  }
+
+  &__subtitle {
+    font-size: 12px;
+    color: var(--c-secondary);
+    margin: 0;
+  }
+}
+
+.campagnes-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.campagne-card {
+  background: var(--c-surface-alt);
+  border: 1px solid var(--c-border-light);
+  border-radius: var(--r-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: border-color var(--t-fast), box-shadow var(--t-fast);
+
+  &:hover {
+    border-color: var(--c-border);
+    box-shadow: var(--s-xs);
+  }
+
+  &--active {
+    border-left: 3.5px solid var(--c-brand);
+  }
+}
+
+.campagne-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--c-text);
+  margin: 0;
+  line-height: 1.3;
+}
+
+.ota-progress-bar {
+  height: 8px;
+  background: var(--c-border);
+  border-radius: var(--r-full);
+  overflow: hidden;
+}
+
+.ota-progress-fill {
+  height: 100%;
+  background: var(--c-brand);
+  border-radius: var(--r-full);
+  transition: width var(--t-slow) cubic-bezier(0.16, 1, 0.3, 1);
+
+  &--done {
+    background: #10b981;
+  }
+}
+
+.campagne-footer {
+  border-top: 1px solid var(--c-border-light);
+  padding-top: 10px;
+}

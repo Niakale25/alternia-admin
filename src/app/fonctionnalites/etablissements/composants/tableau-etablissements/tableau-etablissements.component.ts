@@ -14,7 +14,7 @@ export class TableauEtablissementsComponent {
   @Input({ required: true }) etablissements: EtablissementDTO[] = [];
   @Input() modeAffichage: 'tableau' | 'cartes' = 'tableau';
   @Output() basculerStatut = new EventEmitter<string>();
-  @Output() supprimer = new EventEmitter<string>();
+  @Output() supprimer = new EventEmitter<EtablissementDTO>();
   @Output() voirDetail = new EventEmitter<EtablissementDTO>();
 
   readonly etablissementSelectionne = signal<EtablissementDTO | null>(null);

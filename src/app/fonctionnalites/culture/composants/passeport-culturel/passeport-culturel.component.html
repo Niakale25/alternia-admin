@@ -1,0 +1,124 @@
+<div class="passeport-culturel">
+  <!-- En-tête du Passeport -->
+  <div class="passeport-header flex items-center justify-between mb-4">
+    <div>
+      <h3 class="passeport-title">Gouvernance du Passeport Culturel Malien</h3>
+      <p class="passeport-subtitle">Calibration des tampons régionaux virtuels, seuils d'expérience (XP) et paliers d'exploration</p>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <span class="badge badge--brand font-mono text-xs">
+        {{ tampons.length }} Tampons Régionaux
+      </span>
+      <span class="badge badge--accent font-mono text-xs">
+        4 Niveaux de Maîtrise
+      </span>
+    </div>
+  </div>
+
+  <!-- Section 1 : Paliers de Progression & Niveaux d'Explorateurs -->
+  <div class="card levels-card mb-6">
+    <div class="levels-card__header mb-3">
+      <h4 class="section-title">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+        </svg>
+        Paliers de Maîtrise & Badges de l'Apprenant
+      </h4>
+      <p class="section-sub">Les élèves progressent de niveau en lisant les fiches, écoutant les contes et validant les quiz sur Alta Mobile et les Boîtiers.</p>
+    </div>
+
+    <div class="levels-grid">
+      @for (niv of niveaux; track niv.niveau) {
+        <div class="level-box" [style.--lvl-color]="niv.couleur">
+          <div class="level-box__top flex items-center justify-between">
+            <span class="level-badge font-mono">Niveau {{ niv.niveau }}</span>
+            <span class="text-xs font-mono font-bold text-subtle">{{ niv.seuilXp }} XP</span>
+          </div>
+
+          <div class="level-box__title mt-2 font-bold">{{ niv.titre }}</div>
+          <div class="level-box__badge text-xs text-secondary mt-0.5">Insigne : {{ niv.badgeNom }}</div>
+
+          <div class="level-box__stat mt-3 pt-2 border-t flex items-center justify-between text-xs">
+            <span class="text-subtle">Apprenants certifiés</span>
+            <span class="font-bold font-mono text-text">{{ niv.nombreElevesAtteints | number }}</span>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Section 2 : Grille des Tampons Régionaux du Passeport -->
+  <div class="tampons-section">
+    <h4 class="section-title mb-3">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect width="18" height="18" x="3" y="3" rx="2"/><path d="m9 12 2 2 4-4"/>
+      </svg>
+      Tampons Régionaux & Sceaux Culturels Virtuels
+    </h4>
+
+    <div class="tampons-grid">
+      @for (t of tampons; track t.id) {
+        <div class="tampon-card" [style.--stamp-color]="t.couleurAccent">
+          <!-- Top Card -->
+          <div class="tampon-card__top flex items-start justify-between">
+            <div class="flex items-center gap-3">
+              <div class="stamp-emblem" [class.stamp-emblem--inactive]="!t.actif">
+                <span class="stamp-icon">{{ t.symboleSvg }}</span>
+              </div>
+
+              <div>
+                <div class="flex items-center gap-1.5">
+                  <h5 class="tampon-name">{{ t.nom }}</h5>
+                  <span
+                    class="badge text-xs font-mono"
+                    [class.badge--brand]="t.rarete === 'Rare'"
+                    [class.badge--accent]="t.rarete === 'Épique'"
+                    [class.badge--warning]="t.rarete === 'Légendaire'"
+                  >
+                    {{ t.rarete }}
+                  </span>
+                </div>
+                <div class="text-xs text-subtle mt-0.5">{{ t.regionNom }} • {{ t.monumentOuFigure }}</div>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-1">
+              <span class="badge badge--success badge--subtle font-mono text-xs">+{{ t.xpRecompense }} XP</span>
+            </div>
+          </div>
+
+          <!-- Condition de Déblocage -->
+          <div class="tampon-condition mt-3 mb-3">
+            <div class="text-xs font-semibold text-subtle mb-1">DÉFI DE DÉBLOCAGE</div>
+            <p class="condition-desc">{{ t.conditionDeblocage }}</p>
+          </div>
+
+          <!-- Jauge de diffusion chez les élèves -->
+          <div class="tampon-progress mt-2 mb-3">
+            <div class="flex justify-between text-xs mb-1">
+              <span class="text-subtle">Débloqué par les élèves</span>
+              <span class="font-bold text-text font-mono">{{ t.tauxDeblocage }}% ({{ t.totalDebloquesParEleves | number }})</span>
+            </div>
+            <div class="stamp-bar">
+              <div class="stamp-bar__fill" [style.width.%]="t.tauxDeblocage"></div>
+            </div>
+          </div>
+
+          <!-- Footer Card -->
+          <div class="tampon-card__footer flex items-center justify-between pt-2.5 border-t">
+            <span class="text-xs font-mono text-subtle">{{ t.id }}</span>
+            <button
+              class="btn btn--ghost btn--sm"
+              [class.text-danger]="t.actif"
+              [class.text-success]="!t.actif"
+              (click)="basculerActif.emit(t.id)"
+            >
+              {{ t.actif ? 'Désactiver du passeport' : 'Activer dans le passeport' }}
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>
