@@ -43,9 +43,9 @@
     </div>
 
     <!-- Bannière / Image de couverture -->
-    @if (imageUrl) {
+    @if (imageUrl && !imageErreur()) {
       <div class="tiroir-banner">
-        <img [src]="imageUrl" [alt]="titre" class="tiroir-banner__img" />
+        <img [src]="imageUrl" alt="" class="tiroir-banner__img" (error)="onImageErreur()" />
         <div class="tiroir-banner__overlay"></div>
         <div class="tiroir-banner__content">
           <div class="tiroir-banner__region">
@@ -124,43 +124,10 @@
               <span class="metric-chip__value">{{ item.regionNom }}</span>
             </div>
 
-            @if (item.type === 'figure') {
+            @if (infoSupplementaire !== '—') {
               <div class="metric-chip">
-                <span class="metric-chip__label">Période</span>
-                <span class="metric-chip__value font-medium">{{ item.periode }}</span>
-              </div>
-            } @else if (item.type === 'monument') {
-              <div class="metric-chip">
-                <span class="metric-chip__label">Époque</span>
-                <span class="metric-chip__value font-medium">{{ item.ere }}</span>
-              </div>
-            } @else if (item.type === 'conte') {
-              <div class="metric-chip">
-                <span class="metric-chip__label">Scènes</span>
-                <span class="metric-chip__value font-medium">{{ item.scenes.length }} scènes</span>
-              </div>
-              <div class="metric-chip">
-                <span class="metric-chip__label">Audio</span>
-                <span class="metric-chip__value font-medium">{{ item.dureeAudio }}</span>
-              </div>
-            } @else if (item.type === 'devinette') {
-              <div class="metric-chip">
-                <span class="metric-chip__label">Récompense</span>
-                <span class="metric-chip__value text-cyan font-bold">+{{ item.recompenseXp }} XP</span>
-              </div>
-              <div class="metric-chip">
-                <span class="metric-chip__label">Difficulté</span>
-                <span class="metric-chip__value font-medium">{{ item.difficulte }}</span>
-              </div>
-            } @else if (item.type === 'quiz') {
-              <div class="metric-chip">
-                <span class="metric-chip__label">Récompense</span>
-                <span class="metric-chip__value text-success font-bold">+{{ item.recompenseXp }} XP</span>
-              </div>
-            } @else if (item.type === 'temoignage') {
-              <div class="metric-chip">
-                <span class="metric-chip__label">Durée</span>
-                <span class="metric-chip__value font-medium">{{ item.duree }}</span>
+                <span class="metric-chip__label">Repère / Spécificité</span>
+                <span class="metric-chip__value font-medium">{{ infoSupplementaire }}</span>
               </div>
             }
           </div>
@@ -175,8 +142,8 @@
             </div>
           } @else if (item.type === 'devinette') {
             <div class="riddle-callout">
-              <span class="riddle-formula">{{ item.formuleIntro }}</span>
-              <p class="riddle-prompt">« {{ item.enigmeTexte }} »</p>
+              <span class="riddle-formula">{{ item.formuleIntro || 'Devinette traditionnelle :' }}</span>
+              <p class="riddle-prompt">« {{ titre }} »</p>
             </div>
           } @else if (item.type === 'conte' && item.morale) {
             <div class="moral-callout">
@@ -196,7 +163,7 @@
               Présentation Pédagogique
             </h4>
             <p class="info-card__text">
-              {{ 'resume' in item ? item.resume : 'explicationCulturelle' in item ? item.explicationCulturelle : 'extrait' in item ? item.extrait : 'presentation' in item ? item.presentation : '' }}
+              {{ resumeCourt }}
             </p>
           </div>
 

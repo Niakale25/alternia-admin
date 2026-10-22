@@ -1,6 +1,7 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { BoitierRepository, BoitierDTO, CampagneOtaDTO } from '@donnees/repositories/boitier.repository';
 import { NotificationService } from '@partage/services/notification.service';
+import { ExportService } from '@partage/services/export.service';
 
 @Injectable({
   providedIn: 'root'
@@ -52,12 +53,26 @@ export class BoitierService {
   });
 
   // Métriques de gouvernance matérielle
-  readonly totalDeployes = computed(() => 1247);
-  readonly totalActifs = computed(() => 1202);
-  readonly totalHorsLigne = computed(() => 31);
-  readonly totalMaintenance = computed(() => 14);
-  readonly batterieMoyenne = computed(() => '87%');
-  readonly totalApprenantsSimultanes = computed(() => '18 450');
+  readonly totalDeployes = computed(() => this._boitiers().length);
+  readonly totalActifs = computed(() => this._boitiers().filter(b => b.statut === 'Actif').length);
+  readonly totalHorsLigne = computed(() => this._boitiers().filter(b => b.statut === 'Hors ligne').length);
+  readonly totalMaintenance = computed(() => this._boitiers().filter(b => b.statut === 'Maintenance').length);
+  readonly batterieMoyenne = computed(() => {
+    const list = this._boitiers();
+    if (!list.length) return '0%';
+    const moy = Math.round(list.reduce((acc, b) => acc + (b.batterie || 0), 0) / list.length);
+    return `${moy}%`;
+  });
+  readonly totalApprenantsSimultanes = computed(() => {
+    const total = this._boitiers().reduce((acc, b) => acc + (b.elevesConnectes || 0), 0);
+    return total.toLocaleString('fr-FR');
+  });
+  readonly ratioDisponibilite = computed(() => {
+    const total = this._boitiers().length;
+    if (!total) return '0%';
+    const actifs = this._boitiers().filter(b => b.statut === 'Actif').length;
+    return `${((actifs / total) * 100).toFixed(1)}%`;
+  });
 
   chargerBoitiers(): void {
     this.repository.recupererTous().subscribe({
@@ -135,6 +150,40 @@ export class BoitierService {
   }
 
   pingerBoitiers(): void {
-    this.notificationService.info('Diagnostic réseau en direct : 1 202 boîtiers Edge opérationnels (96,4%).');
+    const total = this._boitiers().length;
+    const actifs = this._boitiers().filter(b => b.statut === 'Actif').length;
+    const ratio = total > 0 ? ((actifs / total) * 100).toFixed(1) : '0';
+    this.notificationService.info(`Diagnostic réseau : ${actifs}/${total} boîtiers Edge opérationnels (${ratio}%).`);
+  }
+
+  private readonly exportService = inject(ExportService);
+
+  exporterCsv(): void {
+    let donnees = this.boitiersFiltres();
+    if (!donnees || donnees.length === 0) {
+      donnees = this._boitiers();
+    }
+    if (!donnees || donnees.length === 0) {
+      this.notificationService.avertissement('Aucun boîtier enregistré dans le parc à exporter.');
+      return;
+    }
+
+    this.exportService.exporterCsv(
+      [
+        { cle: 'id', entete: 'Identifiant Boîtier' },
+        { cle: 'serialNumber', entete: 'Numéro de Série' },
+        { cle: 'etablissementNom', entete: 'Établissement Attribué' },
+        { cle: 'ville', entete: 'Ville' },
+        { cle: 'region', entete: 'Région' },
+        { cle: 'statut', entete: 'Statut' },
+        { cle: 'ipLocale', entete: 'IP Locale' },
+        { cle: 'batterie', entete: 'Batterie (%)', formater: (val) => `${val || 0}%` },
+        { cle: 'stockageUtiliseGo', entete: 'Stockage Utilisé (Go)', formater: (val) => `${val || 0} Go` },
+        { cle: 'elevesConnectes', entete: 'Élèves Connectés en Direct' },
+        { cle: 'derniereConnexion', entete: 'Dernière Télémétrie' }
+      ],
+      donnees,
+      'parc_boitiers_alternia'
+    );
   }
 }

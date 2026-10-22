@@ -21,8 +21,8 @@ export class ModalEtablissementComponent {
   nouvelleRegion: string = 'District de Bamako';
   nouveauDirecteurEmail: string = '';
   nouvelleOffre: 'Enterprise' | 'Institutionnel' | 'Standard' = 'Standard';
-  nouveauxBoitiersCount: number = 10;
-  nouvelEffectifScolaire: number = 500;
+  nouveauxBoitiersCount: number = 1;
+  nouvelEffectifScolaire: number = 30;
 
   validerFormulaire(): void {
     if (!this.nouveauNom.trim()) return;
@@ -45,7 +45,7 @@ export class ModalEtablissementComponent {
   reinitialiser(): void {
     this.nouveauNom = '';
     this.nouveauDirecteurEmail = '';
-    this.nouveauxBoitiersCount = 10;
-    this.nouvelEffectifScolaire = 500;
+    this.nouveauxBoitiersCount = 1;
+    this.nouvelEffectifScolaire = 30;
   }
 }

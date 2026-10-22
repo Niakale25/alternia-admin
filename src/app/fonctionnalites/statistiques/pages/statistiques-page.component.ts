@@ -25,4 +25,15 @@ export class StatistiquesPageComponent implements OnInit {
   ngOnInit(): void {
     this.service.chargerStatistiques();
   }
+
+  formaterNombre(val: number | null | undefined): string {
+    if (val == null) return '0';
+    if (val >= 1_000_000) {
+      return (val / 1_000_000).toFixed(2).replace('.', ',') + 'M';
+    }
+    if (val >= 1_000) {
+      return (val / 1_000).toFixed(1).replace('.', ',') + 'k';
+    }
+    return val.toLocaleString('fr-FR');
+  }
 }

@@ -18,19 +18,26 @@ export class TableauCultureComponent {
   @Output() basculerPublication = new EventEmitter<string>();
 
   getTitre(item: ContenuCulturelDTO): string {
-    if ('nom' in item) return item.nom;
-    if ('titre' in item) return item.titre;
-    if ('question' in item) return item.question;
-    if ('titreHistoire' in item) return item.titreHistoire;
-    return 'Sans titre';
+    const i = item as any;
+    return i.titre || i.nom || i.question || i.titreHistoire || i.enigmeTexte || 'Sans titre';
   }
 
   getSousTitre(item: ContenuCulturelDTO): string {
-    if ('titreHonorifique' in item) return item.titreHonorifique;
-    if ('sousTitre' in item) return item.sousTitre;
-    if ('categorie' in item) return item.categorie;
-    if ('conteur' in item) return item.conteur;
-    return '';
+    const i = item as any;
+    return i.sousTitre || i.titreHonorifique || (i.categorie ? `Catégorie : ${i.categorie}` : '') || '';
+  }
+
+  getSpecificite(item: ContenuCulturelDTO): string {
+    const i = item as any;
+    if (i.info && typeof i.info === 'string' && i.info.trim() && i.info !== 'undefined') {
+      return i.info;
+    }
+    if (i.periode && typeof i.periode === 'string' && i.periode !== 'undefined') return i.periode;
+    if (i.ere && typeof i.ere === 'string' && i.ere !== 'undefined') return i.ere;
+    if (i.epoqueOuSiecle && typeof i.epoqueOuSiecle === 'string') return i.epoqueOuSiecle;
+    if (i.dureeAudio && typeof i.dureeAudio === 'string') return i.dureeAudio;
+    if (i.recompenseXp) return `+${i.recompenseXp} XP`;
+    return '—';
   }
 
   getTypeLabel(type: string): string {
@@ -59,9 +66,18 @@ export class TableauCultureComponent {
     }
   }
 
+  readonly imagesEnErreur = new Set<string>();
+
+  marquerImageErreur(id: string): void {
+    this.imagesEnErreur.add(id);
+  }
+
+  aImageValide(item: ContenuCulturelDTO): boolean {
+    return !!this.getImageUrl(item) && !this.imagesEnErreur.has(item.id);
+  }
+
   getImageUrl(item: ContenuCulturelDTO): string | null {
-    if ('photoUrl' in item && item.photoUrl) return item.photoUrl;
-    if ('avatarUrl' in item && item.avatarUrl) return item.avatarUrl;
-    return null;
+    const i = item as any;
+    return i.photoUrl || i.avatarUrl || null;
   }
 }

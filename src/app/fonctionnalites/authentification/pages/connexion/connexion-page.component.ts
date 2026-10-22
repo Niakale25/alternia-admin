@@ -26,8 +26,8 @@ export class ConnexionPageComponent implements OnInit, OnDestroy {
     private readonly router: Router
   ) {
     this.formulaireConnexion = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      motDePasse: ['', [Validators.required, Validators.minLength(6)]]
+      email: ['admin@alternia.ml', [Validators.required, Validators.email]],
+      motDePasse: ['alternia2026', [Validators.required, Validators.minLength(6)]]
     });
   }
 
@@ -58,13 +58,14 @@ export class ConnexionPageComponent implements OnInit, OnDestroy {
         this.router.navigate(['/tableau-bord']);
       },
       error: (err) => {
+        console.error('[Connexion Super Admin Error]', err);
         this.enChargement = false;
         if (err?.status === 401 || err?.status === 403) {
           this.erreurServeur = 'Email ou mot de passe incorrect.';
         } else if (err?.status === 0) {
-          this.erreurServeur = 'Impossible de joindre le serveur. Vérifiez votre connexion.';
+          this.erreurServeur = 'Impossible de joindre le serveur FastAPI (port 8000). Vérifiez que le backend est démarré.';
         } else {
-          this.erreurServeur = err?.error?.message ?? 'Une erreur inattendue est survenue.';
+          this.erreurServeur = err?.error?.message || err?.message || 'Une erreur inattendue est survenue lors de la connexion.';
         }
       }
     });

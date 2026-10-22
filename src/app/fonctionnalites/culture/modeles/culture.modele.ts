@@ -276,3 +276,33 @@ export interface StatistiquesCultureDTO {
   totalTamponsDebloques: number;
   xpTotalDistribue: string;
 }
+
+// ── 9. Modération des Contributions Citoyennes ───────────────────
+export interface CultureContributionDTO {
+  id: string;
+  auteurNom: string;
+  auteurId?: string;
+  auteurRole: string;
+  typeContenu: string;
+  titre?: string;
+  texte: string;
+  texteOriginal?: string;
+  signification: string;
+  morale?: string;
+  origine: string;
+  theme: string;
+  regionId: string;
+  regionNom: string;
+  sourceTemoin?: string;
+  photoUrl?: string;
+  audioUrl?: string;
+  donneesSupplementaires?: Record<string, any>;
+  statut: 'EN_ATTENTE' | 'APPROUVE' | 'REJETE';
+  motifModeration?: string;
+  traiteParId?: string;
+  xpAttribues: number;
+  piecesAttribuees: number;
+  dateSoumission?: string;
+  dateModeration?: string;
+}
+

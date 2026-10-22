@@ -52,11 +52,65 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
-  }
+    position: relative;
+    overflow: hidden;
 
-  &__svg-fallback {
-    color: #64748B;
+    .fallback-pattern {
+      position: absolute;
+      inset: 0;
+      opacity: 0.12;
+      background-image: radial-gradient(circle at 25% 25%, #fff 2px, transparent 0),
+                        radial-gradient(circle at 75% 75%, #fff 2px, transparent 0);
+      background-size: 20px 20px;
+    }
+
+    .fallback-icon-wrap {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #FFFFFF;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+      z-index: 1;
+      transition: transform 0.3s ease;
+
+      .carte-culture:hover & {
+        transform: scale(1.1);
+      }
+    }
+
+    &.fallback--figure {
+      background: linear-gradient(135deg, #1E1B4B 0%, #312E81 50%, #4338CA 100%);
+    }
+
+    &.fallback--monument {
+      background: linear-gradient(135deg, #451A03 0%, #78350F 50%, #9A3412 100%);
+    }
+
+    &.fallback--ville {
+      background: linear-gradient(135deg, #064E3B 0%, #065F46 50%, #047857 100%);
+    }
+
+    &.fallback--conte {
+      background: linear-gradient(135deg, #3B0764 0%, #581C87 50%, #7E22CE 100%);
+    }
+
+    &.fallback--devinette {
+      background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #334155 100%);
+    }
+
+    &.fallback--quiz {
+      background: linear-gradient(135deg, #0C4A6E 0%, #075985 50%, #0284C7 100%);
+    }
+
+    &.fallback--temoignage {
+      background: linear-gradient(135deg, #292524 0%, #44403C 50%, #57534E 100%);
+    }
   }
 
   &__badges-top {
@@ -149,50 +203,15 @@
     overflow: hidden;
   }
 
-  &__morale-box, &__enigme-box, &__quiz-box {
-    margin-top: 4px;
-    padding: 9px 11px;
-    border-radius: var(--r-md);
-    background: var(--c-surface);
-    border: 1px solid var(--c-border-light);
+  &__resume {
     font-size: 12px;
-  }
-
-  &__morale-box {
-    border-left: 3px solid var(--c-accent);
-    .morale-text {
-      font-style: italic;
-      color: var(--c-text);
-      line-height: 1.4;
-    }
-  }
-
-  &__enigme-box {
-    border-left: 3px solid var(--c-cyan);
-    .formula {
-      font-weight: 600;
-      color: var(--c-cyan);
-      display: block;
-      margin-bottom: 2px;
-      font-size: 11px;
-    }
-    .enigme-text {
-      color: var(--c-text);
-      line-height: 1.4;
-    }
-  }
-
-  &__quiz-box {
-    border-left: 3px solid var(--c-success);
-    .quiz-question {
-      font-weight: 600;
-      color: var(--c-text);
-      margin-bottom: 3px;
-    }
-    .quiz-count {
-      color: var(--c-secondary);
-      font-size: 11px;
-    }
+    color: var(--c-secondary);
+    line-height: 1.45;
+    margin-top: 2px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   &__pied {

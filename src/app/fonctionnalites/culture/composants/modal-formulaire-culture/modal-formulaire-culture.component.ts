@@ -18,7 +18,7 @@ import {
   FaitHistorique,
   ChapitreEditorial
 } from '../../modeles/culture.modele';
-import { REGIONS_MALI } from '../../services/culture-donnees.mock';
+import { REGIONS_MALI } from '../../services/regions-mali.const';
 
 export interface TypeDefinition {
   type: TypeContenuCulturel;

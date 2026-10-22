@@ -1,6 +1,7 @@
 import { Injectable, signal, inject } from '@angular/core';
 import { TableauBordRepository, DonneesTableauBordDTO } from '@donnees/repositories/tableau-bord.repository';
 import { NotificationService } from '@partage/services/notification.service';
+import { ExportService } from '@partage/services/export.service';
 
 @Injectable({
   providedIn: 'root'
@@ -8,10 +9,11 @@ import { NotificationService } from '@partage/services/notification.service';
 export class TableauBordService {
   private readonly repository = inject(TableauBordRepository);
   private readonly notificationService = inject(NotificationService);
+  private readonly exportService = inject(ExportService);
 
   readonly donnees = signal<DonneesTableauBordDTO | null>(null);
   readonly chargement = signal<boolean>(false);
-  readonly derniereMiseAJour = signal<string>('13 août 2026 - 10h34');
+  readonly derniereMiseAJour = signal<string>('En attente...');
 
   chargerDonnees(): void {
     this.chargement.set(true);
@@ -29,6 +31,30 @@ export class TableauBordService {
   }
 
   telechargerRapport(): void {
-    this.notificationService.succes('Le rapport d\'activité de l\'écosystème Alternia est prêt au téléchargement.');
+    const d = this.donnees();
+    if (!d || !d.kpis || d.kpis.length === 0) {
+      this.notificationService.avertissement('Synthèse du tableau de bord non disponible.');
+      return;
+    }
+
+    const lignes = d.kpis.map(k => ({
+      indicateur: k.label || 'N/A',
+      valeur: k.valeur ?? '0',
+      description: k.sousTexte || '',
+      statut: k.badgeLive || 'En direct',
+      tendance: `${(k.tendance ?? 0) >= 0 ? '+' : ''}${k.tendance ?? 0}% (${k.tendanceLabel || 'Stable'})`
+    }));
+
+    this.exportService.exporterCsv(
+      [
+        { cle: 'indicateur', entete: 'Indicateur Clé' },
+        { cle: 'valeur', entete: 'Valeur Actuelle' },
+        { cle: 'description', entete: 'Détail' },
+        { cle: 'statut', entete: 'Statut Télémétrie' },
+        { cle: 'tendance', entete: 'Évolution' }
+      ],
+      lignes,
+      'rapport_global_synthese_alternia'
+    );
   }
 }

@@ -18,8 +18,8 @@
           <!-- Vignette -->
           <td>
             <div class="vignette-wrap" title="Consulter la fiche">
-              @if (getImageUrl(item)) {
-                <img [src]="getImageUrl(item)" [alt]="getTitre(item)" class="vignette" />
+              @if (aImageValide(item)) {
+                <img [src]="getImageUrl(item)" alt="" class="vignette" (error)="marquerImageErreur(item.id)" />
               } @else {
                 <div class="vignette-placeholder">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -55,21 +55,7 @@
 
           <!-- Spécificités -->
           <td>
-            @if (item.type === 'conte') {
-              <span class="cell-spec">{{ item.scenes.length || 0 }} scènes • {{ item.dureeAudio }}</span>
-            } @else if (item.type === 'devinette') {
-              <span class="cell-spec text-cyan font-medium">+{{ item.recompenseXp }} XP • {{ item.difficulte }}</span>
-            } @else if (item.type === 'quiz') {
-              <span class="cell-spec text-success font-medium">+{{ item.recompenseXp }} XP • QCM</span>
-            } @else if (item.type === 'temoignage') {
-              <span class="cell-spec">{{ item.duree }}</span>
-            } @else if (item.type === 'figure' && item.periode) {
-              <span class="cell-spec">{{ item.periode }}</span>
-            } @else if (item.type === 'monument' && item.ere) {
-              <span class="cell-spec">{{ item.ere }}</span>
-            } @else {
-              <span class="cell-spec text-secondary">—</span>
-            }
+            <span class="cell-spec">{{ getSpecificite(item) }}</span>
           </td>
 
           <!-- Statut -->

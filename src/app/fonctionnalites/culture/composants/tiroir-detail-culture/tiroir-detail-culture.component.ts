@@ -19,20 +19,38 @@ export class TiroirDetailCultureComponent {
 
   readonly ongletActif = signal<'vue' | 'contenu' | 'metas'>('vue');
 
+  readonly imageErreur = signal<boolean>(false);
+
+  onImageErreur(): void {
+    this.imageErreur.set(true);
+  }
+
   get titre(): string {
-    if ('nom' in this.item) return this.item.nom;
-    if ('titre' in this.item) return this.item.titre;
-    if ('question' in this.item) return this.item.question;
-    if ('titreHistoire' in this.item) return this.item.titreHistoire;
-    return 'Sans titre';
+    const i = this.item as any;
+    return i.titre || i.nom || i.question || i.titreHistoire || i.enigmeTexte || 'Sans titre';
   }
 
   get sousTitre(): string {
-    if ('titreHonorifique' in this.item) return this.item.titreHonorifique;
-    if ('sousTitre' in this.item) return this.item.sousTitre;
-    if ('categorie' in this.item) return this.item.categorie;
-    if ('conteur' in this.item) return `${this.item.conteur} (${this.item.qualiteConteur})`;
-    return '';
+    const i = this.item as any;
+    return i.sousTitre || i.titreHonorifique || (i.categorie ? `Catégorie : ${i.categorie}` : '') || '';
+  }
+
+  get infoSupplementaire(): string {
+    const i = this.item as any;
+    if (i.info && typeof i.info === 'string' && i.info.trim() && i.info !== 'undefined') {
+      return i.info;
+    }
+    if (i.periode && typeof i.periode === 'string' && i.periode !== 'undefined') return i.periode;
+    if (i.ere && typeof i.ere === 'string' && i.ere !== 'undefined') return i.ere;
+    if (i.epoqueOuSiecle && typeof i.epoqueOuSiecle === 'string') return i.epoqueOuSiecle;
+    if (i.dureeAudio && typeof i.dureeAudio === 'string') return i.dureeAudio;
+    if (i.recompenseXp) return `+${i.recompenseXp} XP`;
+    return '—';
+  }
+
+  get resumeCourt(): string {
+    const i = this.item as any;
+    return i.resume || i.presentation || i.explicationCulturelle || i.extrait || '';
   }
 
   get typeLabel(): string {
@@ -62,8 +80,7 @@ export class TiroirDetailCultureComponent {
   }
 
   get imageUrl(): string | null {
-    if ('photoUrl' in this.item && this.item.photoUrl) return this.item.photoUrl;
-    if ('avatarUrl' in this.item && this.item.avatarUrl) return this.item.avatarUrl;
-    return null;
+    const i = this.item as any;
+    return i.photoUrl || i.avatarUrl || null;
   }
 }

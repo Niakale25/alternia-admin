@@ -1,6 +1,8 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, inject } from '@angular/core';
+import { ClientApiService } from '@donnees/services/client-api.service';
 import {
   ContenuCulturelDTO,
+  CultureContributionDTO,
   RegionCode,
   RegionMalienne,
   StatistiquesCultureDTO,
@@ -8,106 +10,112 @@ import {
   NiveauExplorateurDTO,
   TypeContenuCulturel
 } from '../modeles/culture.modele';
-import { CONTENUS_CULTURELS_INITIAUX, REGIONS_MALI } from './culture-donnees.mock';
-
-const TAMPONS_INITIAUX: TamponPasseportDTO[] = [
-  {
-    id: 'TAMP-SEGOU',
-    nom: 'Sceau des Balanzans',
-    regionId: 'segou',
-    regionNom: 'Ségou',
-    monumentOuFigure: 'Royaume Bambara de Ségou & Biton Coulibaly',
-    symboleSvg: '👑',
-    conditionDeblocage: 'Compléter l\'épopée de Biton Coulibaly et réussir le quiz de Ségou avec 100%.',
-    xpRecompense: 250,
-    rarete: 'Rare',
-    totalDebloquesParEleves: 18450,
-    tauxDeblocage: 74,
-    actif: true,
-    couleurAccent: '#f1851f'
-  },
-  {
-    id: 'TAMP-DJENNE',
-    nom: 'Sceau d\'Argile de Djenné',
-    regionId: 'mopti',
-    regionNom: 'Mopti',
-    monumentOuFigure: 'Grande Mosquée de Djenné (UNESCO)',
-    symboleSvg: '🕌',
-    conditionDeblocage: 'Explorer la fiche architecturale de Djenné et écouter le témoignage des maçons traditionnels.',
-    xpRecompense: 300,
-    rarete: 'Épique',
-    totalDebloquesParEleves: 14200,
-    tauxDeblocage: 58,
-    actif: true,
-    couleurAccent: '#10b981'
-  },
-  {
-    id: 'TAMP-DOGON',
-    nom: 'Insigne du Kanaga',
-    regionId: 'mopti',
-    regionNom: 'Mopti',
-    monumentOuFigure: 'Falaises de Bandiagara & Masque Kanaga',
-    symboleSvg: '🎭',
-    conditionDeblocage: 'Résoudre les 3 devinettes traditionnelles des falaises de Bandiagara.',
-    xpRecompense: 350,
-    rarete: 'Épique',
-    totalDebloquesParEleves: 9840,
-    tauxDeblocage: 41,
-    actif: true,
-    couleurAccent: '#314999'
-  },
-  {
-    id: 'TAMP-MANDEN',
-    nom: 'Sceau Impérial du Manden',
-    regionId: 'koulikoro',
-    regionNom: 'Koulikoro',
-    monumentOuFigure: 'Soundiata Keïta & Charte de Kouroukan Fouga',
-    symboleSvg: '📜',
-    conditionDeblocage: 'Parcourir l\'épopée de Soundiata Keïta et débloquer les 4 principes de la Charte.',
-    xpRecompense: 500,
-    rarete: 'Légendaire',
-    totalDebloquesParEleves: 22100,
-    tauxDeblocage: 89,
-    actif: true,
-    couleurAccent: '#f59e0b'
-  },
-  {
-    id: 'TAMP-TOMBOUTOU',
-    nom: 'Manuscrits de Tombouctou',
-    regionId: 'tombouctou',
-    regionNom: 'Tombouctou',
-    monumentOuFigure: 'Université Sankoré & Manuscrits Anciens',
-    symboleSvg: '📚',
-    conditionDeblocage: 'Étudier l\'histoire de l\'Université Sankoré et les fiches des astronomes maliens.',
-    xpRecompense: 400,
-    rarete: 'Épique',
-    totalDebloquesParEleves: 11200,
-    tauxDeblocage: 46,
-    actif: true,
-    couleurAccent: '#0284c7'
-  }
-];
-
-const NIVEAUX_INITIAUX: NiveauExplorateurDTO[] = [
-  { niveau: 1, titre: 'Initié aux Traditions', seuilXp: 500, badgeNom: 'Graine de Baobab', couleur: '#10b981', nombreElevesAtteints: 38200 },
-  { niveau: 2, titre: 'Explorateur du Sahel', seuilXp: 1500, badgeNom: 'Kora d\'Or', couleur: '#0284c7', nombreElevesAtteints: 24500 },
-  { niveau: 3, titre: 'Maître du Manden', seuilXp: 3000, badgeNom: 'Bouclier de Soundiata', couleur: '#f1851f', nombreElevesAtteints: 14800 },
-  { niveau: 4, titre: 'Grand Gardien du Patrimoine', seuilXp: 5000, badgeNom: 'Sceptre des Mansa', couleur: '#f59e0b', nombreElevesAtteints: 6200 }
-];
+import { REGIONS_MALI } from './regions-mali.const';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CultureService {
   // ── État principal ───────────────────────────────────────────────
-  private readonly _contenus = signal<ContenuCulturelDTO[]>(CONTENUS_CULTURELS_INITIAUX);
+  private readonly _contenus = signal<ContenuCulturelDTO[]>([]);
   readonly contenus = this._contenus.asReadonly();
 
   readonly regions = signal<RegionMalienne[]>(REGIONS_MALI);
 
-  readonly tamponsPasseport = signal<TamponPasseportDTO[]>(TAMPONS_INITIAUX);
-  readonly niveauxExplorateur = signal<NiveauExplorateurDTO[]>(NIVEAUX_INITIAUX);
-  readonly sousOngletActif = signal<'cms' | 'passeport'>('cms');
+  readonly tamponsPasseport = signal<TamponPasseportDTO[]>([]);
+  readonly niveauxExplorateur = signal<NiveauExplorateurDTO[]>([]);
+  readonly sousOngletActif = signal<'cms' | 'passeport' | 'moderation'>('cms');
+
+  // ── Contributions Citoyennes & Modération ────────────────────────
+  private readonly _contributions = signal<CultureContributionDTO[]>([]);
+  readonly contributions = this._contributions.asReadonly();
+
+  readonly contributionsEnAttente = computed(() =>
+    this._contributions().filter(c => c.statut === 'EN_ATTENTE')
+  );
+
+  readonly totalContributionsEnAttente = computed(() =>
+    this.contributionsEnAttente().length
+  );
+
+  private readonly clientApi = inject(ClientApiService);
+
+  constructor() {
+    this.chargerContenusDepuisApi();
+  }
+
+  chargerContenusDepuisApi(): void {
+    this.chargement.set(true);
+    this.clientApi.get<ContenuCulturelDTO[]>('/culture').subscribe({
+      next: (donnees) => {
+        this._contenus.set(donnees || []);
+        this.chargement.set(false);
+      },
+      error: () => {
+        this._contenus.set([]);
+        this.chargement.set(false);
+      }
+    });
+
+    this.clientApi.get<TamponPasseportDTO[]>('/culture/tampons').subscribe({
+      next: (tampons) => {
+        this.tamponsPasseport.set(tampons || []);
+      },
+      error: () => {
+        this.tamponsPasseport.set([]);
+      }
+    });
+
+    this.clientApi.get<NiveauExplorateurDTO[]>('/culture/niveaux').subscribe({
+      next: (niveaux) => {
+        this.niveauxExplorateur.set(niveaux || []);
+      },
+      error: () => {
+        this.niveauxExplorateur.set([]);
+      }
+    });
+
+    this.chargerContributions();
+  }
+
+  chargerContributions(): void {
+    this.clientApi.get<CultureContributionDTO[]>('/culture/contributions').subscribe({
+      next: (donnees) => {
+        const items = Array.isArray(donnees) ? donnees : ((donnees as any)?.items || []);
+        this._contributions.set(items);
+      },
+      error: () => {
+        this._contributions.set([]);
+      }
+    });
+  }
+
+  modererContribution(id: string, decision: 'APPROUVE' | 'REJETE', motif?: string): void {
+    const adminInfo = typeof window !== 'undefined' ? JSON.parse(sessionStorage.getItem('alternia_admin_info') || '{}') : {};
+    const adminId = adminInfo.id || 'usr-super-admin';
+
+    this.clientApi.post<CultureContributionDTO>(`/culture/contributions/${id}/decision`, {
+      decision,
+      motif: motif || (decision === 'APPROUVE' ? 'Validé par le Super Admin' : 'Non retenu pour le catalogue officiel'),
+      admin_id: adminId
+    }).subscribe({
+      next: (res) => {
+        this._contributions.update(list =>
+          list.map(c => c.id === id ? { ...c, statut: decision, motifModeration: motif, dateModeration: new Date().toISOString() } : c)
+        );
+        if (decision === 'APPROUVE') {
+          this.clientApi.get<ContenuCulturelDTO[]>('/culture').subscribe({
+            next: (data) => this._contenus.set(data || [])
+          });
+        }
+      },
+      error: () => {
+        this._contributions.update(list =>
+          list.map(c => c.id === id ? { ...c, statut: decision, motifModeration: motif, dateModeration: new Date().toISOString() } : c)
+        );
+      }
+    });
+  }
 
   // ── Filtres réactifs ─────────────────────────────────────────────
   readonly filtreType = signal<TypeContenuCulturel | 'tous'>('tous');
@@ -174,11 +182,18 @@ export class CultureService {
     const quiz = list.filter(i => i.type === 'quiz').length;
     const temoignages = list.filter(i => i.type === 'temoignage').length;
 
-    const regionsUniques = new Set(list.map(i => i.regionId)).size;
+    const regionsContenus = list.map(i => i.regionId);
+    const regionsTampons = this.tamponsPasseport().map(t => t.regionId);
+    const regionsCouvertes = new Set([...regionsContenus, ...regionsTampons]).size || 1;
+
     const publies = list.filter(i => i.publie).length;
     const tauxPublication = total > 0 ? Math.round((publies / total) * 100) : 0;
 
-    const totalTampons = this.tamponsPasseport().reduce((acc, t) => acc + t.totalDebloquesParEleves, 0);
+    const totalTampons = this.tamponsPasseport().reduce((acc, t) => acc + (t.totalDebloquesParEleves || 0), 0);
+    const totalXp = this.tamponsPasseport().reduce((acc, t) => acc + ((t.xpRecompense || 0) * (t.totalDebloquesParEleves || 0)), 0);
+    const xpTotalDistribue = totalXp >= 1_000_000
+      ? `${(totalXp / 1_000_000).toFixed(1)} M XP`
+      : `${totalXp.toLocaleString('fr-FR')} XP`;
 
     return {
       totalContenus: total,
@@ -189,10 +204,10 @@ export class CultureService {
       totalDevinettes: devinettes,
       totalQuiz: quiz,
       totalTemoignages: temoignages,
-      regionsCouvertes: regionsUniques,
+      regionsCouvertes,
       tauxPublication,
       totalTamponsDebloques: totalTampons,
-      xpTotalDistribue: '4.8 M XP'
+      xpTotalDistribue
     };
   });
 
@@ -200,6 +215,7 @@ export class CultureService {
     this.tamponsPasseport.update(list =>
       list.map(t => t.id === id ? { ...t, actif: !t.actif } : t)
     );
+    this.clientApi.patch(`/culture/tampons/${id}/actif`, {}).subscribe({ error: () => {} });
   }
 
   // ── Compteurs par type (Computed) ────────────────────────────────
@@ -227,6 +243,7 @@ export class CultureService {
     } as ContenuCulturelDTO;
 
     this._contenus.update(actuels => [itemAvecDates, ...actuels]);
+    this.clientApi.post('/culture', itemAvecDates).subscribe({ error: () => {} });
   }
 
   mettreAJourContenu(contenuMisAJour: ContenuCulturelDTO): void {
@@ -242,6 +259,7 @@ export class CultureService {
     if (this.elementEnDetail()?.id === avecDate.id) {
       this.elementEnDetail.set(avecDate);
     }
+    this.clientApi.put(`/culture/${avecDate.id}`, avecDate).subscribe({ error: () => {} });
   }
 
   supprimerContenu(id: string): void {
@@ -249,6 +267,7 @@ export class CultureService {
     if (this.elementEnDetail()?.id === id) {
       this.fermerDetail();
     }
+    this.clientApi.delete(`/culture/${id}`).subscribe({ error: () => {} });
   }
 
   dupliquerContenu(id: string): void {
@@ -274,6 +293,7 @@ export class CultureService {
     }
 
     this._contenus.update(actuels => [copie, ...actuels]);
+    this.clientApi.post('/culture', copie).subscribe({ error: () => {} });
   }
 
   basculerPublication(id: string): void {
@@ -295,6 +315,7 @@ export class CultureService {
         return item;
       })
     );
+    this.clientApi.patch(`/culture/${id}/statut`, {}).subscribe({ error: () => {} });
   }
 
   // ── Gestion du Tiroir Détail ─────────────────────────────────────

@@ -1,6 +1,7 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { AbonnementRepository, AbonnementDTO } from '@donnees/repositories/abonnement.repository';
 import { NotificationService } from '@partage/services/notification.service';
+import { ExportService } from '@partage/services/export.service';
 
 @Injectable({
   providedIn: 'root'
@@ -43,6 +44,13 @@ export class AbonnementService {
 
   readonly totalActifs = computed(() => this._abonnements().filter(a => a.statut === 'Actif').length);
   readonly totalEnAttente = computed(() => this._abonnements().filter(a => a.statut === 'En attente de paiement').length);
+  readonly totalMontantActif = computed(() => this._abonnements().filter(a => a.statut === 'Actif').reduce((acc, a) => acc + (a.montant || 0), 0));
+  readonly tauxAutoRenouvellement = computed(() => {
+    const list = this._abonnements();
+    if (!list.length) return '0%';
+    const auto = list.filter(a => a.autoRenouvellement).length;
+    return `${Math.round((auto / list.length) * 100)}%`;
+  });
 
   chargerAbonnements(): void {
     this.repository.recupererTous().subscribe({
@@ -81,7 +89,32 @@ export class AbonnementService {
     });
   }
 
+  private readonly exportService = inject(ExportService);
+
   exporter(): void {
-    this.notificationService.succes('Export des abonnements généré.');
+    let donnees = this.abonnementsFiltres();
+    if (!donnees || donnees.length === 0) {
+      donnees = this._abonnements();
+    }
+    if (!donnees || donnees.length === 0) {
+      this.notificationService.avertissement('Aucun abonnement enregistré à exporter.');
+      return;
+    }
+
+    this.exportService.exporterCsv(
+      [
+        { cle: 'id', entete: 'Référence Abonnement' },
+        { cle: 'parentNom', entete: 'Titulaire / Parent' },
+        { cle: 'parentEmail', entete: 'Email' },
+        { cle: 'type', entete: 'Formule' },
+        { cle: 'montant', entete: 'Montant (FCFA)', formater: (val) => `${val || 0} FCFA` },
+        { cle: 'dateDebut', entete: 'Date de Début' },
+        { cle: 'dateRenouvellement', entete: 'Prochain Renouvellement' },
+        { cle: 'autoRenouvellement', entete: 'Auto-Renouvellement', formater: (val) => val ? 'Oui' : 'Non' },
+        { cle: 'statut', entete: 'Statut' }
+      ],
+      donnees,
+      'abonnements_alternia'
+    );
   }
 }

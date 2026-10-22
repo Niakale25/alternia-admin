@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ContenuCulturelDTO } from '../../modeles/culture.modele';
 
@@ -18,33 +18,30 @@ export class CarteCultureComponent {
   @Output() supprimer = new EventEmitter<ContenuCulturelDTO>();
   @Output() basculerPublication = new EventEmitter<string>();
 
+  readonly imageErreur = signal<boolean>(false);
+
+  onImageErreur(): void {
+    this.imageErreur.set(true);
+  }
+
   get titre(): string {
-    if ('nom' in this.item) return this.item.nom;
-    if ('titre' in this.item) return this.item.titre;
-    if ('question' in this.item) return this.item.question;
-    if ('titreHistoire' in this.item) return this.item.titreHistoire;
-    return 'Sans titre';
+    const i = this.item as any;
+    return i.titre || i.nom || i.question || i.titreHistoire || i.enigmeTexte || 'Sans titre';
   }
 
   get sousTitre(): string {
-    if ('titreHonorifique' in this.item) return this.item.titreHonorifique;
-    if ('sousTitre' in this.item) return this.item.sousTitre;
-    if ('categorie' in this.item) return `Catégorie : ${this.item.categorie}`;
-    if ('conteur' in this.item) return `${this.item.conteur} (${this.item.qualiteConteur})`;
-    return '';
+    const i = this.item as any;
+    return i.sousTitre || i.titreHonorifique || (i.categorie ? `Catégorie : ${i.categorie}` : '') || '';
   }
 
   get tag(): string {
-    if ('tag' in this.item && typeof this.item.tag === 'string') return this.item.tag;
-    if ('categorie' in this.item && typeof this.item.categorie === 'string') return this.item.categorie;
-    if (this.item.type === 'devinette') return this.item.difficulte;
-    return this.item.type.toUpperCase();
+    const i = this.item as any;
+    return i.tag || i.etiquette || i.categorie || i.difficulte || this.typeLabel;
   }
 
   get imageUrl(): string | null {
-    if ('photoUrl' in this.item && this.item.photoUrl) return this.item.photoUrl;
-    if ('avatarUrl' in this.item && this.item.avatarUrl) return this.item.avatarUrl;
-    return null;
+    const i = this.item as any;
+    return i.photoUrl || i.avatarUrl || null;
   }
 
   get typeLabel(): string {
@@ -74,24 +71,21 @@ export class CarteCultureComponent {
   }
 
   get infoSupplementaire(): string | null {
-    if (this.item.type === 'conte') {
-      return `${this.item.scenes?.length || 0} scènes • ${this.item.dureeAudio}`;
+    const i = this.item as any;
+    if (i.info && typeof i.info === 'string' && i.info.trim() && i.info !== 'undefined') {
+      return i.info;
     }
-    if (this.item.type === 'devinette') {
-      return `+${this.item.recompenseXp} XP • 3 indices`;
-    }
-    if (this.item.type === 'quiz') {
-      return `+${this.item.recompenseXp} XP • 4 options`;
-    }
-    if (this.item.type === 'temoignage') {
-      return `${this.item.duree}`;
-    }
-    if (this.item.type === 'figure') {
-      return `${this.item.periode}`;
-    }
-    if (this.item.type === 'monument') {
-      return `${this.item.ere}`;
-    }
+    if (i.periode && typeof i.periode === 'string' && i.periode !== 'undefined') return i.periode;
+    if (i.ere && typeof i.ere === 'string' && i.ere !== 'undefined') return i.ere;
+    if (i.epoqueOuSiecle && typeof i.epoqueOuSiecle === 'string') return i.epoqueOuSiecle;
+    if (i.dureeAudio && typeof i.dureeAudio === 'string') return i.dureeAudio;
+    if (i.recompenseXp) return `+${i.recompenseXp} XP`;
     return null;
   }
+
+  get resumeCourt(): string {
+    const i = this.item as any;
+    return i.resume || i.presentation || i.explicationCulturelle || i.extrait || '';
+  }
 }
+

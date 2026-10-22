@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, inject } from '@angular/core';
+import { Component, OnInit, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ParentService } from '../services/parent.service';
@@ -33,12 +33,18 @@ export class ParentsPageComponent implements OnInit {
   readonly modeAffichage = signal<'tableau' | 'cartes'>('tableau');
   readonly parentASupprimer = signal<ParentDTO | null>(null);
 
-  readonly formulesStats = signal([
-    { nom: 'Tous', count: 48391 },
-    { nom: 'Premium Famille', count: 34110, couleur: 'var(--c-brand)' },
-    { nom: 'Premium Établissement', count: 11462, couleur: 'var(--c-accent)' },
-    { nom: 'Accès Général (Inclus Boîtier)', count: 2819, couleur: 'var(--c-cyan)' }
-  ]);
+  readonly formulesStats = computed(() => {
+    const list = this.service.parents();
+    const famille = list.filter(p => p.abonnementsType === 'Premium Famille').length;
+    const etab = list.filter(p => p.abonnementsType === 'Premium Établissement').length;
+    const acces = list.filter(p => p.abonnementsType === 'Accès Général (Inclus Boîtier)').length;
+    return [
+      { nom: 'Tous', count: list.length },
+      { nom: 'Premium Famille', count: famille, couleur: 'var(--c-brand)' },
+      { nom: 'Premium Établissement', count: etab, couleur: 'var(--c-accent)' },
+      { nom: 'Accès Général (Inclus Boîtier)', count: acces, couleur: 'var(--c-cyan)' }
+    ];
+  });
 
   ngOnInit(): void {
     this.service.chargerParents();

@@ -1,7 +1,8 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { tap, catchError, throwError } from 'rxjs';
+import { JETON_CONFIG_API, ConfigurationApi } from '@core/configuration/api.config';
 
 export interface IdentifiantsConnexion {
   email: string;
@@ -22,6 +23,7 @@ const CLE_ADMIN = 'alternia_admin_info';
 
 @Injectable({ providedIn: 'root' })
 export class AuthentificationService {
+  private readonly config = inject<ConfigurationApi>(JETON_CONFIG_API);
   private readonly _estConnecte = signal<boolean>(this._verifierJeton());
   private readonly _adminInfo = signal<ReponseConnexion['admin'] | null>(this._chargerAdmin());
 
@@ -40,7 +42,10 @@ export class AuthentificationService {
   }
 
   seConnecter(identifiants: IdentifiantsConnexion) {
-    return this.http.post<ReponseConnexion>('/api/v1/auth/login', identifiants).pipe(
+    const baseUrl = this.config.urlBase.replace(/\/$/, '');
+    const url = `${baseUrl}/auth/login`;
+    return this.http.post<ReponseConnexion>(url, identifiants).pipe(
+
       tap(reponse => {
         sessionStorage.setItem(CLE_JETON, reponse.jeton);
         sessionStorage.setItem(CLE_ADMIN, JSON.stringify(reponse.admin));

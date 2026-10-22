@@ -31,15 +31,15 @@
   <div class="kpi-grid mb-6">
     <app-carte-statistique
       titre="Abonnements Actifs"
-      valeur="48 "
+      [valeur]="service.totalActifs()"
       sousTexte="Abonnements en cours de validité"
       couleurAccent="var(--c-brand)"
     ></app-carte-statistique>
 
     <app-carte-statistique
-      titre="MRR Abonnements Parents"
-      valeur="81M FCFA"
-      sousTexte="Revenu mensuel récurrent B2C"
+      titre="MRR Abonnements Actifs"
+      [valeur]="(service.totalMontantActif() | number) + ' FCFA'"
+      sousTexte="Revenu mensuel récurrent"
       couleurAccent="var(--c-cyan)"
     ></app-carte-statistique>
 
@@ -52,7 +52,7 @@
 
     <app-carte-statistique
       titre="Taux d'Auto-Renouvellement"
-      valeur="86,2%"
+      [valeur]="service.tauxAutoRenouvellement()"
       sousTexte="Reconduction automatique active"
       couleurAccent="var(--c-success)"
     ></app-carte-statistique>

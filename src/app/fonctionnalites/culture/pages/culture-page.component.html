@@ -14,6 +14,16 @@
     </div>
 
     <div class="culture-page__header-right">
+      <button 
+        type="button" 
+        class="btn btn--secondary btn--sm" 
+        (click)="exporterCatalogueCsv()"
+        title="Exporter le catalogue culturel en CSV">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/>
+        </svg>
+        Exporter CSV
+      </button>
 
       <button 
         type="button" 
@@ -28,8 +38,338 @@
     </div>
   </div>
 
+  <!-- Métriques KPIs Culturelles Authentiques -->
+  <div class="kpi-grid mb-6">
+    <app-carte-statistique
+      titre="Contenus Culturels"
+      [valeur]="service.statistiques().totalContenus"
+      [sousTexte]="service.statistiques().tauxPublication + '% publiés'"
+      couleurAccent="var(--c-brand)"
+    ></app-carte-statistique>
+
+    <app-carte-statistique
+      titre="Tampons Débloqués"
+      [valeur]="(service.statistiques().totalTamponsDebloques | number) || '0'"
+      sousTexte="Passeports validés par les élèves"
+      couleurAccent="var(--c-accent)"
+    ></app-carte-statistique>
+
+    <app-carte-statistique
+      titre="Expérience (XP) Distribuée"
+      [valeur]="service.statistiques().xpTotalDistribue"
+      sousTexte="Points cumulés par les apprenants"
+      couleurAccent="#0284c7"
+    ></app-carte-statistique>
+
+    <app-carte-statistique
+      titre="Territoires Représentés"
+      [valeur]="service.statistiques().regionsCouvertes"
+      sousTexte="Régions actives dans le catalogue"
+      couleurAccent="var(--c-success)"
+    ></app-carte-statistique>
+  </div>
+
+  <!-- Commutateur de sous-onglet : CMS vs Passeport vs Modération -->
+  <div class="culture-subtabs mb-4 flex gap-2">
+    <button
+      type="button"
+      class="btn btn--sm"
+      [class.btn--primary]="service.sousOngletActif() === 'cms'"
+      [class.btn--secondary]="service.sousOngletActif() !== 'cms'"
+      (click)="service.sousOngletActif.set('cms')">
+      Catalogue Éditorial (CMS)
+    </button>
+    <button
+      type="button"
+      class="btn btn--sm"
+      [class.btn--primary]="service.sousOngletActif() === 'passeport'"
+      [class.btn--secondary]="service.sousOngletActif() !== 'passeport'"
+      (click)="service.sousOngletActif.set('passeport')">
+      Passeport & Gamification
+    </button>
+    <button
+      type="button"
+      class="btn btn--sm btn-moderation-tab"
+      [class.btn--primary]="service.sousOngletActif() === 'moderation'"
+      [class.btn--secondary]="service.sousOngletActif() !== 'moderation'"
+      (click)="service.sousOngletActif.set('moderation')">
+      Modération des Contributions
+      @if (service.totalContributionsEnAttente() > 0) {
+        <span class="badge-count-pill">{{ service.totalContributionsEnAttente() }}</span>
+      }
+    </button>
+  </div>
+
+  @if (service.sousOngletActif() === 'passeport') {
+    <app-passeport-culturel
+      [tampons]="service.tamponsPasseport()"
+      [niveaux]="service.niveauxExplorateur()"
+      (basculerActif)="service.basculerActifTampon($event)">
+    </app-passeport-culturel>
+  } @else if (service.sousOngletActif() === 'moderation') {
+    <!-- ── PANNEAU MODÉRATION DES CONTRIBUTIONS CITOYENNES ────── -->
+    <div class="moderation-panel">
+      <!-- Barre d'outils de modération -->
+      <div class="card mb-4 moderation-toolbar">
+        <div class="moderation-toolbar__filters">
+          <div class="pill-group">
+            <button
+              type="button"
+              class="pill-btn"
+              [class.pill-btn--active]="filtreStatutModeration() === 'EN_ATTENTE'"
+              (click)="filtreStatutModeration.set('EN_ATTENTE')">
+              En attente
+              @if (service.totalContributionsEnAttente() > 0) {
+                <span class="pill-badge">{{ service.totalContributionsEnAttente() }}</span>
+              }
+            </button>
+            <button
+              type="button"
+              class="pill-btn"
+              [class.pill-btn--active]="filtreStatutModeration() === 'APPROUVE'"
+              (click)="filtreStatutModeration.set('APPROUVE')">
+              Approuvées
+            </button>
+            <button
+              type="button"
+              class="pill-btn"
+              [class.pill-btn--active]="filtreStatutModeration() === 'REJETE'"
+              (click)="filtreStatutModeration.set('REJETE')">
+              Refusées
+            </button>
+            <button
+              type="button"
+              class="pill-btn"
+              [class.pill-btn--active]="filtreStatutModeration() === 'TOUS'"
+              (click)="filtreStatutModeration.set('TOUS')">
+              Toutes ({{ service.contributions().length }})
+            </button>
+          </div>
+
+          <div class="type-filter-select">
+            <select
+              class="form-select form-select--sm"
+              [ngModel]="filtreTypeModeration()"
+              (ngModelChange)="filtreTypeModeration.set($event)">
+              <option value="TOUS">Tous les types de contenus</option>
+              <option value="proverbe">Proverbes & Adages</option>
+              <option value="devinette">Devinettes traditionnelles</option>
+              <option value="conte">Contes & Fables</option>
+              <option value="monument">Monuments & Lieux sacrés</option>
+            </select>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          class="btn btn--secondary btn--sm"
+          (click)="service.chargerContributions()"
+          title="Actualiser les soumissions">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+          </svg>
+          Actualiser
+        </button>
+      </div>
+
+      <!-- Liste des contributions sous forme de cartes d'examen -->
+      @if (contributionsFiltrees().length > 0) {
+        <div class="moderation-grid">
+          @for (c of contributionsFiltrees(); track c.id) {
+            <div class="card moderation-card" [class.moderation-card--pending]="c.statut === 'EN_ATTENTE'">
+              <!-- En-tête de la carte -->
+              <div class="moderation-card__header">
+                <div class="moderation-card__author">
+                  <div class="author-avatar">{{ c.auteurNom.charAt(0).toUpperCase() }}</div>
+                  <div>
+                    <div class="author-name">{{ c.auteurNom }}</div>
+                    <div class="author-meta">{{ c.auteurRole }} • {{ c.regionNom }}</div>
+                  </div>
+                </div>
+
+                <div class="moderation-card__badges">
+                  <span class="badge badge--type" [attr.data-type]="c.typeContenu">
+                    {{ c.typeContenu | uppercase }}
+                  </span>
+                  @if (c.statut === 'EN_ATTENTE') {
+                    <span class="badge badge--warning">En attente</span>
+                  } @else if (c.statut === 'APPROUVE') {
+                    <span class="badge badge--success">Approuvée</span>
+                  } @else {
+                    <span class="badge badge--danger">Refusée</span>
+                  }
+                </div>
+              </div>
+
+              <!-- Corps de la carte -->
+              <div class="moderation-card__body">
+                @if (c.titre) {
+                  <h3 class="moderation-card__title">{{ c.titre }}</h3>
+                }
+
+                @if (c.texteOriginal) {
+                  <div class="original-quote">
+                    « {{ c.texteOriginal }} »
+                  </div>
+                }
+
+                <div class="content-text">
+                  {{ c.texte }}
+                </div>
+
+                @if (c.signification) {
+                  <div class="info-block">
+                    <span class="info-label">Signification & Contexte :</span>
+                    <p class="info-desc">{{ c.signification }}</p>
+                  </div>
+                }
+
+                @if (c.morale) {
+                  <div class="info-block info-block--morale">
+                    <span class="info-label">Enseignement / Réponse :</span>
+                    <p class="info-desc font-medium">{{ c.morale }}</p>
+                  </div>
+                }
+
+                @if (c.sourceTemoin) {
+                  <div class="source-tag">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                    </svg>
+                    Source : {{ c.sourceTemoin }}
+                  </div>
+                }
+
+                @if (c.motifModeration) {
+                  <div class="motif-box">
+                    <span class="motif-label">Remarque de modération :</span>
+                    <span class="motif-text">{{ c.motifModeration }}</span>
+                  </div>
+                }
+              </div>
+
+              <!-- Pied de carte : Récompenses et Actions -->
+              <div class="moderation-card__footer">
+                <div class="reward-pills">
+                  <span class="reward-pill reward-pill--xp">+{{ c.xpAttribues }} XP</span>
+                  <span class="reward-pill reward-pill--coins">+{{ c.piecesAttribuees }} Pièces</span>
+                </div>
+
+                <div class="moderation-actions">
+                  @if (c.statut === 'EN_ATTENTE') {
+                    <button
+                      type="button"
+                      class="btn btn--sm btn--danger btn--action"
+                      (click)="ouvrirDecision(c, 'REJETE')"
+                      title="Refuser cette contribution">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                      </svg>
+                      Refuser
+                    </button>
+
+                    <button
+                      type="button"
+                      class="btn btn--sm btn--success btn--action"
+                      (click)="ouvrirDecision(c, 'APPROUVE')"
+                      title="Valider et promouvoir dans le catalogue">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <polyline points="20 6 9 17 4 12"/>
+                      </svg>
+                      Accepter & Promouvoir
+                    </button>
+                  } @else if (c.statut === 'APPROUVE') {
+                    <div class="status-certified">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--c-success)" stroke-width="2.5">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+                      </svg>
+                      Promu au catalogue officiel
+                    </div>
+                  } @else {
+                    <div class="status-rejected">
+                      Proposition non retenue
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      } @else {
+        <app-etat-vide
+          titre="Aucune contribution à afficher"
+          description="Toutes les propositions citoyennes dans ce filtre ont été examinées ou aucune n'a encore été soumise.">
+        </app-etat-vide>
+      }
+    </div>
+
+    <!-- Modale de décision de modération -->
+    @if (modalDecisionOuverte() && contributionSelectionnee()) {
+      <div class="modal-backdrop">
+        <div class="modal-dialog card">
+          <div class="modal-dialog__header">
+            <h2 class="modal-title">
+              {{ decisionModeration() === 'APPROUVE' ? 'Valider et Récompenser la Contribution' : 'Refuser la Contribution' }}
+            </h2>
+            <button type="button" class="btn-close" (click)="annulerDecision()">✕</button>
+          </div>
+
+          <div class="modal-dialog__body">
+            <div class="review-preview p-3 mb-3">
+              <div class="font-semibold text-primary mb-1">
+                {{ contributionSelectionnee()?.auteurNom }} ({{ contributionSelectionnee()?.auteurRole }})
+              </div>
+              <div class="text-sm text-secondary mb-2">
+                Type : {{ contributionSelectionnee()?.typeContenu | uppercase }} • Région : {{ contributionSelectionnee()?.regionNom }}
+              </div>
+              <div class="text-sm italic">
+                « {{ contributionSelectionnee()?.texte }} »
+              </div>
+            </div>
+
+            @if (decisionModeration() === 'APPROUVE') {
+              <div class="alert alert--success mb-3 text-sm">
+                En approuvant cette proposition :
+                <ul class="list-disc ml-4 mt-1">
+                  <li>L'élément sera immédiatement promu dans le catalogue éditorial officiel (CMS).</li>
+                  <li>L'auteur recevra automatiquement <strong>{{ contributionSelectionnee()?.piecesAttribuees }} pièces</strong> et <strong>{{ contributionSelectionnee()?.xpAttribues }} XP</strong> dans son portefeuille.</li>
+                </ul>
+              </div>
+            }
+
+            <div class="form-group">
+              <label class="form-label">
+                {{ decisionModeration() === 'APPROUVE' ? 'Note de félicitations / Commentaire :' : 'Motif du refus :' }}
+              </label>
+              <textarea
+                class="form-control"
+                rows="3"
+                [ngModel]="motifDecision()"
+                (ngModelChange)="motifDecision.set($event)"
+                placeholder="Renseignez une observation..."></textarea>
+            </div>
+          </div>
+
+          <div class="modal-dialog__footer flex justify-end gap-2">
+            <button type="button" class="btn btn--secondary" (click)="annulerDecision()">
+              Annuler
+            </button>
+            <button
+              type="button"
+              class="btn"
+              [class.btn--success]="decisionModeration() === 'APPROUVE'"
+              [class.btn--danger]="decisionModeration() === 'REJETE'"
+              (click)="confirmerDecision()">
+              {{ decisionModeration() === 'APPROUVE' ? 'Confirmer et Créditer' : 'Confirmer le Refus' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+  } @else {
   <!-- ── BARRE DE CONTRÔLE UNIFIÉE (ONGLETS + FILTRES) ────────── -->
   <div class="unified-control-panel card mb-5">
+
     
     <!-- Ligne 1 : Onglets de Catégories (Style Segmented Control Épuré) -->
     <div class="categories-segmented-bar">
@@ -172,6 +512,7 @@
       titre="Aucun contenu culturel correspondant"
       description="Modifiez votre recherche ou réinitialisez les critères de filtrage pour afficher les résultats.">
     </app-etat-vide>
+  }
   }
 
   <!-- ── TIROIR DÉTAIL & STUDIO DE CRÉATION ─────────────────────── -->

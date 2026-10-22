@@ -16,10 +16,10 @@ export class PedagogieIaService {
   readonly avatars = this._avatars.asReadonly();
 
   readonly kpis = signal({
-    totalRequetesIa: '148 900',
-    tempsMoyenReponseEdge: '142 ms',
-    avatarsActifs: 4,
-    voixTtsDisponibles: 4
+    totalRequetesIa: '0',
+    tempsMoyenReponseEdge: '0 ms',
+    avatarsActifs: 0,
+    voixTtsDisponibles: 0
   });
 
   readonly voixEnLecture = signal<string | null>(null);

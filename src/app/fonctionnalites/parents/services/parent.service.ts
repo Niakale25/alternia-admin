@@ -1,6 +1,7 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { ParentRepository, ParentDTO } from '@donnees/repositories/parent.repository';
 import { NotificationService } from '@partage/services/notification.service';
+import { ExportService } from '@partage/services/export.service';
 
 @Injectable({
   providedIn: 'root'
@@ -43,8 +44,19 @@ export class ParentService {
     return liste;
   });
 
+  readonly totalParents = computed(() => this._parents().length);
   readonly totalActifs = computed(() => this._parents().filter(p => p.statut === 'Actif').length);
+  readonly totalInactifs = computed(() => this._parents().filter(p => p.statut === 'Inactif' || p.statut === 'Suspendu').length);
   readonly totalEnfants = computed(() => this._parents().reduce((acc, p) => acc + (p.enfantsRattaches || 0), 0));
+  readonly totalPremium = computed(() => this._parents().filter(p => p.abonnementsType?.includes('Premium')).length);
+  readonly ratioEnfantsParFamille = computed(() => {
+    const t = this._parents().length;
+    return t > 0 ? (this.totalEnfants() / t).toFixed(2) : '0';
+  });
+  readonly tauxConversion = computed(() => {
+    const t = this._parents().length;
+    return t > 0 ? `${((this.totalPremium() / t) * 100).toFixed(1)}%` : '0%';
+  });
 
 
   chargerParents(): void {
@@ -84,7 +96,33 @@ export class ParentService {
     });
   }
 
+  private readonly exportService = inject(ExportService);
+
   exporterCsv(): void {
-    this.notificationService.succes('Export CSV des comptes parents généré avec succès.');
+    let donnees = this.parentsFiltres();
+    if (!donnees || donnees.length === 0) {
+      donnees = this._parents();
+    }
+    if (!donnees || donnees.length === 0) {
+      this.notificationService.avertissement('Aucun compte parent à exporter.');
+      return;
+    }
+
+    this.exportService.exporterCsv(
+      [
+        { cle: 'id', entete: 'Identifiant' },
+        { cle: 'tuteur', entete: 'Prénom & Nom du Tuteur' },
+        { cle: 'nomFamille', entete: 'Famille' },
+        { cle: 'email', entete: 'Email' },
+        { cle: 'telephone', entete: 'Téléphone' },
+        { cle: 'etablissement', entete: 'Établissement Associé' },
+        { cle: 'enfantsRattaches', entete: 'Enfants Rattachés' },
+        { cle: 'abonnementsType', entete: 'Formule d\'Abonnement' },
+        { cle: 'statut', entete: 'Statut' },
+        { cle: 'derniereActivite', entete: 'Dernière Activité' }
+      ],
+      donnees,
+      'parents_tuteurs_alternia'
+    );
   }
 }

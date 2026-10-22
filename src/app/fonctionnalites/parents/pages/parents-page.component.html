@@ -81,30 +81,30 @@
   <!-- Métriques KPIs Clés -->
   <div class="kpi-grid mb-6">
     <app-carte-statistique
-      titre="Parents Connectés ce mois"
-      valeur="48 391"
-      sousTexte="Activité régulière détectée"
+      titre="Parents Enregistrés"
+      [valeur]="service.totalParents()"
+      [sousTexte]="service.totalActifs() + ' comptes actifs'"
       couleurAccent="var(--c-brand)"
     ></app-carte-statistique>
 
     <app-carte-statistique
       titre="Enfants Rattachés"
-      valeur="61 940"
-      sousTexte="1,28 enfant par famille"
+      [valeur]="service.totalEnfants()"
+      [sousTexte]="service.ratioEnfantsParFamille() + ' enfant par famille en moyenne'"
       couleurAccent="var(--c-cyan)"
     ></app-carte-statistique>
 
     <app-carte-statistique
       titre="Abonnements Premium"
-      valeur="34 110"
-      sousTexte="Taux de conversion de 70,5%"
+      [valeur]="service.totalPremium()"
+      [sousTexte]="'Taux de conversion : ' + service.tauxConversion()"
       couleurAccent="var(--c-accent)"
     ></app-carte-statistique>
 
     <app-carte-statistique
       titre="Comptes Inactifs"
-      valeur="1 420"
-      sousTexte="Sans activité > 30 jours"
+      [valeur]="service.totalInactifs()"
+      sousTexte="Sans activité récente ou suspendus"
       couleurAccent="var(--c-danger)"
     ></app-carte-statistique>
   </div>

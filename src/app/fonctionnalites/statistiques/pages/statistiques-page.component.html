@@ -50,28 +50,28 @@
     <div class="kpi-grid mb-6">
       <app-carte-statistique
         titre="Temps d'Utilisation Global"
-        valeur="1,43M h"
+        [valeur]="formaterNombre(s.tempsUtilisationTotalHeures) + ' h'"
         sousTexte="Cumulé sur les boîtiers actifs ce mois"
         couleurAccent="var(--c-brand)"
       ></app-carte-statistique>
 
       <app-carte-statistique
         titre="Volume Questions IA"
-        valeur="1,84M"
+        [valeur]="formaterNombre(s.volumeQuestionsMois)"
         sousTexte="Interactions d'aide à l'apprentissage"
         couleurAccent="var(--c-cyan)"
       ></app-carte-statistique>
 
       <app-carte-statistique
         titre="Taux de Disponibilité Boîtiers"
-        valeur="96,4%"
+        [valeur]="(s.boitiersActifsRatio | number:'1.1-1') + '%'"
         sousTexte="Connexion stable en classe"
         couleurAccent="var(--c-success)"
       ></app-carte-statistique>
 
       <app-carte-statistique
         titre="Taux de Satisfaction Global"
-        valeur="96,8%"
+        [valeur]="(s.tauxSatisfactionMoyen | number:'1.1-1') + '%'"
         sousTexte="Retours positifs enseignants/élèves"
         couleurAccent="var(--c-accent)"
       ></app-carte-statistique>

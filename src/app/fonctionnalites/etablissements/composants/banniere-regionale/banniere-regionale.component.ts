@@ -15,7 +15,7 @@ export class BanniereRegionaleComponent {
   @Output() selectionnerRegion = new EventEmitter<string>();
 
   get totalEtablissements(): number {
-    return this.regions?.reduce((acc, r) => acc + (r.count || 0), 0) || 1247;
+    return this.regions?.reduce((acc, r) => acc + (r.count || 0), 0) ?? 0;
   }
 
   filtrer(region: string): void {

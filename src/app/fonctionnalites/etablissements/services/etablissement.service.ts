@@ -20,15 +20,29 @@ export class EtablissementService {
   readonly pageCourante = signal<number>(0);
   readonly taillePage = signal<number>(10);
 
-  readonly regions = signal<InfoRegionDTO[]>([
-    { region: 'District de Bamako', villePhares: 'Bamako', count: 480 },
-    { region: 'Sikasso', villePhares: 'Sikasso, Koutiala, Bougouni', count: 210 },
-    { region: 'Ségou', villePhares: 'Ségou, San, Markala', count: 175 },
-    { region: 'Koulikoro', villePhares: 'Koulikoro, Kati, Kolokani', count: 145 },
-    { region: 'Kayes', villePhares: 'Kayes, Kita, Nioro', count: 110 },
-    { region: 'Mopti', villePhares: 'Mopti, Sévaré, Djenné', count: 85 },
-    { region: 'Gao & Tombouctou', villePhares: 'Gao, Tombouctou', count: 42 }
-  ]);
+  readonly regions = computed<InfoRegionDTO[]>(() => {
+    const etabs = this._etablissements();
+    const listeRegions = [
+      { region: 'District de Bamako', villePhares: 'Bamako' },
+      { region: 'Sikasso', villePhares: 'Sikasso, Koutiala, Bougouni' },
+      { region: 'Ségou', villePhares: 'Ségou, San, Markala' },
+      { region: 'Koulikoro', villePhares: 'Koulikoro, Kati, Kolokani' },
+      { region: 'Kayes', villePhares: 'Kayes, Kita, Nioro' },
+      { region: 'Mopti', villePhares: 'Mopti, Sévaré, Djenné' },
+      { region: 'Gao & Tombouctou', villePhares: 'Gao, Tombouctou' }
+    ];
+
+    return listeRegions.map(r => ({
+      region: r.region,
+      villePhares: r.villePhares,
+      count: etabs.filter(e => {
+        if (r.region === 'Gao & Tombouctou') {
+          return e.region === 'Gao' || e.region === 'Tombouctou' || e.region === 'Gao & Tombouctou';
+        }
+        return e.region === r.region;
+      }).length
+    }));
+  });
 
   readonly etablissementsFiltres = computed(() => {
     let liste = this._etablissements();

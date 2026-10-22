@@ -9,6 +9,7 @@ import { CarteStatistiqueComponent } from '@partage/composants/carte-statistique
 import { EtatVideComponent } from '@partage/composants/etat-vide/etat-vide.component';
 import { ModalConfirmationComponent } from '@partage/composants/modal-confirmation/modal-confirmation.component';
 import { NotificationService } from '@partage/services/notification.service';
+import { ExportService } from '@partage/services/export.service';
 import { EtablissementDTO } from '../modeles/etablissement.model';
 
 @Component({
@@ -68,8 +69,33 @@ export class EtablissementsPageComponent implements OnInit {
     this.service.filtreRegion.set('Toutes');
   }
 
+  private readonly exportService = inject(ExportService);
+
   exporterDonnees(): void {
-    const total = this.service.etablissementsFiltres().length;
-    this.notificationService.succes(`Export du répertoire de ${total} établissement(s) généré avec succès.`);
+    let donnees = this.service.etablissementsFiltres();
+    if (!donnees || donnees.length === 0) {
+      donnees = this.service.etablissements();
+    }
+    if (!donnees || donnees.length === 0) {
+      this.notificationService.avertissement('Aucun établissement à exporter pour le moment.');
+      return;
+    }
+
+    this.exportService.exporterCsv(
+      [
+        { cle: 'id', entete: 'Identifiant' },
+        { cle: 'nom', entete: 'Nom de l\'Établissement' },
+        { cle: 'ville', entete: 'Ville' },
+        { cle: 'region', entete: 'Région' },
+        { cle: 'directeurEmail', entete: 'Email Direction' },
+        { cle: 'offre', entete: 'Formule / Offre' },
+        { cle: 'boitiersCount', entete: 'Boîtiers Attribués' },
+        { cle: 'effectifScolaire', entete: 'Effectif Scolaire' },
+        { cle: 'statut', entete: 'Statut' },
+        { cle: 'dateInscription', entete: 'Date d\'Inscription' }
+      ],
+      donnees,
+      'repertoire_etablissements_alternia'
+    );
   }
 }

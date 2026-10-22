@@ -114,6 +114,21 @@ export class ClientApiService {
   }
 
   /**
+   * Effectue un appel PATCH vers un endpoint Spring Boot.
+   */
+  patch<T, D = any>(chemin: string, corps?: D): Observable<T> {
+    const url = this.construireUrl(chemin);
+    return this.http.patch<ReponseApi<T> | T>(url, corps ?? {}).pipe(
+      map(res => {
+        if (res && typeof res === 'object' && 'donnees' in res) {
+          return (res as ReponseApi<T>).donnees;
+        }
+        return res as T;
+      })
+    );
+  }
+
+  /**
    * Effectue un appel DELETE vers un endpoint Spring Boot.
    */
   delete<T = void>(chemin: string): Observable<T> {

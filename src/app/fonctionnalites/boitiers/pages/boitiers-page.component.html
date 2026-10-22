@@ -11,6 +11,13 @@
     </div>
 
     <div class="flex gap-2">
+      <button class="btn btn--secondary" (click)="service.exporterCsv()" title="Télécharger l'inventaire complet des boîtiers">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/>
+        </svg>
+        Exporter Parc (CSV)
+      </button>
+
       <button class="btn btn--secondary" (click)="service.pingerBoitiers()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
@@ -32,14 +39,14 @@
     <app-carte-statistique
       titre="Flotte Déployée"
       [valeur]="service.totalDeployes()"
-      sousTexte="1 247 unités sur le terrain"
+      [sousTexte]="service.totalDeployes() + ' boîtiers enregistrés'"
       couleurAccent="var(--c-brand)"
     ></app-carte-statistique>
 
     <app-carte-statistique
       titre="En Ligne (Edge Connecté)"
       [valeur]="service.totalActifs()"
-      sousTexte="Disponibilité : 96,4%"
+      [sousTexte]="'Disponibilité : ' + service.ratioDisponibilite()"
       couleurAccent="var(--c-success)"
     ></app-carte-statistique>
 
