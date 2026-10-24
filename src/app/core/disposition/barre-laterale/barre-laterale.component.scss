@@ -237,81 +237,82 @@
   }
 
   &__footer {
-    padding: 10px 12px;
+    padding: 10px 14px;
     border-top: 1px solid var(--c-border-light);
     flex-shrink: 0;
   }
 
-  &__user {
+  &__status-bar {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 6px 8px;
+    justify-content: space-between;
+    width: 100%;
+    padding: 8px 10px;
+    background: var(--c-surface-alt);
     border-radius: var(--r-md);
+    border: 1px solid var(--c-border);
     cursor: pointer;
-    transition: background var(--t-fast);
+    transition: all var(--t-fast);
 
-    &:hover { background: var(--c-surface-alt); }
+    &:hover {
+      background: var(--c-surface);
+      border-color: var(--c-brand-border);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+
+      .sidebar__settings-btn {
+        color: var(--c-brand);
+        transform: rotate(30deg);
+      }
+    }
   }
 
-  &__user-collapsed {
+  &__status-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  &__status-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  &__status-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--c-text);
+    letter-spacing: 0.02em;
+  }
+
+  &__status-version {
+    font-size: 10px;
+    color: var(--c-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__settings-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--c-subtle);
+    transition: all 0.3s ease;
+  }
+
+  &__status-collapsed {
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    padding: 4px;
+    padding: 8px 4px;
     border-radius: var(--r-md);
     transition: transform var(--t-fast);
 
     &:hover {
-      transform: scale(1.08);
+      transform: scale(1.15);
     }
-  }
-
-  &__user-avatar {
-    position: relative;
-    width: 34px;
-    height: 34px;
-    border-radius: 10px;
-    background: #314999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    flex-shrink: 0;
-    box-shadow: 0 2px 6px rgba(49, 73, 153, 0.25);
-  }
-
-  &__user-dot {
-    position: absolute;
-    bottom: -1px;
-    right: -1px;
-    width: 8px;
-    height: 8px;
-    background: var(--c-success);
-    border: 1.5px solid var(--c-white);
-    border-radius: 50%;
-  }
-
-  &__user-info { min-width: 0; }
-
-  &__user-name {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--c-text);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  &__user-email {
-    font-size: 10px;
-    color: var(--c-subtle);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
 }

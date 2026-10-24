@@ -41,7 +41,14 @@ export class CarteCultureComponent {
 
   get imageUrl(): string | null {
     const i = this.item as any;
-    return i.photoUrl || i.avatarUrl || null;
+    let url = i.photoUrl || i.avatarUrl || null;
+    if (url && typeof url === 'string') {
+      url = url.trim();
+      if (!url.startsWith('http') && !url.startsWith('/')) {
+        url = '/' + url;
+      }
+    }
+    return url;
   }
 
   get typeLabel(): string {
@@ -59,13 +66,13 @@ export class CarteCultureComponent {
 
   get typeBadgeClass(): string {
     switch (this.item.type) {
-      case 'figure': return 'badge--brand';
-      case 'monument': return 'badge--info';
-      case 'ville': return 'badge--warning';
-      case 'conte': return 'badge--accent';
-      case 'devinette': return 'badge--info';
-      case 'quiz': return 'badge--success';
-      case 'temoignage': return 'badge--neutral';
+      case 'figure': return 'badge--figure';
+      case 'monument': return 'badge--monument';
+      case 'ville': return 'badge--ville';
+      case 'conte': return 'badge--conte';
+      case 'devinette': return 'badge--devinette';
+      case 'quiz': return 'badge--quiz';
+      case 'temoignage': return 'badge--temoignage';
       default: return 'badge--neutral';
     }
   }
