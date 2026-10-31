@@ -32,12 +32,24 @@
 }
 
 .search-wrap {
+  position: relative;
   flex: 1;
   min-width: 240px;
   max-width: 380px;
+  display: flex;
+  align-items: center;
+
+  .search-icon {
+    position: absolute;
+    left: 12px;
+    color: var(--c-subtle);
+    pointer-events: none;
+    flex-shrink: 0;
+  }
 
   .input {
     width: 100%;
+    padding-left: 36px;
   }
 }
 

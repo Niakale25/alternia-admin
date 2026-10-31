@@ -486,27 +486,33 @@
     gap: 6px;
   }
 
+  .badge--type {
+    background: var(--c-brand-bg);
+    color: var(--c-brand);
+    border: 1px solid var(--c-brand-border);
+  }
+
   &__title {
     font-size: 15px;
-    font-weight: 600;
+    font-weight: 700;
     margin-bottom: 8px;
-    color: var(--c-brand, #f1851f);
+    color: var(--c-text);
   }
 
   .original-quote {
     font-size: 14px;
     font-style: italic;
-    color: var(--c-primary, #0f172a);
-    background: #f8fafc;
+    color: var(--c-text);
+    background: var(--c-surface-alt);
     padding: 8px 12px;
     border-radius: 6px;
-    border-left: 2px solid var(--c-brand, #f1851f);
+    border-left: 3px solid var(--c-accent);
     margin-bottom: 10px;
   }
 
   .content-text {
     font-size: 13.5px;
-    color: var(--c-text, #334155);
+    color: var(--c-secondary);
     line-height: 1.5;
     margin-bottom: 12px;
   }
@@ -514,32 +520,33 @@
   .info-block {
     margin-top: 8px;
     padding: 8px 10px;
-    background: #f8fafc;
+    background: var(--c-surface-alt);
+    border: 1px solid var(--c-border-light);
     border-radius: 6px;
     font-size: 12.5px;
 
     .info-label {
       font-weight: 600;
-      color: var(--c-secondary, #64748b);
+      color: var(--c-secondary);
       display: block;
       margin-bottom: 2px;
     }
 
     .info-desc {
-      color: var(--c-text, #1e293b);
+      color: var(--c-text);
       margin: 0;
     }
 
     &--morale {
-      background: #fefce8;
-      border: 1px solid #fef08a;
+      background: var(--c-accent-bg);
+      border: 1px solid var(--c-accent-border);
 
       .info-label {
-        color: #854d0e;
+        color: var(--c-accent);
       }
 
       .info-desc {
-        color: #713f12;
+        color: var(--c-text);
       }
     }
   }
@@ -549,26 +556,27 @@
     align-items: center;
     gap: 4px;
     font-size: 11.5px;
-    color: var(--c-secondary, #64748b);
+    color: var(--c-secondary);
     margin-top: 10px;
   }
 
   .motif-box {
     margin-top: 8px;
-    padding: 6px 10px;
-    background: #fef2f2;
-    border: 1px solid #fecaca;
+    padding: 8px 10px;
+    background: var(--c-danger-bg);
+    border: 1px solid var(--c-danger-border);
     border-radius: 6px;
     font-size: 12px;
 
     .motif-label {
-      font-weight: 600;
-      color: #991b1b;
+      font-weight: 700;
+      color: var(--c-danger);
       display: block;
+      margin-bottom: 2px;
     }
 
     .motif-text {
-      color: #7f1d1d;
+      color: var(--c-text);
     }
   }
 
@@ -579,7 +587,7 @@
     gap: 12px;
     margin-top: 16px;
     padding-top: 12px;
-    border-top: 1px solid var(--c-border-light, #f1f5f9);
+    border-top: 1px solid var(--c-border-light);
     flex-wrap: wrap;
   }
 
@@ -596,13 +604,15 @@
     font-weight: 700;
 
     &--xp {
-      background: #e0f2fe;
-      color: #0369a1;
+      background: var(--c-cyan-bg);
+      color: var(--c-cyan-text);
+      border: 1px solid var(--c-cyan-border);
     }
 
     &--coins {
-      background: #fef3c7;
-      color: #b45309;
+      background: var(--c-accent-bg);
+      color: var(--c-accent);
+      border: 1px solid var(--c-accent-border);
     }
   }
 
@@ -638,13 +648,13 @@
     gap: 5px;
     font-size: 12px;
     font-weight: 600;
-    color: #10b981;
+    color: var(--c-success);
   }
 
   .status-rejected {
     font-size: 12px;
     font-weight: 600;
-    color: #ef4444;
+    color: var(--c-danger);
   }
 }
 
@@ -664,10 +674,11 @@
 .modal-dialog {
   max-width: 540px;
   width: 100%;
-  background: var(--c-surface, #fff);
-  border-radius: var(--r-lg, 12px);
+  background: var(--c-white);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-xl);
   padding: 24px;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--s-xl);
 
   &__header {
     display: flex;
@@ -679,7 +690,7 @@
   .modal-title {
     font-size: 18px;
     font-weight: 700;
-    color: var(--c-text, #0f172a);
+    color: var(--c-text);
     margin: 0;
   }
 
@@ -687,15 +698,15 @@
     background: transparent;
     border: none;
     font-size: 18px;
-    color: var(--c-secondary, #64748b);
+    color: var(--c-secondary);
     cursor: pointer;
     &:hover { color: var(--c-text); }
   }
 
   .review-preview {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
+    background: var(--c-surface-alt);
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-md);
   }
 }
 
