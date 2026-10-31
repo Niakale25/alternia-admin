@@ -149,6 +149,7 @@ export class NotificationService {
 
   viderHistorique(): void {
     this._notifications.set([]);
+    this.clientApi.delete('/notifications').subscribe({ error: () => {} });
   }
 }
 

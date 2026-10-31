@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { BoitierService } from '../services/boitier.service';
 import { TableauBoitiersComponent } from '../composants/tableau-boitiers/tableau-boitiers.component';
 import { InspecteurHardwareComponent } from '../composants/inspecteur-hardware/inspecteur-hardware.component';
-import { CampagnesOtaComponent } from '../composants/campagnes-ota/campagnes-ota.component';
 import { ModalBoitierComponent } from '../composants/modal-boitier/modal-boitier.component';
 import { CarteStatistiqueComponent } from '@partage/composants/carte-statistique/carte-statistique.component';
 import { EtatVideComponent } from '@partage/composants/etat-vide/etat-vide.component';
@@ -20,7 +19,6 @@ import { BoitierDTO } from '../modeles/boitier.model';
     FormsModule,
     TableauBoitiersComponent,
     InspecteurHardwareComponent,
-    CampagnesOtaComponent,
     ModalBoitierComponent,
     CarteStatistiqueComponent,
     EtatVideComponent,

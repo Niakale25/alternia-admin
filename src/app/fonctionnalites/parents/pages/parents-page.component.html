@@ -39,45 +39,6 @@
     </div>
   </div>
 
-  <!-- Bannière d'Engagement Familial & Formules -->
-  <div class="card family-banner mb-6">
-    <div class="family-banner__glow"></div>
-    <div class="family-banner__content">
-
-      <div class="family-banner__main">
-        <div class="family-banner__info">
-          <h3 class="family-banner__title">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="text-cyan">
-              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-            </svg>
-            Accompagnement Parental & Devoirs Connectés
-          </h3>
-          <p class="family-banner__subtitle">
-            Les tuteurs reçoivent les bilans hebdomadaires de devoirs, alertes d'assiduité et cours numériques via l'application mobile et notifications SMS/WhatsApp.
-          </p>
-        </div>
-
-        <!-- Filtres rapides par Formules d'abonnement -->
-        <div class="family-banner__pills-box">
-          <span class="pills-title">Filtrer par formule :</span>
-          <div class="pills-row">
-            @for (f of formulesStats(); track f.nom) {
-              <button
-                type="button"
-                class="formula-pill"
-                [class.formula-pill--active]="service.filtreAbonnement() === f.nom"
-                (click)="filtrerFormule(f.nom)"
-              >
-                <span class="formula-name">{{ f.nom }}</span>
-                <span class="formula-badge">{{ f.count | number }}</span>
-              </button>
-            }
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- Métriques KPIs Clés -->
   <div class="kpi-grid mb-6">
     <app-carte-statistique

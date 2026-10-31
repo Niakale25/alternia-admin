@@ -39,13 +39,6 @@
     </div>
   </div>
 
-  <!-- Bannière Régionale Mali -->
-  <app-banniere-regionale
-    [regions]="service.regions()"
-    [regionSelectionnee]="service.filtreRegion()"
-    (selectionnerRegion)="service.filtreRegion.set($event)"
-  ></app-banniere-regionale>
-
   <!-- Métriques KPIs Clés -->
   <div class="kpi-grid mb-6">
     <app-carte-statistique
@@ -106,6 +99,20 @@
 
       <!-- Sélecteurs et Filtres -->
       <div class="filters-cluster">
+        <div class="filter-item">
+          <label class="filter-label">Région</label>
+          <select
+            class="filter-select"
+            [ngModel]="service.filtreRegion()"
+            (ngModelChange)="service.filtreRegion.set($event)"
+          >
+            <option value="Toutes">Toutes les régions</option>
+            @for (r of service.regions(); track r.region) {
+              <option [value]="r.region">{{ r.region }}</option>
+            }
+          </select>
+        </div>
+
         <div class="filter-item">
           <label class="filter-label">Statut</label>
           <select

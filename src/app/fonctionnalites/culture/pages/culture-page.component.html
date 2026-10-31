@@ -43,21 +43,21 @@
     <app-carte-statistique
       titre="Contenus Culturels"
       [valeur]="service.statistiques().totalContenus"
-      [sousTexte]="service.statistiques().tauxPublication + '% publiés'"
+      [sousTexte]="service.statistiques().tauxPublication + '% publiés dans le catalogue'"
       couleurAccent="var(--c-brand)"
     ></app-carte-statistique>
 
     <app-carte-statistique
-      titre="Tampons Débloqués"
-      [valeur]="(service.statistiques().totalTamponsDebloques | number) || '0'"
-      sousTexte="Passeports validés par les élèves"
+      titre="Figures & Monuments"
+      [valeur]="service.statistiques().totalFigures + service.statistiques().totalMonuments"
+      [sousTexte]="service.statistiques().totalFigures + ' figures • ' + service.statistiques().totalMonuments + ' monuments'"
       couleurAccent="var(--c-accent)"
     ></app-carte-statistique>
 
     <app-carte-statistique
-      titre="Expérience (XP) Distribuée"
-      [valeur]="service.statistiques().xpTotalDistribue"
-      sousTexte="Points cumulés par les apprenants"
+      titre="Contributions Citoyennes"
+      [valeur]="service.contributions().length"
+      [sousTexte]="service.totalContributionsEnAttente() + ' en attente de modération'"
       couleurAccent="#0284c7"
     ></app-carte-statistique>
 
@@ -69,7 +69,7 @@
     ></app-carte-statistique>
   </div>
 
-  <!-- Commutateur de sous-onglet : CMS vs Passeport vs Modération -->
+  <!-- Commutateur de sous-onglet : CMS vs Modération -->
   <div class="culture-subtabs mb-4 flex gap-2">
     <button
       type="button"
@@ -78,14 +78,6 @@
       [class.btn--secondary]="service.sousOngletActif() !== 'cms'"
       (click)="service.sousOngletActif.set('cms')">
       Catalogue Éditorial (CMS)
-    </button>
-    <button
-      type="button"
-      class="btn btn--sm"
-      [class.btn--primary]="service.sousOngletActif() === 'passeport'"
-      [class.btn--secondary]="service.sousOngletActif() !== 'passeport'"
-      (click)="service.sousOngletActif.set('passeport')">
-      Passeport & Gamification
     </button>
     <button
       type="button"
@@ -100,13 +92,7 @@
     </button>
   </div>
 
-  @if (service.sousOngletActif() === 'passeport') {
-    <app-passeport-culturel
-      [tampons]="service.tamponsPasseport()"
-      [niveaux]="service.niveauxExplorateur()"
-      (basculerActif)="service.basculerActifTampon($event)">
-    </app-passeport-culturel>
-  } @else if (service.sousOngletActif() === 'moderation') {
+  @if (service.sousOngletActif() === 'moderation') {
     <!-- ── PANNEAU MODÉRATION DES CONTRIBUTIONS CITOYENNES ────── -->
     <div class="moderation-panel">
       <!-- Barre d'outils de modération -->
@@ -156,6 +142,9 @@
               <option value="devinette">Devinettes traditionnelles</option>
               <option value="conte">Contes & Fables</option>
               <option value="monument">Monuments & Lieux sacrés</option>
+              <option value="personnage">Grands Personnages & Héros</option>
+              <option value="lieu">Villes & Terroirs historiques</option>
+              <option value="patronyme">Patronymes (Jamu) & Totems</option>
             </select>
           </div>
         </div>
@@ -228,6 +217,20 @@
                   <div class="info-block info-block--morale">
                     <span class="info-label">Enseignement / Réponse :</span>
                     <p class="info-desc font-medium">{{ c.morale }}</p>
+                  </div>
+                }
+
+                @if (c.donneesSupplementaires && (c.donneesSupplementaires['ville'] || c.donneesSupplementaires['epoque'] || c.donneesSupplementaires['periode'] || c.donneesSupplementaires['fondation'] || c.donneesSupplementaires['totem'] || c.donneesSupplementaires['senankouya'])) {
+                  <div class="info-block">
+                    <span class="info-label">Détails patrimoniaux :</span>
+                    <p class="info-desc">
+                      @if (c.donneesSupplementaires['ville']) { Ville : {{ c.donneesSupplementaires['ville'] }} • }
+                      @if (c.donneesSupplementaires['epoque']) { Époque : {{ c.donneesSupplementaires['epoque'] }} • }
+                      @if (c.donneesSupplementaires['periode']) { Période : {{ c.donneesSupplementaires['periode'] }} • }
+                      @if (c.donneesSupplementaires['fondation']) { Fondation : {{ c.donneesSupplementaires['fondation'] }} • }
+                      @if (c.donneesSupplementaires['totem']) { Totem (Tana) : {{ c.donneesSupplementaires['totem'] }} • }
+                      @if (c.donneesSupplementaires['senankouya']) { Senankouya : {{ c.donneesSupplementaires['senankouya'] }} }
+                    </p>
                   </div>
                 }
 

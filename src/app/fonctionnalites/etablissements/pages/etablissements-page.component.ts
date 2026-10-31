@@ -2,7 +2,6 @@ import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { EtablissementService } from '../services/etablissement.service';
-import { BanniereRegionaleComponent } from '../composants/banniere-regionale/banniere-regionale.component';
 import { TableauEtablissementsComponent } from '../composants/tableau-etablissements/tableau-etablissements.component';
 import { ModalEtablissementComponent } from '../composants/modal-etablissement/modal-etablissement.component';
 import { CarteStatistiqueComponent } from '@partage/composants/carte-statistique/carte-statistique.component';
@@ -18,7 +17,6 @@ import { EtablissementDTO } from '../modeles/etablissement.model';
   imports: [
     CommonModule,
     FormsModule,
-    BanniereRegionaleComponent,
     TableauEtablissementsComponent,
     ModalEtablissementComponent,
     CarteStatistiqueComponent,

@@ -65,103 +65,63 @@
     ></app-carte-statistique>
   </div>
 
-  <!-- Sous-onglets de navigation métier -->
-  <div class="boitiers-subtabs mb-4 flex items-center justify-between">
-    <div class="pill-group">
-      <button
-        type="button"
-        class="pill-btn"
-        [class.pill-btn--active]="service.ongletActif() === 'parc'"
-        (click)="service.ongletActif.set('parc')"
-      >
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect width="20" height="14" x="2" y="5" rx="2"/><path d="M2 10h20"/>
-        </svg>
-        Parc & Télémétrie en Direct
-      </button>
+  <!-- Barre de Recherche & Filtres Régionaux -->
+  <div class="table-controls mb-4">
+    <div class="table-controls__search">
+      <input
+        type="text"
+        class="input input--sm"
+        placeholder="Rechercher par numéro de série, établissement, IP, ville..."
+        [ngModel]="service.recherche()"
+        (ngModelChange)="service.recherche.set($event)"
+      />
+    </div>
 
-      <button
-        type="button"
-        class="pill-btn"
-        [class.pill-btn--active]="service.ongletActif() === 'ota'"
-        (click)="service.ongletActif.set('ota')"
+    <div class="flex gap-2">
+      <select
+        class="select select--sm"
+        [ngModel]="service.filtreRegion()"
+        (ngModelChange)="service.filtreRegion.set($event)"
       >
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-        </svg>
-        Campagnes OTA & Mises à Jour
-        <span class="badge badge--cyan badge--subtle font-mono text-xs">
-          {{ service.campagnesOta().length }}
-        </span>
-      </button>
+        <option value="Toutes">Toutes les régions</option>
+        <option value="Bamako">Bamako</option>
+        <option value="Sikasso">Sikasso</option>
+        <option value="Ségou">Ségou</option>
+        <option value="Kayes">Kayes</option>
+        <option value="Mopti">Mopti</option>
+      </select>
+
+      <select
+        class="select select--sm"
+        [ngModel]="service.filtreStatut()"
+        (ngModelChange)="service.filtreStatut.set($event)"
+      >
+        <option value="Tous">Tous les statuts</option>
+        <option value="Actif">Actif (En ligne)</option>
+        <option value="Hors ligne">Hors ligne</option>
+        <option value="Maintenance">Maintenance</option>
+      </select>
     </div>
   </div>
 
-  @if (service.ongletActif() === 'parc') {
-    <!-- Barre de Recherche & Filtres Régionaux -->
-    <div class="table-controls mb-4">
-      <div class="table-controls__search">
-        <input
-          type="text"
-          class="input input--sm"
-          placeholder="Rechercher par numéro de série, établissement, IP, ville..."
-          [ngModel]="service.recherche()"
-          (ngModelChange)="service.recherche.set($event)"
-        />
-      </div>
-
-      <div class="flex gap-2">
-        <select
-          class="select select--sm"
-          [ngModel]="service.filtreRegion()"
-          (ngModelChange)="service.filtreRegion.set($event)"
-        >
-          <option value="Toutes">Toutes les régions</option>
-          <option value="Bamako">Bamako</option>
-          <option value="Sikasso">Sikasso</option>
-          <option value="Ségou">Ségou</option>
-          <option value="Kayes">Kayes</option>
-          <option value="Mopti">Mopti</option>
-        </select>
-
-        <select
-          class="select select--sm"
-          [ngModel]="service.filtreStatut()"
-          (ngModelChange)="service.filtreStatut.set($event)"
-        >
-          <option value="Tous">Tous les statuts</option>
-          <option value="Actif">Actif (En ligne)</option>
-          <option value="Hors ligne">Hors ligne</option>
-          <option value="Maintenance">Maintenance</option>
-        </select>
-      </div>
-    </div>
-
-    <!-- Tableau ou État Vide -->
-    @if (service.boitiersFiltres().length > 0) {
-      <app-tableau-boitiers
-        [boitiers]="service.boitiersFiltres()"
-        (changerStatut)="service.changerStatut($event.id, $event.statut)"
-        (inspecter)="service.inspecterBoitier($event)"
-        (forcerSynchro)="service.forcerSynchro($event)"
-        (supprimer)="demanderSuppression($event)"
-      ></app-tableau-boitiers>
-    } @else {
-      <div class="card">
-        <app-etat-vide
-          titre="Aucun boîtier trouvé"
-          message="Aucun boîtier ne correspond à vos critères de recherche."
-          texteAction="Réinitialiser les filtres"
-          (action)="service.recherche.set(''); service.filtreStatut.set('Tous'); service.filtreRegion.set('Toutes')"
-        ></app-etat-vide>
-      </div>
-    }
+  <!-- Tableau ou État Vide -->
+  @if (service.boitiersFiltres().length > 0) {
+    <app-tableau-boitiers
+      [boitiers]="service.boitiersFiltres()"
+      (changerStatut)="service.changerStatut($event.id, $event.statut)"
+      (inspecter)="service.inspecterBoitier($event)"
+      (forcerSynchro)="service.forcerSynchro($event)"
+      (supprimer)="demanderSuppression($event)"
+    ></app-tableau-boitiers>
   } @else {
-    <!-- Vue Campagnes OTA -->
-    <app-campagnes-ota
-      [campagnes]="service.campagnesOta()"
-      (lancerCampagne)="service.lancerCampagneOta($event)"
-    ></app-campagnes-ota>
+    <div class="card">
+      <app-etat-vide
+        titre="Aucun boîtier trouvé"
+        message="Aucun boîtier ne correspond à vos critères de recherche."
+        texteAction="Réinitialiser les filtres"
+        (action)="service.recherche.set(''); service.filtreStatut.set('Tous'); service.filtreRegion.set('Toutes')"
+      ></app-etat-vide>
+    </div>
   }
 
   <!-- Tiroir / Inspecteur Hardware en Direct -->

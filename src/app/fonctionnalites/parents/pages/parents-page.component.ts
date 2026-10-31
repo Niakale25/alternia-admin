@@ -33,29 +33,12 @@ export class ParentsPageComponent implements OnInit {
   readonly modeAffichage = signal<'tableau' | 'cartes'>('tableau');
   readonly parentASupprimer = signal<ParentDTO | null>(null);
 
-  readonly formulesStats = computed(() => {
-    const list = this.service.parents();
-    const famille = list.filter(p => p.abonnementsType === 'Premium Famille').length;
-    const etab = list.filter(p => p.abonnementsType === 'Premium Établissement').length;
-    const acces = list.filter(p => p.abonnementsType === 'Accès Général (Inclus Boîtier)').length;
-    return [
-      { nom: 'Tous', count: list.length },
-      { nom: 'Premium Famille', count: famille, couleur: 'var(--c-brand)' },
-      { nom: 'Premium Établissement', count: etab, couleur: 'var(--c-accent)' },
-      { nom: 'Accès Général (Inclus Boîtier)', count: acces, couleur: 'var(--c-cyan)' }
-    ];
-  });
-
   ngOnInit(): void {
     this.service.chargerParents();
   }
 
   changerMode(mode: 'tableau' | 'cartes'): void {
     this.modeAffichage.set(mode);
-  }
-
-  filtrerFormule(formule: string): void {
-    this.service.filtreAbonnement.set(formule);
   }
 
   reinitialiserFiltres(): void {

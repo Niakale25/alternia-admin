@@ -17,7 +17,6 @@ import { EtatVideComponent } from '@partage/composants/etat-vide/etat-vide.compo
 import { CarteStatistiqueComponent } from '@partage/composants/carte-statistique/carte-statistique.component';
 import { ExportService } from '@partage/services/export.service';
 import { NotificationService } from '@partage/services/notification.service';
-import { PasseportCulturelComponent } from '../composants/passeport-culturel/passeport-culturel.component';
 
 @Component({
   selector: 'app-culture-page',
@@ -31,8 +30,7 @@ import { PasseportCulturelComponent } from '../composants/passeport-culturel/pas
     ModalFormulaireCultureComponent,
     ModalSuppressionCultureComponent,
     EtatVideComponent,
-    CarteStatistiqueComponent,
-    PasseportCulturelComponent
+    CarteStatistiqueComponent
   ],
   templateUrl: './culture-page.component.html',
   styleUrls: ['./culture-page.component.scss']

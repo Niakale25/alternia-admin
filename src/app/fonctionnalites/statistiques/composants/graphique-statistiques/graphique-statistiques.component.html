@@ -17,12 +17,12 @@
           <div class="bars-pair">
             <div
               class="bar bar--questions"
-              [style.height.%]="(pt.questions / 2000000) * 100"
+              [style.height.%]="((pt.questions || 0) / maxQuestions) * 100"
               [attr.data-tooltip]="(pt.questions | number) + ' Questions'"
             ></div>
             <div
               class="bar bar--sessions"
-              [style.height.%]="(pt.sessions / 800000) * 100"
+              [style.height.%]="((pt.sessions || 0) / maxSessions) * 100"
               [attr.data-tooltip]="(pt.sessions | number) + ' Sessions'"
             ></div>
           </div>

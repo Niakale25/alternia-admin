@@ -8,6 +8,7 @@ import { ListeAlertesComponent } from '../composants/liste-alertes/liste-alertes
 import { ActionsRapidesComponent } from '../composants/actions-rapides/actions-rapides.component';
 import { ChargeurSqueletteComponent } from '@partage/composants/chargeur-squelette/chargeur-squelette.component';
 import { AlertePrioritaireDTO } from '../modeles/tableau-bord.model';
+import { CultureService } from '@fonctionnalites/culture/services/culture.service';
 
 @Component({
   selector: 'app-tableau-bord-page',
@@ -26,6 +27,7 @@ import { AlertePrioritaireDTO } from '../modeles/tableau-bord.model';
 export class TableauBordPageComponent implements OnInit {
   readonly tdbService = inject(TableauBordService);
   private readonly router = inject(Router);
+  private readonly cultureService = inject(CultureService);
 
   ngOnInit(): void {
     this.tdbService.chargerDonnees();
@@ -38,6 +40,9 @@ export class TableauBordPageComponent implements OnInit {
       this.router.navigate(['/etablissements']);
     } else if (alerte.type === 'renouvellement') {
       this.router.navigate(['/abonnements']);
+    } else {
+      this.cultureService.sousOngletActif.set('moderation');
+      this.router.navigate(['/culture']);
     }
   }
 }

@@ -1,5 +1,5 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
-import { BoitierRepository, BoitierDTO, CampagneOtaDTO } from '@donnees/repositories/boitier.repository';
+import { BoitierRepository, BoitierDTO } from '@donnees/repositories/boitier.repository';
 import { NotificationService } from '@partage/services/notification.service';
 import { ExportService } from '@partage/services/export.service';
 
@@ -13,14 +13,10 @@ export class BoitierService {
   private readonly _boitiers = signal<BoitierDTO[]>([]);
   readonly boitiers = this._boitiers.asReadonly();
 
-  private readonly _campagnesOta = signal<CampagneOtaDTO[]>([]);
-  readonly campagnesOta = this._campagnesOta.asReadonly();
-
   readonly recherche = signal<string>('');
   readonly filtreStatut = signal<string>('Tous');
   readonly filtreRegion = signal<string>('Toutes');
   readonly vueMode = signal<'tableau' | 'grille'>('tableau');
-  readonly ongletActif = signal<'parc' | 'ota'>('parc');
 
   readonly boitierInspecte = signal<BoitierDTO | null>(null);
 
@@ -79,11 +75,6 @@ export class BoitierService {
       next: (donnees) => this._boitiers.set(donnees),
       error: () => this.notificationService.erreur('Impossible de charger le parc de boîtiers.')
     });
-
-    this.repository.recupererCampagnesOta().subscribe({
-      next: (campagnes) => this._campagnesOta.set(campagnes),
-      error: () => this.notificationService.erreur('Impossible de charger les campagnes de mise à jour.')
-    });
   }
 
   creerBoitier(nouveau: Omit<BoitierDTO, 'id' | 'derniereConnexion' | 'batterie' | 'stockageUtiliseGo' | 'elevesConnectes' | 'temperatureCpu'>): void {
@@ -131,10 +122,6 @@ export class BoitierService {
     setTimeout(() => {
       this.notificationService.succes(`Serveur Edge de ${boitier.etablissementNom} opérationnel.`);
     }, 1500);
-  }
-
-  lancerCampagneOta(campagneId: string): void {
-    this.notificationService.info('Déploiement OTA programmé sur l\'ensemble des boîtiers ciblés.');
   }
 
   supprimer(id: string): void {

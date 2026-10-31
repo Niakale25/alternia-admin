@@ -33,18 +33,6 @@
     </div>
   </div>
 
-  <!-- Bannière de Confidentialité -->
-  <div class="confidentialite-banner card mb-6">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--c-brand)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>
-      <path d="m9 12 2 2 4-4"/>
-    </svg>
-    <div class="text-xs text-secondary">
-      <strong>Confidentialité garantie :</strong> Alternia ne collecte aucune donnée personnelle nominative sur les apprenants.
-      Toutes les métriques présentées sont agrégées et anonymisées conformément aux standards internationaux de protection des donnees scolaires.
-    </div>
-  </div>
-
   @if (service.donnees(); as s) {
     <!-- KPIs -->
     <div class="kpi-grid mb-6">
@@ -84,20 +72,22 @@
     </div>
 
     <!-- Sujets les plus fréquents -->
-    <div class="card p-4">
-      <h3 class="font-bold text-sm mb-3">Sujets d'Exercices les Plus Consultés par les Élèves</h3>
-      <div class="sujets-grid">
-        @for (sujet of s.sujetsFrequents; track sujet.sujet) {
-          <div class="sujet-card">
-            <div class="sujet-card__top">
-              <span class="badge badge--neutre text-xs">{{ sujet.matiere }}</span>
-              <span class="text-xs font-semibold text-brand">{{ sujet.occurrences | number }} requêtes</span>
+    @if (s.sujetsFrequents && s.sujetsFrequents.length > 0) {
+      <div class="card p-4">
+        <h3 class="font-bold text-sm mb-3">Sujets d'Exercices les Plus Consultés par les Élèves</h3>
+        <div class="sujets-grid">
+          @for (sujet of s.sujetsFrequents; track sujet.sujet) {
+            <div class="sujet-card">
+              <div class="sujet-card__top">
+                <span class="badge badge--neutre text-xs">{{ sujet.matiere }}</span>
+                <span class="text-xs font-semibold text-brand">{{ sujet.occurrences | number }} requêtes</span>
+              </div>
+              <div class="sujet-card__nom font-semibold text-sm mt-1">{{ sujet.sujet }}</div>
             </div>
-            <div class="sujet-card__nom font-semibold text-sm mt-1">{{ sujet.sujet }}</div>
-          </div>
-        }
+          }
+        </div>
       </div>
-    </div>
+    }
   } @else {
     <div class="kpi-grid mb-6">
       <app-chargeur-squelette hauteur="110px" rayon="var(--r-lg)"></app-chargeur-squelette>

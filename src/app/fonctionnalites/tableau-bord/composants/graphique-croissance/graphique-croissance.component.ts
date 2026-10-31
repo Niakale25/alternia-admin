@@ -34,9 +34,28 @@ export class GraphiqueCroissanceComponent {
   readonly padBottom = 35;
   readonly baselineY = 195;
 
-  readonly maxEtab = 1500;
-  readonly maxParents = 60000;
-  readonly maxBoitiers = 1500;
+  get maxEtab(): number {
+    if (!this.points || this.points.length === 0) return 10;
+    return Math.max(...this.points.map(p => p.etablissements || 0), 5);
+  }
+
+  get maxParents(): number {
+    if (!this.points || this.points.length === 0) return 10;
+    return Math.max(...this.points.map(p => p.parents || 0), 5);
+  }
+
+  get maxBoitiers(): number {
+    if (!this.points || this.points.length === 0) return 10;
+    return Math.max(...this.points.map(p => p.boitiers || 0), 5);
+  }
+
+  get yAxisMax(): number {
+    const f = this.filtreActif();
+    if (f === 'etablissements') return this.maxEtab;
+    if (f === 'parents') return this.maxParents;
+    if (f === 'boitiers') return this.maxBoitiers;
+    return Math.max(this.maxEtab, this.maxParents, this.maxBoitiers);
+  }
 
   // Calcul des coordonnées
   readonly coords = computed(() => {

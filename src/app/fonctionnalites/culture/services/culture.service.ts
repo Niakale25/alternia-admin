@@ -21,10 +21,7 @@ export class CultureService {
   readonly contenus = this._contenus.asReadonly();
 
   readonly regions = signal<RegionMalienne[]>(REGIONS_MALI);
-
-  readonly tamponsPasseport = signal<TamponPasseportDTO[]>([]);
-  readonly niveauxExplorateur = signal<NiveauExplorateurDTO[]>([]);
-  readonly sousOngletActif = signal<'cms' | 'passeport' | 'moderation'>('cms');
+  readonly sousOngletActif = signal<'cms' | 'moderation'>('cms');
 
   // ── Contributions Citoyennes & Modération ────────────────────────
   private readonly _contributions = signal<CultureContributionDTO[]>([]);
@@ -54,24 +51,6 @@ export class CultureService {
       error: () => {
         this._contenus.set([]);
         this.chargement.set(false);
-      }
-    });
-
-    this.clientApi.get<TamponPasseportDTO[]>('/culture/tampons').subscribe({
-      next: (tampons) => {
-        this.tamponsPasseport.set(tampons || []);
-      },
-      error: () => {
-        this.tamponsPasseport.set([]);
-      }
-    });
-
-    this.clientApi.get<NiveauExplorateurDTO[]>('/culture/niveaux').subscribe({
-      next: (niveaux) => {
-        this.niveauxExplorateur.set(niveaux || []);
-      },
-      error: () => {
-        this.niveauxExplorateur.set([]);
       }
     });
 
@@ -183,17 +162,10 @@ export class CultureService {
     const temoignages = list.filter(i => i.type === 'temoignage').length;
 
     const regionsContenus = list.map(i => i.regionId);
-    const regionsTampons = this.tamponsPasseport().map(t => t.regionId);
-    const regionsCouvertes = new Set([...regionsContenus, ...regionsTampons]).size || 1;
+    const regionsCouvertes = new Set(regionsContenus).size || 1;
 
     const publies = list.filter(i => i.publie).length;
     const tauxPublication = total > 0 ? Math.round((publies / total) * 100) : 0;
-
-    const totalTampons = this.tamponsPasseport().reduce((acc, t) => acc + (t.totalDebloquesParEleves || 0), 0);
-    const totalXp = this.tamponsPasseport().reduce((acc, t) => acc + ((t.xpRecompense || 0) * (t.totalDebloquesParEleves || 0)), 0);
-    const xpTotalDistribue = totalXp >= 1_000_000
-      ? `${(totalXp / 1_000_000).toFixed(1)} M XP`
-      : `${totalXp.toLocaleString('fr-FR')} XP`;
 
     return {
       totalContenus: total,
@@ -206,17 +178,10 @@ export class CultureService {
       totalTemoignages: temoignages,
       regionsCouvertes,
       tauxPublication,
-      totalTamponsDebloques: totalTampons,
-      xpTotalDistribue
+      totalTamponsDebloques: 0,
+      xpTotalDistribue: '0 XP'
     };
   });
-
-  basculerActifTampon(id: string): void {
-    this.tamponsPasseport.update(list =>
-      list.map(t => t.id === id ? { ...t, actif: !t.actif } : t)
-    );
-    this.clientApi.patch(`/culture/tampons/${id}/actif`, {}).subscribe({ error: () => {} });
-  }
 
   // ── Compteurs par type (Computed) ────────────────────────────────
   readonly compteursParType = computed(() => {

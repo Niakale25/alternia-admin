@@ -25,8 +25,6 @@ export class PedagogieIaService {
   readonly voixEnLecture = signal<string | null>(null);
   readonly avatarEnEdition = signal<AvatarPedagogiqueDTO | null>(null);
   readonly modalAvatarOuvert = signal<boolean>(false);
-  readonly avatarEnTestLive = signal<AvatarPedagogiqueDTO | null>(null);
-  readonly cleApiSimliDefaut = signal<string>('simli_live_livekit_cnce_edtech_99a8b');
 
   // Filtres Studio Avatars
   readonly rechercheAvatars = signal<string>('');
@@ -113,15 +111,6 @@ export class PedagogieIaService {
     this.avatarEnEdition.set(null);
   }
 
-  ouvrirTestStreamSimli(avatar: AvatarPedagogiqueDTO): void {
-    this.avatarEnTestLive.set({ ...avatar });
-  }
-
-  fermerTestStreamSimli(): void {
-    this.avatarEnTestLive.set(null);
-    this.arreterLectureVocale();
-  }
-
   sauvegarderAvatar(avatarData: Omit<AvatarPedagogiqueDTO, 'id'>): void {
     const existant = this.avatarEnEdition();
     if (existant) {
@@ -161,13 +150,17 @@ export class PedagogieIaService {
   }
 
   definirAvatarParDefaut(avatar: AvatarPedagogiqueDTO): void {
-    this._avatars.update(list =>
-      list.map(a => ({
-        ...a,
-        parDefaut: a.id === avatar.id
-      }))
-    );
-    this.notificationService.succes(`${avatar.nom} est maintenant l'enseignant IA par défaut.`);
+    this.repository.modifierAvatar(avatar.id, { parDefaut: true }).subscribe({
+      next: () => {
+        this._avatars.update(list =>
+          list.map(a => ({
+            ...a,
+            parDefaut: a.id === avatar.id
+          }))
+        );
+        this.notificationService.succes(`${avatar.nom} est maintenant l'enseignant IA par défaut.`);
+      }
+    });
   }
 
   supprimerAvatar(id: string): void {
