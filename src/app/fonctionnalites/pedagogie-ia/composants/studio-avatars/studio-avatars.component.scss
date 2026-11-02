@@ -204,9 +204,12 @@
   position: relative;
   width: 52px;
   height: 52px;
+  min-width: 52px;
   flex-shrink: 0;
+  overflow: visible;
 
-  &--live .avatar-portrait-img {
+  &--live .avatar-portrait-img,
+  &--live .avatar-portrait-fallback {
     box-shadow: 0 0 0 2px var(--c-brand-light);
   }
 }
@@ -217,6 +220,24 @@
   border-radius: var(--r-lg);
   object-fit: cover;
   border: 1px solid var(--c-border);
+  background: var(--c-surface-alt);
+  display: block;
+}
+
+.avatar-portrait-fallback {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--r-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--card-accent, var(--c-brand));
+  background: var(--c-surface-alt);
+  border: 1px solid var(--c-border);
+  user-select: none;
 }
 
 .live-indicator-tag {

@@ -28,6 +28,20 @@ export class StudioAvatarsComponent {
 
   filtreMoteur: 'tous' | 'simli' | 'statique' = 'tous';
   idCopie: string | null = null;
+  imagesErreur = new Set<string>();
+
+  getInitiales(nom: string): string {
+    if (!nom) return 'IA';
+    const parties = nom.replace(/^(Dr\.|Prof\.|Professeure|Mme|M\.)\s*/i, '').trim().split(/\s+/);
+    if (parties.length >= 2) {
+      return (parties[0][0] + parties[1][0]).toUpperCase();
+    }
+    return nom.substring(0, 2).toUpperCase();
+  }
+
+  onImageErreur(id: string): void {
+    this.imagesErreur.add(id);
+  }
 
   matieresOptions = [
     'Toutes',

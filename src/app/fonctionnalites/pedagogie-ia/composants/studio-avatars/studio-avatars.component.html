@@ -99,7 +99,18 @@
           <!-- En-tête de carte avec hiérarchie claire -->
           <div class="avatar-card__header">
             <div class="avatar-portrait-wrap" [class.avatar-portrait-wrap--live]="a.moteurRendu === 'simli'">
-              <img [src]="a.photoUrl" [alt]="a.nom" class="avatar-portrait-img" />
+              @if (!imagesErreur.has(a.id) && a.photoUrl) {
+                <img
+                  [src]="a.photoUrl"
+                  [alt]="a.nom"
+                  class="avatar-portrait-img"
+                  (error)="onImageErreur(a.id)"
+                />
+              } @else {
+                <div class="avatar-portrait-fallback">
+                  {{ getInitiales(a.nom) }}
+                </div>
+              }
               @if (a.moteurRendu === 'simli') {
                 <span class="live-indicator-tag" title="Flux WebRTC Simli prêt">LIVE</span>
               }
